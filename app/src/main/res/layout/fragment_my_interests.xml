@@ -1,0 +1,177 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.amigos.sachin.MyProfileFragments.MyInterestsFragment">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="10dp">
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:paddingLeft="5dp"
+                android:text="General"
+                android:textColor="@color/gray3"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <co.lujun.androidtagview.TagContainerLayout
+                android:id="@+id/tagPrefContainerLifeStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp"
+                android:padding="5dp"
+                app:container_enable_drag="false"
+                app:horizontal_interval="10dp"
+                app:tag_clickable="true"
+                app:vertical_interval="10dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="5dp"
+                android:text="Arts"
+                android:textColor="@color/gray3"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <co.lujun.androidtagview.TagContainerLayout
+                android:id="@+id/tagPrefContainerArts"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp"
+                android:padding="5dp"
+                app:container_enable_drag="false"
+                app:horizontal_interval="10dp"
+                app:tag_clickable="true"
+                app:vertical_interval="10dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="5dp"
+                android:text="Entertainment"
+                android:textColor="@color/gray3"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <co.lujun.androidtagview.TagContainerLayout
+                android:id="@+id/tagPrefContainerEntertainment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp"
+                android:padding="5dp"
+                app:container_enable_drag="false"
+                app:horizontal_interval="10dp"
+                app:tag_clickable="true"
+                app:vertical_interval="10dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="5dp"
+                android:text="Business"
+                android:textColor="@color/gray3"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <co.lujun.androidtagview.TagContainerLayout
+                android:id="@+id/tagPrefContainerBusiness"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp"
+                android:padding="5dp"
+                app:container_enable_drag="false"
+                app:horizontal_interval="10dp"
+                app:tag_clickable="true"
+                app:vertical_interval="10dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="5dp"
+                android:text="Sports"
+                android:textColor="@color/gray3"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <co.lujun.androidtagview.TagContainerLayout
+                android:id="@+id/tagPrefContainerSports"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp"
+                android:padding="5dp"
+                app:container_enable_drag="false"
+                app:horizontal_interval="10dp"
+                app:tag_clickable="true"
+                app:vertical_interval="10dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="5dp"
+                android:text="Music"
+                android:textColor="@color/gray3"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <co.lujun.androidtagview.TagContainerLayout
+                android:id="@+id/tagPrefContainerMusic"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp"
+                android:padding="5dp"
+                app:container_enable_drag="false"
+                app:horizontal_interval="10dp"
+                app:tag_clickable="true"
+                app:vertical_interval="10dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="5dp"
+                android:text="Science and Tech"
+                android:textColor="@color/gray3"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <co.lujun.androidtagview.TagContainerLayout
+                android:id="@+id/tagPrefContainerTechnology"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp"
+                android:padding="5dp"
+                app:container_enable_drag="false"
+                app:horizontal_interval="10dp"
+                app:tag_clickable="true"
+                app:vertical_interval="10dp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="40dp"/>
+
+        </LinearLayout>
+    </ScrollView>
+
+</RelativeLayout>

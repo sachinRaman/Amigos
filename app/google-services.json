@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "531197709922",
+    "firebase_url": "https://new-amigos.firebaseio.com",
+    "project_id": "new-amigos",
+    "storage_bucket": "new-amigos.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:531197709922:android:cf7cc89bcabf16dc",
+        "android_client_info": {
+          "package_name": "com.amigos.sachin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "531197709922-fvd53a0t62u03k2gh22m4asc6k2nt1si.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.amigos.sachin",
+            "certificate_hash": "1a4bab7b700beb16bd41cca2da4dd726bfad4bdf"
+          }
+        },
+        {
+          "client_id": "531197709922-idascrsqge14l40i0231s2mdp5da3b7d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBuCefRIiVkZ9AnPiAEygdaFqmuEvJg-2A"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "531197709922-idascrsqge14l40i0231s2mdp5da3b7d.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
