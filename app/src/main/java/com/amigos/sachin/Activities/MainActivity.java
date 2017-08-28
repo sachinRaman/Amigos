@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
         loginButton.setReadPermissions(Arrays.asList(
                 "public_profile", "email", "user_birthday", "user_friends"));
         if (isLoggedIn()){
-            Intent intent = new Intent(MainActivity.this,MainTabsActivity.class);
+            Intent intent = new Intent(MainActivity.this,SplashScreen2.class);
             startActivity(intent);
         }
 

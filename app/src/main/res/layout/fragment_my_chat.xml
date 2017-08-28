@@ -4,10 +4,9 @@
     android:layout_height="match_parent"
     tools:context="com.amigos.sachin.ChatsFragments.MyChatFragment">
 
-
-    <TextView
+    <ListView
+        android:id="@+id/chatListView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="My Chats" />
+        android:layout_height="match_parent"></ListView>
 
 </FrameLayout>

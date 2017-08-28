@@ -55,15 +55,6 @@ public class MyProfileFragment extends Fragment {
         myProfileViewPager = (CustomViewPager) view.findViewById(R.id.my_profile_viewpager);
         myProfileViewPager.setPagingEnabled(false);
         myProfileViewPager.setAdapter(new MyPagerAdapter(getChildFragmentManager()));
-
-        //Comment below code to enable swiping but dont forget to select the bottom navigation
-        /*myProfileViewPager.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                return true;
-            }
-        });*/
-
         myProfileBottomNavigationView = (BottomNavigationView) view.findViewById(R.id.bottom_navigation_my_profile);
         myProfileBottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override

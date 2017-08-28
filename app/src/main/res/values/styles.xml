@@ -24,4 +24,5 @@
         <item name="android:textColor">@color/textColor</item><!-- For menu text color -->
     </style>
 
+
 </resources>

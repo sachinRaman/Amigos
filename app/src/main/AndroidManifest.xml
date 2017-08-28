@@ -40,7 +40,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".Activities.MainTabsActivity" />
-        <activity android:name=".Activities.SplashScreen"></activity>
+        <activity android:name=".Activities.SplashScreen" />
+        <activity android:name=".Activities.SplashScreen2" />
+        <activity android:name=".Activities.ChatActivity"></activity>
     </application>
 
 </manifest>
