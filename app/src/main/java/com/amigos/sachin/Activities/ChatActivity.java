@@ -1,12 +1,12 @@
 package com.amigos.sachin.Activities;
 
-import android.database.DataSetObserver;
-import android.support.v7.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.v7.app.AppCompatActivity;
+import android.database.DataSetObserver;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AbsListView;
@@ -16,6 +16,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.amigos.sachin.Adapters.ChatArrayAdapter;
+import com.amigos.sachin.ChatsFragments.MyChatFragment;
 import com.amigos.sachin.DAO.ChatUsersDAO;
 import com.amigos.sachin.R;
 import com.amigos.sachin.VO.ChatMessageVO;
@@ -31,9 +32,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
 import jp.wasabeef.glide.transformations.CropSquareTransformation;
@@ -114,7 +113,7 @@ public class ChatActivity extends AppCompatActivity {
                     chatText.setText("");
 
                     ChatUsersDAO chatUsersDAO = new ChatUsersDAO(getApplicationContext());
-                    chatUsersDAO.addToChatList(userId,myId,msg,0,time);
+                    chatUsersDAO.addToChatList(userId,myId,msg,0);
 
                     myMsgRef.child(myId).setValue(msg);
                     userMsgRef.child(myId).setValue(msg);
@@ -147,7 +146,7 @@ public class ChatActivity extends AppCompatActivity {
                 chatText.setText("");
 
                 ChatUsersDAO chatUsersDAO = new ChatUsersDAO(getApplicationContext());
-                chatUsersDAO.addToChatList(userId,myId,msg,0,time);
+                chatUsersDAO.addToChatList(userId,myId,msg,0);
 
                 myMsgRef.child(myId).setValue(msg);
                 userMsgRef.child(myId).setValue(msg);
@@ -222,6 +221,8 @@ public class ChatActivity extends AppCompatActivity {
         userChatRef.child(userId).setValue("");
 
         myChatRef.removeEventListener(valueEventListener);
+
+        MyChatFragment.reloadChatList();
 
         finish();
         return;

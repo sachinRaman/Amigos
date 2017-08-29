@@ -4,10 +4,9 @@
     android:layout_height="match_parent"
     tools:context="com.amigos.sachin.ChatsFragments.PeopleWhoLikedMeFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <ListView
+        android:id="@+id/peopleWhoLikedMeListView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="People who liked me" />
+        android:layout_height="match_parent"></ListView>
 
 </FrameLayout>

@@ -47,8 +47,10 @@ public class ChatUsersDAO extends SQLiteOpenHelper {
 
     }
 
-    public boolean addToChatList(String toId, String fromId, String lastMessage, int seen, String time){
+    public boolean addToChatList(String toId, String fromId, String lastMessage, int seen){
         Log.i(TAG," ChatDAO::addChat");
+
+        String time = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
 
         SQLiteDatabase db = this.getWritableDatabase();
         try {

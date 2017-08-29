@@ -1,5 +1,6 @@
 package com.amigos.sachin.ApplicationCache;
 
+import com.amigos.sachin.VO.LikedUserVO;
 import com.amigos.sachin.VO.UserVO;
 import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
@@ -21,11 +22,13 @@ public class ApplicationCache {
     public static ArrayList<UserVO> userVOArrayList = new ArrayList<UserVO>();
     public static Map<String, UserVO> userVOMap = new HashMap<String, UserVO>();
     public static UserVO myUserVO = new UserVO();
+    public static ArrayList<LikedUserVO> peopleWhoLikedMeVOArrayList = new ArrayList<LikedUserVO>();
 
 
     public ApplicationCache(){
         populateUserVOArrayList();
         loadMyUserVO();
+        loadPeopleWhoLikedMeList();
     }
 
     public static synchronized void populateUserVOArrayList(){
@@ -209,6 +212,31 @@ public class ApplicationCache {
             @Override
             public void onChildMoved(DataSnapshot dataSnapshot, String s) {
 
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });
+    }
+
+    public static synchronized void loadPeopleWhoLikedMeList(){
+        Firebase myLikeRef = new Firebase("https://new-amigos.firebaseio.com/users/"+myId+"/people_who_liked_me/");
+        myLikeRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot child : dataSnapshot.getChildren()){
+                    String userId = child.getKey();
+                    String time = child.getValue().toString();
+                    LikedUserVO likedUserVO = new LikedUserVO();
+                    likedUserVO.setTime(time);
+                    likedUserVO.setId(userId);
+                    likedUserVO.setName("");
+                    likedUserVO.setImageUrl("");
+                    likedUserVO.setStatus("");
+                    peopleWhoLikedMeVOArrayList.add(likedUserVO);
+                }
             }
 
             @Override

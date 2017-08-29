@@ -24,9 +24,10 @@ import java.util.Comparator;
 
 public class MyChatFragment extends Fragment {
 
-    Context context;
-    ListView chatListView;
-    String myId;
+    static Context context;
+    static ListView chatListView;
+    static String myId;
+    static ChatLVAdapter chatLVAdapter;
 
 
     public MyChatFragment() {
@@ -68,10 +69,36 @@ public class MyChatFragment extends Fragment {
             }
         });
 
-        ChatLVAdapter chatLVAdapter = new ChatLVAdapter(context,chatUsersVOArrayList,chatListView);
+        chatLVAdapter = new ChatLVAdapter(context,chatUsersVOArrayList,chatListView);
         chatListView.setAdapter(chatLVAdapter);
 
         return view;
     }
+
+
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
+
+    public static void reloadChatList(){
+        ChatUsersDAO chatUsersDAO = new ChatUsersDAO(context);
+        ArrayList<ChatUsersVO> chatUsersVOArrayList = chatUsersDAO.getMyChatList(myId);
+
+        Collections.sort(chatUsersVOArrayList, new Comparator<ChatUsersVO>() {
+            @Override
+            public int compare(ChatUsersVO lhs, ChatUsersVO rhs) {
+                if ( lhs.getTime().compareTo(rhs.getTime()) > 0 )
+                    return -1;
+                return 1;
+            }
+        });
+
+        chatLVAdapter = new ChatLVAdapter(context,chatUsersVOArrayList,chatListView);
+        chatListView.setAdapter(chatLVAdapter);
+    }
+
+
+
 
 }
