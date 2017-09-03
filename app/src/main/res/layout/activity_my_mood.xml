@@ -1,9 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="com.amigos.sachin.MyProfileFragments.MyMoods">
+    tools:context="com.amigos.sachin.Activities.MyMoodActivity">
 
     <ScrollView
         android:layout_width="wrap_content"
@@ -24,7 +25,7 @@
                 android:textSize="18sp" />
 
             <LinearLayout
-                android:id="@+id/linearLayout1"
+                android:id="@+id/linearLayout11"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
@@ -40,7 +41,7 @@
                     android:textSize="18sp"/>
 
                 <Switch
-                    android:id="@+id/switch1"
+                    android:id="@+id/switch11"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
@@ -59,29 +60,29 @@
 
 
             <EditText
-                android:id="@+id/et_myMood"
+                android:id="@+id/et_myMood1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
-                android:layout_below="@+id/linearLayout1"
+                android:layout_below="@+id/linearLayout11"
                 android:layout_marginTop="20dp"
                 android:hint="What's on your mind"
                 android:textColor="@color/textColor" />
 
             <TextView
-                android:id="@+id/tv_addedTags"
+                android:id="@+id/tv_addedTags1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
-                android:layout_below="@+id/et_myMood"
+                android:layout_below="@+id/et_myMood1"
                 android:layout_marginTop="10dp"
                 android:text="Added Tags" />
 
             <co.lujun.androidtagview.TagContainerLayout
-                android:id="@+id/chosenTags"
+                android:id="@+id/chosenTags1"
                 android:layout_width="match_parent"
                 android:layout_height="130dp"
-                android:layout_below="@+id/tv_addedTags"
+                android:layout_below="@+id/tv_addedTags1"
                 android:layout_margin="0dp"
                 android:layout_marginTop="33dp"
                 android:padding="10dp"
@@ -93,27 +94,27 @@
                 app:vertical_interval="10dp" />
 
             <TextView
-                android:id="@+id/tv_allTags"
+                android:id="@+id/tv_allTags1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
-                android:layout_below="@+id/tv_addedTags"
+                android:layout_below="@+id/tv_addedTags1"
                 android:layout_marginTop="140dp"
                 android:text="Add upto 5 tags." />
 
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/et_search"
-                android:layout_below="@+id/tv_allTags"
+                android:id="@+id/et_search1"
+                android:layout_below="@+id/tv_allTags1"
                 android:hint="Search Here..."
                 android:textColor="@color/textColor"/>
 
             <co.lujun.androidtagview.TagContainerLayout
-                android:id="@+id/allTags"
+                android:id="@+id/allTags1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/et_search"
+                android:layout_below="@+id/et_search1"
                 android:layout_margin="0dp"
                 android:layout_marginTop="33dp"
                 android:padding="10dp"
@@ -126,14 +127,14 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
-                android:layout_below="@+id/allTags"/>
+                android:layout_below="@+id/allTags1"/>
 
         </RelativeLayout>
 
     </ScrollView>
 
     <LinearLayout
-        android:id="@+id/linearLayout_button"
+        android:id="@+id/linearLayout_button1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true">
@@ -144,7 +145,7 @@
             android:padding="10dp">
 
             <Button
-                android:id="@+id/myMoodsButton"
+                android:id="@+id/myMoodsButton1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
@@ -170,7 +171,5 @@
 
 
     </LinearLayout>
-
-
 
 </RelativeLayout>

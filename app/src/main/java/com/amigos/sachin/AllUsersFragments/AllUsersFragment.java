@@ -5,7 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.media.Image;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -47,7 +49,7 @@ public class AllUsersFragment extends Fragment {
     int match = 0;
     TagView tagGroup;
     ArrayList<Tag> tags = new ArrayList<Tag>();
-    ImageView messageIcon, likeIcon;
+    ImageView messageIcon, likeIcon, messageIcon1, likeIcon1;
     String myId;
 
     public AllUsersFragment() {
@@ -80,6 +82,8 @@ public class AllUsersFragment extends Fragment {
         tagGroup = (TagView) view.findViewById(R.id.user_tag_group);
         messageIcon = (ImageView) view.findViewById(R.id.messageIcon);
         likeIcon = (ImageView) view.findViewById(R.id.likeIcon);
+        /*likeIcon = (ImageView) getParentFragment().getView().findViewById(R.id.likeIcon1);
+        messageIcon = (ImageView) getParentFragment().getView().findViewById(R.id.messageIcon1);*/
 
         if(userVO.getImageUrl() != null){
             imageUrl = userVO.getImageUrl();
@@ -182,6 +186,7 @@ public class AllUsersFragment extends Fragment {
         });
 
         final String finalUserId1 = userId;
+        final String myName = ApplicationCache.myUserVO.getName();
         likeIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -189,8 +194,12 @@ public class AllUsersFragment extends Fragment {
                 String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
                 Firebase myRef = new Firebase("https://new-amigos.firebaseio.com/users/"+myId+"/people_i_liked/");
                 Firebase userRef = new Firebase("https://new-amigos.firebaseio.com/users/"+finalUserId1+"/people_who_liked_me/");
+                Firebase likedNotificationRef = new Firebase("https://new-amigos.firebaseio.com/liked_notifications/"
+                        +finalUserId1+"/");
                 myRef.child(finalUserId1).setValue(timeStamp);
                 userRef.child(myId).setValue(timeStamp);
+                likedNotificationRef.child(myId).child(myName).setValue(timeStamp);
+
                 final PeopleILikedDAO peopleILikedDAO = new PeopleILikedDAO(context);
                 Firebase thisUserRef = new Firebase("https://new-amigos.firebaseio.com/users/"+finalUserId1+"/");
                 thisUserRef.addListenerForSingleValueEvent(new ValueEventListener() {

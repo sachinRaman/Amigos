@@ -12,7 +12,6 @@ public class Amigos extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-
         FontsOverride.setDefaultFont(this, "SERIF", "fonts/Calibri/Calibri.ttf");
     }
 }

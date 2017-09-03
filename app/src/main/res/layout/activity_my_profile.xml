@@ -1,12 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.amigos.sachin.MyProfileFragments.MyInfoFragment">
+    tools:context="com.amigos.sachin.Activities.MyProfileActivity">
 
     <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_width="368dp"
+        android:layout_height="wrap_content"
+        tools:layout_editor_absoluteY="0dp"
+        tools:layout_editor_absoluteX="8dp">
 
 
         <LinearLayout
@@ -25,7 +29,7 @@
                 android:paddingTop="20dp">
 
                 <ImageView
-                    android:id="@+id/iv_profile_pic"
+                    android:id="@+id/iv_profile_pic1"
                     android:layout_width="200dp"
                     android:layout_height="200dp"
                     android:layout_alignParentTop="false"
@@ -33,20 +37,12 @@
                     android:src="@drawable/ic_user" />
 
                 <ImageView
-                    android:id="@+id/profilePhotoEdit"
+                    android:id="@+id/profilePhotoEdit1"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:layout_alignBottom="@+id/iv_profile_pic"
-                    android:layout_alignRight="@+id/iv_profile_pic"
-                    android:src="@drawable/profile_picture_edit" />
-
-                <ImageView
-                    android:id="@+id/settingsIcon"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentTop="true"
-                    android:src="@drawable/settings_icon" />
+                    android:src="@drawable/profile_picture_edit"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignEnd="@+id/iv_profile_pic1" />
 
             </RelativeLayout>
 
@@ -61,7 +57,7 @@
                 android:textSize="15sp" />
 
             <EditText
-                android:id="@+id/et_display_name"
+                android:id="@+id/et_display_name1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/backgroundColor"
@@ -84,7 +80,7 @@
                 android:textSize="15sp" />
 
             <EditText
-                android:id="@+id/age"
+                android:id="@+id/age1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/backgroundColor"
@@ -108,14 +104,14 @@
 
 
             <RadioGroup
-                android:id="@+id/radioSex"
+                android:id="@+id/radioSex1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/backgroundColor"
                 android:orientation="horizontal">
 
                 <RadioButton
-                    android:id="@+id/radioMale"
+                    android:id="@+id/radioMale1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:buttonTint="@color/colorPrimary"
@@ -123,7 +119,7 @@
                     android:text="Male" />
 
                 <RadioButton
-                    android:id="@+id/radioFemale"
+                    android:id="@+id/radioFemale1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
@@ -143,7 +139,7 @@
                 android:textSize="15sp"/>
 
             <EditText
-                android:id="@+id/place"
+                android:id="@+id/place1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/backgroundColor"
@@ -166,7 +162,7 @@
                 android:textSize="15sp"/>
 
             <EditText
-                android:id="@+id/editText_status"
+                android:id="@+id/editText_status1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/backgroundColor"
@@ -188,7 +184,7 @@
                 android:textSize="15sp" />
 
             <EditText
-                android:id="@+id/editText_act1"
+                android:id="@+id/editText_act11"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
@@ -200,7 +196,7 @@
                 android:textColor="@color/gray3"
                 android:textCursorDrawable="@null" />
             <EditText
-                android:id="@+id/editText_act2"
+                android:id="@+id/editText_act21"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/backgroundColor"
@@ -212,7 +208,7 @@
                 android:textColor="@color/gray3"
                 android:textCursorDrawable = "@null"/>
             <EditText
-                android:id="@+id/editText_act3"
+                android:id="@+id/editText_act31"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/backgroundColor"
@@ -234,9 +230,11 @@
     </ScrollView>
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true">
+        android:layout_alignParentBottom="true"
+        tools:layout_editor_absoluteX="8dp"
+        tools:layout_editor_absoluteY="0dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -244,7 +242,7 @@
             android:padding="10dp">
 
             <Button
-                android:id="@+id/button"
+                android:id="@+id/button1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
@@ -263,7 +261,7 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="100dp"/>
+                android:layout_height="100dp" />
 
 
         </RelativeLayout>

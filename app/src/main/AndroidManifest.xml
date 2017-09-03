@@ -3,9 +3,12 @@
     package="com.amigos.sachin">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
+        android:name=".Application.Amigos"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
@@ -39,10 +42,42 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activities.MainTabsActivity" />
+        <activity
+            android:name=".Activities.MainTabsActivity"
+            android:windowSoftInputMode="adjustPan" />
         <activity android:name=".Activities.SplashScreen" />
         <activity android:name=".Activities.SplashScreen2" />
-        <activity android:name=".Activities.ChatActivity"></activity>
+        <activity android:name=".Activities.ChatActivity" />
+
+        <service
+            android:name=".Services.ChatService"
+            android:enabled="true">
+
+            <!--
+            android:exported="false"
+            android:process=":remote" >
+            <intent-filter>
+                <action android:name="com.amigos.sachin.Services.ChatService" />
+            </intent-filter>
+            -->
+        </service>
+
+        <receiver android:name=".Services.StartServicesAtBoot">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+        <activity android:name=".Activities.MyProfileActivity" />
+        <activity android:name=".Activities.InterestsTagsActivity" />
+        <activity android:name=".Activities.MyMoodActivity" />
+        <activity android:name=".Activities.UserProfileActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.amigos.sachin.Activities.MainTabsActivity" />
+        </activity>
+        <activity android:name=".Activities.SettingsActivity" />
+        <activity android:name=".Activities.BlockListActivity"></activity>
     </application>
 
 </manifest>

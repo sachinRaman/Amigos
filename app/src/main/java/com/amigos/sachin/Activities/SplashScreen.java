@@ -9,6 +9,7 @@ import android.os.Bundle;
 
 import com.amigos.sachin.DAO.InterestsDAO;
 import com.amigos.sachin.R;
+import com.amigos.sachin.Services.ChatService;
 import com.amigos.sachin.Values.PeevesList;
 import com.firebase.client.Firebase;
 
@@ -24,6 +25,8 @@ public class SplashScreen extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
+        Intent startChatService = new Intent(this, ChatService.class);
+        startService(startChatService);
         getSupportActionBar().hide();
         startHeavyProcessing();
     }
@@ -76,7 +79,7 @@ public class SplashScreen extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String result) {
-            Intent intent = new Intent(SplashScreen.this, MainTabsActivity.class);
+            Intent intent = new Intent(SplashScreen.this, MyProfileActivity.class);
             intent.putExtra("data", result);
             startActivity(intent);
             finish();

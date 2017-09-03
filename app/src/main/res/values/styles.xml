@@ -16,12 +16,24 @@
         <item name="android:textColorPrimary">@color/actionBarTextColor</item>
         <item name="android:windowBackground">@color/backgroundColor</item>
         <item name="android:itemTextAppearance">@style/TextAppearance</item>
-        <item name="android:typeface">monospace</item>
+        <item name="android:typeface">serif</item>
 
     </style>
 
     <style name="TextAppearance">
         <item name="android:textColor">@color/textColor</item><!-- For menu text color -->
+    </style>
+
+    <style name="SCBSwitch" parent="Theme.AppCompat.Light">
+        <!-- active thumb & track color (30% transparency) -->
+        <item name="colorControlActivated">#46bdbf</item>
+
+        <!-- inactive thumb color -->
+        <item name="colorSwitchThumbNormal">#f1f1f1</item>
+
+        <!-- inactive track color (30% transparency) -->
+        <item name="android:colorForeground">#42221f1f
+        </item>
     </style>
 
 

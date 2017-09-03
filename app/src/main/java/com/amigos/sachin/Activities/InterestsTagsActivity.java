@@ -1,14 +1,13 @@
-package com.amigos.sachin.MyProfileFragments;
-
+package com.amigos.sachin.Activities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.amigos.sachin.DAO.InterestsDAO;
 import com.amigos.sachin.R;
@@ -20,51 +19,30 @@ import java.util.ArrayList;
 import co.lujun.androidtagview.TagContainerLayout;
 import co.lujun.androidtagview.TagView;
 
-public class MyInterestsFragment extends Fragment {
+public class InterestsTagsActivity extends AppCompatActivity {
 
     String myId = "";
     SharedPreferences sp;
     Context context;
-
-    public MyInterestsFragment() {
-
-    }
-
-    public static MyInterestsFragment newInstance(String param1) {
-        MyInterestsFragment fragment = new MyInterestsFragment();
-        Bundle args = new Bundle();
-        args.putString("param1", param1);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    Button interestsButton;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-    }
+        setContentView(R.layout.activity_interests_tags);
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view =  inflater.inflate(R.layout.fragment_my_interests, container, false);
-        context = getActivity();
-        sp = context.getSharedPreferences("com.amigos.sachin",Context.MODE_PRIVATE);
+        context = getApplicationContext();
+        sp = getSharedPreferences("com.amigos.sachin",Context.MODE_PRIVATE);
         myId = sp.getString("myId", "");
-        return view;
-    }
 
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        TagContainerLayout mTagContainerLayoutLifestyle = (TagContainerLayout) view.findViewById(R.id.tagPrefContainerLifeStyle);
-        TagContainerLayout mTagContainerLayoutArts = (TagContainerLayout) view.findViewById(R.id.tagPrefContainerArts);
-        TagContainerLayout mTagContainerLayoutEntertainment = (TagContainerLayout) view.findViewById(R.id.tagPrefContainerEntertainment);
-        TagContainerLayout mTagContainerLayoutBusiness = (TagContainerLayout) view.findViewById(R.id.tagPrefContainerBusiness);
-        TagContainerLayout mTagContainerLayoutSports = (TagContainerLayout) view.findViewById(R.id.tagPrefContainerSports);
-        TagContainerLayout mTagContainerLayoutMusic = (TagContainerLayout) view.findViewById(R.id.tagPrefContainerMusic);
-        TagContainerLayout mTagContainerLayoutTechnology = (TagContainerLayout) view.findViewById(R.id.tagPrefContainerTechnology);
+        TagContainerLayout mTagContainerLayoutLifestyle = (TagContainerLayout) findViewById(R.id.tagPrefContainerLifeStyle1);
+        TagContainerLayout mTagContainerLayoutArts = (TagContainerLayout) findViewById(R.id.tagPrefContainerArts1);
+        TagContainerLayout mTagContainerLayoutEntertainment = (TagContainerLayout) findViewById(R.id.tagPrefContainerEntertainment1);
+        TagContainerLayout mTagContainerLayoutBusiness = (TagContainerLayout) findViewById(R.id.tagPrefContainerBusiness1);
+        TagContainerLayout mTagContainerLayoutSports = (TagContainerLayout) findViewById(R.id.tagPrefContainerSports1);
+        TagContainerLayout mTagContainerLayoutMusic = (TagContainerLayout) findViewById(R.id.tagPrefContainerMusic1);
+        TagContainerLayout mTagContainerLayoutTechnology = (TagContainerLayout) findViewById(R.id.tagPrefContainerTechnology1);
+        interestsButton = (Button) findViewById(R.id.buttonInterests);
 
         ArrayList<String> lifestyle = PeevesList.getAllLifestyleInterests();
         ArrayList<String> arts = PeevesList.getAllArtsInterests();
@@ -74,11 +52,6 @@ public class MyInterestsFragment extends Fragment {
         ArrayList<String> music = PeevesList.getAllMusicInterests();
         ArrayList<String> technology = PeevesList.getAllTechnologyInterests();
 
-
-        InterestsDAO interestsDAO = new InterestsDAO(context);
-        // interestsDAO.clearTableData();
-
-
         createInterestTags(mTagContainerLayoutLifestyle,lifestyle, "lifestyle");
         createInterestTags(mTagContainerLayoutArts,arts, "arts");
         createInterestTags(mTagContainerLayoutEntertainment,entertainment, "entertainment");
@@ -86,6 +59,14 @@ public class MyInterestsFragment extends Fragment {
         createInterestTags(mTagContainerLayoutSports,sports, "sports");
         createInterestTags(mTagContainerLayoutMusic,music, "music");
         createInterestTags(mTagContainerLayoutTechnology,technology, "technology");
+
+        interestsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(InterestsTagsActivity.this,MyMoodActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     private void createInterestTags(final TagContainerLayout mTagContainerLayout,ArrayList<String> tags, String topic) {

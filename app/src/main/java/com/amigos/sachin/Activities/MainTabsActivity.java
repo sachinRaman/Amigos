@@ -49,6 +49,8 @@ public class MainTabsActivity extends AppCompatActivity {
 
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
+        TabLayout.Tab tab = tabLayout.getTabAt(1);
+        tab.select();
         setupTabIcons();
 
     }

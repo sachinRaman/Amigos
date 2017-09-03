@@ -13,6 +13,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.amigos.sachin.Activities.ChatActivity;
+import com.amigos.sachin.Activities.UserProfileActivity;
 import com.amigos.sachin.R;
 import com.amigos.sachin.VO.ChatUsersVO;
 import com.bumptech.glide.Glide;
@@ -110,6 +111,15 @@ public class ChatLVAdapter extends ArrayAdapter<ChatUsersVO> implements View.OnC
             @Override
             public void onCancelled(FirebaseError firebaseError) {
 
+            }
+        });
+
+        holder.profilePicImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context,UserProfileActivity.class);
+                intent.putExtra("userId",userId);
+                context.startActivity(intent);
             }
         });
 

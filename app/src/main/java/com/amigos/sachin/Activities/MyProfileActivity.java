@@ -1,8 +1,6 @@
-package com.amigos.sachin.MyProfileFragments;
-
+package com.amigos.sachin.Activities;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -20,15 +18,11 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -36,7 +30,6 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
-import com.amigos.sachin.Activities.SettingsActivity;
 import com.amigos.sachin.R;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -58,9 +51,7 @@ import java.net.URL;
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
 import jp.wasabeef.glide.transformations.CropSquareTransformation;
 
-import static android.app.Activity.RESULT_OK;
-
-public class MyInfoFragment extends Fragment {
+public class MyProfileActivity extends AppCompatActivity {
 
     private static final int PICK_IMAGE_REQUEST = 234;
     private String TAG = "MyInfoFragment";
@@ -68,8 +59,8 @@ public class MyInfoFragment extends Fragment {
     String imageUrl = "";
     String myId = "";
     Context context;
-    ImageView imageView,profilePhotoEdit,settingsIcon;
-    EditText et_name, et_age, et_place, et_status, et_activity1, et_activity2, et_activity3;
+    ImageView imageView,profilePhotoEdit;
+    EditText et_name, et_age,et_place,et_status,et_activity1,et_activity2,et_activity3;
     Button okButton;
     public RadioGroup radioSexGroup;
     public RadioButton radioSexButton;
@@ -77,64 +68,29 @@ public class MyInfoFragment extends Fragment {
     SharedPreferences sp;
     public static StorageReference storageReference;
 
-    public MyInfoFragment() {
-
-    }
-
-    public static MyInfoFragment newInstance(String param1) {
-        MyInfoFragment fragment = new MyInfoFragment();
-        Bundle args = new Bundle();
-        args.putString("param1", param1);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_my_profile);
 
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-
-        view =  inflater.inflate(R.layout.fragment_my_info, container, false);
-        return view;
-    }
-
-    @Override
-    public void onViewCreated(View view,Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        setRetainInstance(true);
 
         FirebaseStorage storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
 
-        context = getActivity();
-        et_name = (EditText) view.findViewById(R.id.et_display_name);
-        et_age = (EditText) view.findViewById(R.id.age);
-        et_place = (EditText) view.findViewById(R.id.place);
-        et_status = (EditText) view.findViewById(R.id.editText_status);
-        et_activity1 = (EditText) view.findViewById(R.id.editText_act1);
-        et_activity2 = (EditText) view.findViewById(R.id.editText_act2);
-        et_activity3 = (EditText) view.findViewById(R.id.editText_act3);
-        radioSexGroup = (RadioGroup) view.findViewById(R.id.radioSex);
-        okButton = (Button) view.findViewById(R.id.button);
-        imageView = (ImageView) view.findViewById(R.id.iv_profile_pic);
-        profilePhotoEdit = (ImageView) view.findViewById(R.id.profilePhotoEdit);
-        settingsIcon = (ImageView) view.findViewById(R.id.settingsIcon);
+        context = getApplicationContext();
+        et_name = (EditText)findViewById(R.id.et_display_name1);
+        et_age = (EditText) findViewById(R.id.age1);
+        et_place = (EditText) findViewById(R.id.place1);
+        et_status = (EditText) findViewById(R.id.editText_status1);
+        et_activity1 = (EditText) findViewById(R.id.editText_act11);
+        et_activity2 = (EditText) findViewById(R.id.editText_act21);
+        et_activity3 = (EditText) findViewById(R.id.editText_act31);
+        radioSexGroup = (RadioGroup) findViewById(R.id.radioSex1);
+        okButton = (Button) findViewById(R.id.button1);
+        imageView = (ImageView) findViewById(R.id.iv_profile_pic1);
+        profilePhotoEdit = (ImageView) findViewById(R.id.profilePhotoEdit1);
         sp = context.getSharedPreferences("com.amigos.sachin", Context.MODE_PRIVATE);
         myId = sp.getString("myId", "");
-
-        settingsIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(context, SettingsActivity.class);
-                startActivity(intent);
-            }
-        });
 
         fillData();
     }
@@ -174,9 +130,9 @@ public class MyInfoFragment extends Fragment {
                 }
                 if ("sex".equalsIgnoreCase(dataSnapshot.getKey())) {
                     if("male".equalsIgnoreCase(dataSnapshot.getValue().toString())){
-                        radioSexGroup.check(R.id.radioMale);
+                        radioSexGroup.check(R.id.radioMale1);
                     }else if("female".equalsIgnoreCase(dataSnapshot.getValue().toString())){
-                        radioSexGroup.check(R.id.radioFemale);
+                        radioSexGroup.check(R.id.radioFemale1);
                     }
                 }
                 if ("imageUrl".equalsIgnoreCase(dataSnapshot.getKey())){
@@ -220,7 +176,7 @@ public class MyInfoFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 int selectedId = radioSexGroup.getCheckedRadioButtonId();
-                radioSexButton = (RadioButton) view.findViewById(selectedId);
+                radioSexButton = (RadioButton) findViewById(selectedId);
                 String sexStr = radioSexButton.getText().toString();
 
                 Firebase myRef = new Firebase("https://new-amigos.firebaseio.com/users/" + myId + "/");
@@ -233,7 +189,10 @@ public class MyInfoFragment extends Fragment {
                 myRef.child("activity").child("act2").setValue(et_activity2.getText().toString());
                 myRef.child("activity").child("act3").setValue(et_activity3.getText().toString());
 
-                Toast.makeText(context,"Data updated successfully",Toast.LENGTH_LONG);
+                Toast.makeText(context,"Data updated successfully.",Toast.LENGTH_LONG).show();
+
+                Intent intent = new Intent(MyProfileActivity.this,InterestsTagsActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -244,6 +203,15 @@ public class MyInfoFragment extends Fragment {
             }
         });
 
+        //uploadFile();
+    }
+
+    public void showFileChooser(View view) {
+
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
     }
 
     public void addUrlToProfile(){
@@ -267,14 +235,6 @@ public class MyInfoFragment extends Fragment {
         });
     }
 
-    public void showFileChooser(View view) {
-
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
-    }
-
     private void checkPermissions() {
 
         if (ContextCompat.checkSelfPermission(context,
@@ -289,7 +249,8 @@ public class MyInfoFragment extends Fragment {
                             Manifest.permission.WRITE_EXTERNAL_STORAGE
                     },
                     1052);*/
-            requestPermissions(new String[]{
+            ActivityCompat.requestPermissions(this,
+                    new String[]{
                             Manifest.permission.READ_EXTERNAL_STORAGE,
                             Manifest.permission.WRITE_EXTERNAL_STORAGE
                     },
@@ -419,9 +380,6 @@ public class MyInfoFragment extends Fragment {
             //if there is a file to upload
             if (filePath != null) {
                 //displaying a progress dialog while upload is going on
-                /*final ProgressDialog progressDialog = new ProgressDialog(context);
-                progressDialog.setTitle("Uploading");
-                progressDialog.show();*/
 
                 StorageReference riversRef = storageReference.child("images/" + myId+"/"+myId + ".jpg");
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), filePath);
@@ -438,11 +396,11 @@ public class MyInfoFragment extends Fragment {
                             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                                 //if the upload is successfull
                                 //hiding the progress dialog
-                                /*progressDialog.dismiss();*/
 
                                 //and displaying a success toast
                                 //Toast.makeText(context, "File Uploaded ", Toast.LENGTH_LONG).show();
                                 addUrlToProfile();
+
                             }
                         })
                         .addOnFailureListener(new OnFailureListener() {
@@ -450,7 +408,6 @@ public class MyInfoFragment extends Fragment {
                             public void onFailure(@NonNull Exception exception) {
                                 //if the upload is not successfull
                                 //hiding the progress dialog
-                                /*progressDialog.dismiss();*/
 
                                 //and displaying error message
                                 Toast.makeText(context, exception.getMessage(), Toast.LENGTH_LONG).show();
@@ -463,7 +420,6 @@ public class MyInfoFragment extends Fragment {
                                 double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
 
                                 //displaying percentage in progress dialog
-                                /*progressDialog.setMessage("Uploaded " + ((int) progress) + "%...");*/
                             }
                         });
             }
@@ -475,5 +431,4 @@ public class MyInfoFragment extends Fragment {
             ex.printStackTrace();
         }
     }
-
 }

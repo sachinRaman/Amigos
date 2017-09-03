@@ -1,5 +1,7 @@
 package com.amigos.sachin.ApplicationCache;
 
+import android.provider.ContactsContract;
+
 import com.amigos.sachin.VO.LikedUserVO;
 import com.amigos.sachin.VO.UserVO;
 import com.firebase.client.ChildEventListener;
@@ -23,7 +25,10 @@ public class ApplicationCache {
     public static Map<String, UserVO> userVOMap = new HashMap<String, UserVO>();
     public static UserVO myUserVO = new UserVO();
     public static ArrayList<LikedUserVO> peopleWhoLikedMeVOArrayList = new ArrayList<LikedUserVO>();
-
+    public static ArrayList<String> peopleIBlockedList = new ArrayList<String>();
+    public static ArrayList<String> peopleWhoBlockedMeList = new ArrayList<String>();
+    public static ArrayList<LikedUserVO> peopleIBlockedVOList = new ArrayList<LikedUserVO>();
+    public static ArrayList<LikedUserVO> peopleWhoBlockedMeVOList = new ArrayList<LikedUserVO>();
 
     public ApplicationCache(){
         populateUserVOArrayList();
@@ -132,86 +137,98 @@ public class ApplicationCache {
 
     public static synchronized void loadMyUserVO(){
         Firebase myRef = new Firebase("https://new-amigos.firebaseio.com/users/"+myId+"/");
-        myRef.addChildEventListener(new ChildEventListener() {
+        myRef.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onChildAdded(DataSnapshot userData, String s1) {
-                String name, age, place, sex, status, activity1, activity2, activity3, imageUrl;
-                ArrayList<String> interests = new ArrayList<String>();
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot userData : dataSnapshot.getChildren()){
+                    String name, age, place, sex, status, activity1, activity2, activity3, imageUrl;
+                    ArrayList<String> interests = new ArrayList<String>();
 
-                myUserVO.setId(myId);
+                    myUserVO.setId(myId);
 
-                if ("name".equalsIgnoreCase(userData.getKey())){
-                    name = userData.getValue(String.class);
-                    myUserVO.setName(name);
-                }
-                if ("age".equalsIgnoreCase(userData.getKey())){
-                    age = userData.getValue(String.class);
-                    myUserVO.setAge(age);
-                }
-                if ("place".equalsIgnoreCase(userData.getKey())){
-                    place = userData.getValue(String.class);
-                    myUserVO.setPlace(place);
-                }
-                if ("sex".equalsIgnoreCase(userData.getKey())){
-                    sex = userData.getValue(String.class);
-                    myUserVO.setSex(sex);
-                }
-                if ("status".equalsIgnoreCase(userData.getKey())){
-                    status = userData.getValue(String.class);
-                    myUserVO.setStatus(status);
-                }
-                if ("activity".equalsIgnoreCase(userData.getKey())) {
-                    for (DataSnapshot children : userData.getChildren()){
-                        if("act1".equalsIgnoreCase(children.getKey())){
-                            activity1 = children.getValue(String.class);
-                            myUserVO.setActivity1(activity1);
-                        }
-                        if("act2".equalsIgnoreCase(children.getKey())){
-                            activity2 = children.getValue(String.class);
-                            myUserVO.setActivity2(activity2);
-                        }
-                        if("act3".equalsIgnoreCase(children.getKey())){
-                            activity3 = children.getValue(String.class);
-                            myUserVO.setActivity3(activity3);
-                        }
+                    if ("name".equalsIgnoreCase(userData.getKey())){
+                        name = userData.getValue(String.class);
+                        myUserVO.setName(name);
                     }
-                }
-                if ("imageUrl".equalsIgnoreCase(userData.getKey())){
-                    for(DataSnapshot children : userData.getChildren()){
-                        if(myId.equalsIgnoreCase(children.getKey())){
-                            imageUrl = children.getValue().toString();
-                            myUserVO.setImageUrl(imageUrl);
-                        }
+                    if ("age".equalsIgnoreCase(userData.getKey())){
+                        age = userData.getValue(String.class);
+                        myUserVO.setAge(age);
                     }
-                }
-                if("interests_list".equalsIgnoreCase(userData.getKey())){
-                    for (DataSnapshot interest_list : userData.getChildren()){
-                        String key = interest_list.getKey();
-                        Map<String, String> topicInterests = interest_list.getValue(Map.class);
-                        for (String s: topicInterests.keySet()){
-                            if("1".equalsIgnoreCase(topicInterests.get(s))){
-                                interests.add(s);
+                    if ("place".equalsIgnoreCase(userData.getKey())){
+                        place = userData.getValue(String.class);
+                        myUserVO.setPlace(place);
+                    }
+                    if ("sex".equalsIgnoreCase(userData.getKey())){
+                        sex = userData.getValue(String.class);
+                        myUserVO.setSex(sex);
+                    }
+                    if ("block_list".equalsIgnoreCase(userData.getKey())){
+                        for (DataSnapshot children : userData.getChildren()){
+                            if ("people_i_blocked".equalsIgnoreCase(children.getKey())){
+                                peopleIBlockedList.clear();
+                                peopleIBlockedVOList.clear();
+                                for(DataSnapshot snap : children.getChildren()){
+                                    LikedUserVO likedUserVO = new LikedUserVO();
+                                    likedUserVO.setId(snap.getKey().toString());
+                                    likedUserVO.setTime(snap.getValue().toString());
+                                    peopleIBlockedVOList.add(likedUserVO);
+                                    peopleIBlockedList.add(snap.getKey().toString());
+                                }
+                            }
+                            if ("people_who_blocked_me".equalsIgnoreCase(children.getKey())){
+                                peopleWhoBlockedMeList.clear();
+                                peopleWhoBlockedMeVOList.clear();
+                                for(DataSnapshot snap : children.getChildren()){
+                                    LikedUserVO likedUserVO = new LikedUserVO();
+                                    likedUserVO.setId(snap.getKey().toString());
+                                    likedUserVO.setTime(snap.getValue().toString());
+                                    peopleWhoBlockedMeVOList.add(likedUserVO);
+                                    peopleWhoBlockedMeList.add(snap.getKey().toString());
+                                }
                             }
                         }
                     }
-                    myUserVO.setInterests(interests);
-
+                    if ("status".equalsIgnoreCase(userData.getKey())){
+                        status = userData.getValue(String.class);
+                        myUserVO.setStatus(status);
+                    }
+                    if ("activity".equalsIgnoreCase(userData.getKey())) {
+                        for (DataSnapshot children : userData.getChildren()){
+                            if("act1".equalsIgnoreCase(children.getKey())){
+                                activity1 = children.getValue(String.class);
+                                myUserVO.setActivity1(activity1);
+                            }
+                            if("act2".equalsIgnoreCase(children.getKey())){
+                                activity2 = children.getValue(String.class);
+                                myUserVO.setActivity2(activity2);
+                            }
+                            if("act3".equalsIgnoreCase(children.getKey())){
+                                activity3 = children.getValue(String.class);
+                                myUserVO.setActivity3(activity3);
+                            }
+                        }
+                    }
+                    if ("imageUrl".equalsIgnoreCase(userData.getKey())){
+                        for(DataSnapshot children : userData.getChildren()){
+                            if(myId.equalsIgnoreCase(children.getKey())){
+                                imageUrl = children.getValue().toString();
+                                myUserVO.setImageUrl(imageUrl);
+                            }
+                        }
+                    }
+                    if("interests_list".equalsIgnoreCase(userData.getKey())){
+                        for (DataSnapshot interest_list : userData.getChildren()){
+                            String key = interest_list.getKey();
+                            Map<String, String> topicInterests = interest_list.getValue(Map.class);
+                            for (String s: topicInterests.keySet()){
+                                if("1".equalsIgnoreCase(topicInterests.get(s))){
+                                    interests.add(s);
+                                }
+                            }
+                        }
+                        myUserVO.setInterests(interests);
+                    }
                 }
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
             }
 
             @Override
@@ -245,5 +262,6 @@ public class ApplicationCache {
             }
         });
     }
+
 
 }

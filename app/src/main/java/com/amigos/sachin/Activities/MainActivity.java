@@ -1,5 +1,6 @@
 package com.amigos.sachin.Activities;
 
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -13,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.amigos.sachin.R;
+import com.amigos.sachin.Services.ChatService;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -44,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
     String profile_name;
     String birthday;
     ImageView imageView;
+    String TAG = "Main Activity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +64,11 @@ public class MainActivity extends AppCompatActivity {
         loginButton.setReadPermissions(Arrays.asList(
                 "public_profile", "email", "user_birthday", "user_friends"));
         if (isLoggedIn()){
+            if(isMyServiceRunning(ChatService.class) == false) {
+                Intent startChatService = new Intent(this, ChatService.class);
+                startService(startChatService);
+            }
+            //startService(new Intent(ChatService.class.getName()));
             Intent intent = new Intent(MainActivity.this,SplashScreen2.class);
             startActivity(intent);
         }
@@ -187,11 +195,12 @@ public class MainActivity extends AppCompatActivity {
                                     }*/
                                     SharedPreferences sp=getApplicationContext().getSharedPreferences("com.amigos.sachin", Context.MODE_PRIVATE);
                                     sp.edit().putString("myId",""+ myId).apply();
+                                    //startService(new Intent(ChatService.class.getName()));
+
 
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
-
                                 Intent intent = new Intent(MainActivity.this,SplashScreen.class);
                                 startActivity(intent);
 
@@ -263,5 +272,18 @@ public class MainActivity extends AppCompatActivity {
     public boolean isLoggedIn() {
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
         return accessToken != null;
+    }
+
+    private boolean isMyServiceRunning(Class<?> serviceClass) {
+        Log.i(TAG,"isMyServiceRunning():: Entered");
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                Log.i(TAG,"isMyServiceRunning():: TRUE-Service running");
+                return true;
+            }
+        }
+        Log.i(TAG, "isMyServiceRunning():: FALSE-Service NOT-running");
+        return false;
     }
 }

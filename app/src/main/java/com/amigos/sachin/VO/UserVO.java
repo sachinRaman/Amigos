@@ -20,6 +20,7 @@ public class UserVO implements Serializable {
     ArrayList<String> interests;
     String imageUrl;
 
+
     public String getId() {
         return id;
     }

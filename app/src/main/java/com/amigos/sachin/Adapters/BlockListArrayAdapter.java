@@ -1,17 +1,18 @@
 package com.amigos.sachin.Adapters;
 
 import android.content.Context;
-import android.content.Intent;
+import android.content.SharedPreferences;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
-import com.amigos.sachin.Activities.UserProfileActivity;
 import com.amigos.sachin.R;
 import com.amigos.sachin.VO.LikedUserVO;
 import com.bumptech.glide.Glide;
@@ -26,20 +27,21 @@ import java.util.ArrayList;
 import jp.wasabeef.glide.transformations.CropSquareTransformation;
 
 /**
- * Created by Sachin on 8/30/2017.
+ * Created by Sachin on 9/2/2017.
  */
 
-public class LikedUsersLVAdapter extends ArrayAdapter<LikedUserVO> implements View.OnClickListener {
+public class BlockListArrayAdapter extends ArrayAdapter<LikedUserVO> implements View.OnClickListener {
 
-    ArrayList<LikedUserVO> likedUsersVOList;
+    ArrayList<LikedUserVO> blockedUsersList;
     Context context;
-    ListView likedListView;
+    ListView blockedListView;
     private static LayoutInflater inflater=null;
+    String myId;
 
-    public LikedUsersLVAdapter(Context ctx, ArrayList<LikedUserVO> chatVoList, ListView chatListView) {
-        super(ctx, R.layout.item_chat_list,chatVoList);
-        this.likedUsersVOList =chatVoList;
-        this.likedListView = chatListView;
+    public BlockListArrayAdapter(Context ctx, ArrayList<LikedUserVO> blockedList, ListView blockedListView) {
+        super(ctx, R.layout.item_chat_list, blockedList);
+        this.blockedUsersList =blockedList;
+        this.blockedListView = blockedListView;
         context=ctx;
         inflater = ( LayoutInflater )context.
                 getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -47,13 +49,16 @@ public class LikedUsersLVAdapter extends ArrayAdapter<LikedUserVO> implements Vi
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        final LikedUsersLVAdapter.LikedListViewHolder holder;
+
+        final BlockedListViewHolder holder;
 
         if (convertView == null){
-            holder = new LikedUsersLVAdapter.LikedListViewHolder();
+            holder = new BlockedListViewHolder();
 
             LayoutInflater inflater = LayoutInflater.from(getContext());
             convertView = inflater.inflate(R.layout.item_chat_list, parent, false);
+            SharedPreferences sp = context.getSharedPreferences("com.amigos.sachin",Context.MODE_PRIVATE);
+            myId = sp.getString("myId","");
 
             holder.tvName = (TextView) convertView.findViewById(R.id.tv_name);
             holder.tvMatch = (TextView) convertView.findViewById(R.id.tv_match_info);
@@ -63,19 +68,15 @@ public class LikedUsersLVAdapter extends ArrayAdapter<LikedUserVO> implements Vi
             holder.view = (LinearLayout)convertView.findViewById(R.id.holder_LinearLayout);
             convertView.setTag(holder);
         }else{
-            holder = (LikedUsersLVAdapter.LikedListViewHolder) convertView.getTag();
+            holder = (BlockedListViewHolder) convertView.getTag();
         }
 
         holder.tvName.setText("");
-        final String[] userName = {""};
-        LikedUserVO likedUsersVO = likedUsersVOList.get(position);
         holder.tvTime.setText("");
-        //holder.tvStatus.setText(likedUsersVO.getStatus());
         holder.tvMatch.setText("");
         holder.tvStatus.setText("");
 
-        final String userId = likedUsersVO.getId();
-        final String[] imageUrl = {""};
+        final String userId  = blockedUsersList.get(position).getId();
 
         Firebase userRef = new Firebase("https://new-amigos.firebaseio.com/users/"+userId+"/");
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -85,10 +86,8 @@ public class LikedUsersLVAdapter extends ArrayAdapter<LikedUserVO> implements Vi
                     if("name".equalsIgnoreCase(child.getKey())){
                         if(child.getValue().toString() != null && !child.getValue().toString().isEmpty()) {
                             holder.tvName.setText(child.getValue().toString());
-                            userName[0] = child.getValue().toString();
                         }else{
                             holder.tvName.setText("User");
-                            userName[0] = "User";
                         }
                     }
                     if("status".equalsIgnoreCase(child.getKey())){
@@ -97,8 +96,8 @@ public class LikedUsersLVAdapter extends ArrayAdapter<LikedUserVO> implements Vi
                     if("imageUrl".equalsIgnoreCase(child.getKey())){
                         for(DataSnapshot children : child.getChildren()){
                             if(userId.equalsIgnoreCase(children.getKey())){
-                                imageUrl[0] = children.getValue().toString();
-                                Glide.with(context).load(imageUrl[0])
+                                String imageUrl = children.getValue().toString();
+                                Glide.with(context).load(imageUrl)
                                         .bitmapTransform(new CropSquareTransformation(context)).thumbnail(0.5f).crossFade()
                                         .diskCacheStrategy(DiskCacheStrategy.ALL).into(holder.profilePicImageView);
                             }
@@ -116,13 +115,31 @@ public class LikedUsersLVAdapter extends ArrayAdapter<LikedUserVO> implements Vi
         holder.view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context,UserProfileActivity.class);
-                intent.putExtra("userId",userId);
-                context.startActivity(intent);
+                PopupMenu popup = new PopupMenu(context,holder.view);
+                popup.getMenuInflater().inflate(R.menu.unblock_popup_menu, popup.getMenu());
+                //Toast.makeText(ChatActivity.this,"You Clicked : ",Toast.LENGTH_SHORT).show();
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        switch(item.getItemId()){
+                            case R.id.unblock:
+                                Firebase myBlockListRef = new Firebase("https://new-amigos.firebaseio.com/users/"+myId+"/block_list"
+                                        +"/people_i_blocked/");
+                                Firebase userBlockListRef = new Firebase("https://new-amigos.firebaseio.com/users/"+userId+"/block_list"
+                                        +"/people_who_blocked_me/");
+                                myBlockListRef.child(userId).setValue(null);
+                                userBlockListRef.child(myId).setValue(null);
+                                return true;
+                        }
+                        return true;
+                    }
+                });
+                popup.show();
             }
         });
 
         return convertView;
+
     }
 
     @Override
@@ -130,7 +147,7 @@ public class LikedUsersLVAdapter extends ArrayAdapter<LikedUserVO> implements Vi
 
     }
 
-    public static class LikedListViewHolder {
+    public static class BlockedListViewHolder {
         TextView tvName;
         TextView tvMatch;
         TextView tvStatus;
