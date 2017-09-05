@@ -119,7 +119,7 @@ public class MyInfoFragment extends Fragment {
         et_status = (EditText) view.findViewById(R.id.editText_status);
         et_activity1 = (EditText) view.findViewById(R.id.editText_act1);
         et_activity2 = (EditText) view.findViewById(R.id.editText_act2);
-        et_activity3 = (EditText) view.findViewById(R.id.editText_act3);
+        /*et_activity3 = (EditText) view.findViewById(R.id.editText_act3);*/
         radioSexGroup = (RadioGroup) view.findViewById(R.id.radioSex);
         okButton = (Button) view.findViewById(R.id.button);
         imageView = (ImageView) view.findViewById(R.id.iv_profile_pic);
@@ -167,9 +167,9 @@ public class MyInfoFragment extends Fragment {
                         if("act2".equalsIgnoreCase(children.getKey())){
                             et_activity2.setText(children.getValue().toString());
                         }
-                        if("act3".equalsIgnoreCase(children.getKey())){
+                        /*if("act3".equalsIgnoreCase(children.getKey())){
                             et_activity3.setText(children.getValue().toString());
-                        }
+                        }*/
                     }
                 }
                 if ("sex".equalsIgnoreCase(dataSnapshot.getKey())) {
@@ -231,9 +231,9 @@ public class MyInfoFragment extends Fragment {
                 myRef.child("sex").setValue(sexStr);
                 myRef.child("activity").child("act1").setValue(et_activity1.getText().toString());
                 myRef.child("activity").child("act2").setValue(et_activity2.getText().toString());
-                myRef.child("activity").child("act3").setValue(et_activity3.getText().toString());
+                /*myRef.child("activity").child("act3").setValue(et_activity3.getText().toString());*/
 
-                Toast.makeText(context,"Data updated successfully",Toast.LENGTH_LONG);
+                Toast.makeText(context,"Data updated successfully",Toast.LENGTH_LONG).show();
             }
         });
 

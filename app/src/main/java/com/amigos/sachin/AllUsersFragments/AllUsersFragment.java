@@ -42,7 +42,7 @@ import jp.wasabeef.glide.transformations.CropSquareTransformation;
 public class AllUsersFragment extends Fragment {
 
     ImageView profilePicture;
-    TextView tv_name, tv_extra_info, tv_status, tv_act1, tv_act2, tv_act3;
+    TextView tv_name, tv_extra_info, tv_status, tv_act1, tv_act2, tv_matchCount, tv_professionalProfileText,tv_InterestedInText,tv_moodTopic;
     ArrayList<String> userInterests = new ArrayList<String>();
     ArrayList<String> myInterests = new ArrayList<String>();
     Context context;
@@ -77,13 +77,15 @@ public class AllUsersFragment extends Fragment {
         tv_status = (TextView) view.findViewById(R.id.textView_info);
         tv_act1 = (TextView) view.findViewById(R.id.tv_activity1);
         tv_act2 = (TextView) view.findViewById(R.id.tv_activity2);
-        tv_act3 = (TextView) view.findViewById(R.id.tv_activity3);
+        //tv_act3 = (TextView) view.findViewById(R.id.tv_activity3);
+        tv_matchCount = (TextView) view.findViewById(R.id.tv_matchCount);
         profilePicture = (ImageView) view.findViewById(R.id.imageView_profileImage);
         tagGroup = (TagView) view.findViewById(R.id.user_tag_group);
         messageIcon = (ImageView) view.findViewById(R.id.messageIcon);
         likeIcon = (ImageView) view.findViewById(R.id.likeIcon);
-        /*likeIcon = (ImageView) getParentFragment().getView().findViewById(R.id.likeIcon1);
-        messageIcon = (ImageView) getParentFragment().getView().findViewById(R.id.messageIcon1);*/
+        tv_InterestedInText = (TextView) view.findViewById(R.id.tv_interestedActivities);
+        tv_professionalProfileText = (TextView) view.findViewById(R.id.tv_professionalProfile);
+        tv_moodTopic = (TextView) view.findViewById(R.id.tv_moodTopic);
 
         if(userVO.getImageUrl() != null){
             imageUrl = userVO.getImageUrl();
@@ -99,30 +101,46 @@ public class AllUsersFragment extends Fragment {
             tv_name.setText(userVO.getName());
             userName = userVO.getName();
         }
-        if(userVO.getStatus() != null){
+        if(userVO.getStatus() != null && !userVO.getStatus().trim().isEmpty()){
             tv_status.setText(userVO.getStatus());
         }else{
             tv_status.setVisibility(View.GONE);
         }
-        if(userVO.getActivity1() != null){
+        if(userVO.getActivity1() != null && !userVO.getActivity1().trim().isEmpty()){
             tv_act1.setText(userVO.getActivity1());
         }else{
             tv_act1.setVisibility(View.GONE);
+            tv_InterestedInText.setVisibility(View.GONE);
         }
-        if(userVO.getActivity2() != null){
+        if(userVO.getActivity2() != null && !userVO.getActivity2().trim().isEmpty()){
             tv_act2.setText(userVO.getActivity2());
         }else{
             tv_act2.setVisibility(View.GONE);
+            tv_professionalProfileText.setVisibility(View.GONE);
         }
-        if(userVO.getActivity3() != null){
+        /*if(userVO.getActivity3() != null){
             tv_act3.setText(userVO.getActivity3());
         }else{
             tv_act3.setVisibility(View.GONE);
+        }*/
+        if ("1".equalsIgnoreCase(userVO.getMood())){
+            tv_moodTopic.setText(userVO.getMoodTopic());
+        }else{
+            tv_moodTopic.setVisibility(View.GONE);
         }
         if(userVO.getInterests() != null){
             userInterests = userVO.getInterests();
         }
-
+        if(userVO.getMatch() != 0){
+            int match = userVO.getMatch();
+            if (match == 0){
+                tv_matchCount.setText("YOU CLICK 0%");
+            }else if(match%100 == 0){
+                tv_matchCount.setText("YOU CLICK 100%");
+            }else{
+                tv_matchCount.setText("YOU CLICK " + userVO.getMatch() % 100 + "%");
+            }
+        }
         if(userVO.getAge() != null){
             age = userVO.getAge();
         }

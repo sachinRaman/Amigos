@@ -70,15 +70,48 @@
                 android:background="#EEEEEE"/>
 
             <TextView
+                android:id="@+id/tv_moodTopic"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/backgroundColor"
+                android:inputType="textMultiLine"
+                android:padding="10dp"
+                android:textColor="@color/gray3"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/tv_interestedActivities"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="5dp"
+                android:paddingLeft="10dp"
+                android:paddingTop="15dp"
+                android:background="@color/gray1"
+                android:text="Interested in"
+                android:textColor="@color/gray3"
+                android:textSize="15sp"/>
+
+            <TextView
                 android:id="@+id/tv_activity1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/backgroundColor"
                 android:inputType="textMultiLine"
                 android:padding="10dp"
-                android:text="About Me."
                 android:textColor="@color/gray3"
                 android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/tv_professionalProfile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="5dp"
+                android:paddingLeft="10dp"
+                android:paddingTop="15dp"
+                android:background="@color/gray1"
+                android:text="Professional profile"
+                android:textColor="@color/gray3"
+                android:textSize="15sp"/>
 
             <TextView
                 android:id="@+id/tv_activity2"
@@ -87,20 +120,18 @@
                 android:background="@color/backgroundColor"
                 android:inputType="textMultiLine"
                 android:padding="10dp"
-                android:text="About Me."
                 android:textColor="@color/gray3"
                 android:textSize="18sp" />
 
-            <TextView
+            <!--<TextView
                 android:id="@+id/tv_activity3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/backgroundColor"
                 android:inputType="textMultiLine"
                 android:padding="10dp"
-                android:text="About Me."
                 android:textColor="@color/gray3"
-                android:textSize="18sp" />
+                android:textSize="18sp" />-->
 
             <View
                 android:layout_width="match_parent"
@@ -115,6 +146,7 @@
                 android:paddingLeft="10dp"
                 android:paddingTop="15dp"
                 android:text="Common interests"
+                android:background="@color/gray1"
                 android:textColor="@color/gray3"
                 android:textSize="15sp" />
 
@@ -191,6 +223,21 @@
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:background="@color/textColor5" />-->
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true">
+
+        <TextView
+            android:id="@+id/tv_matchCount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:gravity="right"
+            android:textColor="@color/backgroundColor"
+            android:textStyle="bold"/>
 
     </LinearLayout>
 

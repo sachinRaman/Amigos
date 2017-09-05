@@ -180,7 +180,7 @@
                 android:paddingBottom="5dp"
                 android:paddingLeft="10dp"
                 android:paddingTop="10dp"
-                android:text="Write 3 interesting activities you did in recent past"
+                android:text="What are the activities that you like doing."
                 android:textSize="15sp" />
 
             <EditText
@@ -195,6 +195,17 @@
                 android:padding="10dp"
                 android:textColor="@color/gray3"
                 android:textCursorDrawable="@null" />
+
+            <TextView
+                android:id="@+id/tv5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="5dp"
+                android:paddingLeft="10dp"
+                android:paddingTop="10dp"
+                android:text="Professional Profile"
+                android:textSize="15sp" />
+
             <EditText
                 android:id="@+id/editText_act21"
                 android:layout_width="match_parent"
@@ -207,7 +218,7 @@
                 android:padding="10dp"
                 android:textColor="@color/gray3"
                 android:textCursorDrawable = "@null"/>
-            <EditText
+            <!--<EditText
                 android:id="@+id/editText_act31"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -218,7 +229,7 @@
                 android:inputType="textMultiLine"
                 android:padding="10dp"
                 android:textColor="@color/gray3"
-                android:textCursorDrawable = "@null"/>
+                android:textCursorDrawable = "@null"/>-->
 
             <View
                 android:layout_width="match_parent"

@@ -37,7 +37,8 @@ import jp.wasabeef.glide.transformations.CropSquareTransformation;
 public class UserProfileActivity extends AppCompatActivity {
 
     ImageView profilePicture;
-    TextView tv_name, tv_extra_info, tv_status, tv_act1, tv_act2, tv_act3;
+    TextView tv_name, tv_extra_info, tv_status, tv_act1, tv_act2, tv_act3, tv_matchCount, tv_professionalProfileText,
+            tv_InterestedInText, tv_moodTopic;
     ArrayList<String> userInterests = new ArrayList<String>();
     ArrayList<String> myInterests = new ArrayList<String>();
     Context context;
@@ -47,7 +48,7 @@ public class UserProfileActivity extends AppCompatActivity {
     ImageView messageIcon, likeIcon;
     String myId;
     String age = null, sex = null, place = null;
-    String userName = null, userId = null, imageUrl = null;
+    String userName , userId , imageUrl ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,11 +73,15 @@ public class UserProfileActivity extends AppCompatActivity {
         tv_status = (TextView) findViewById(R.id.textView_info1);
         tv_act1 = (TextView) findViewById(R.id.tv_activity11);
         tv_act2 = (TextView) findViewById(R.id.tv_activity21);
-        tv_act3 = (TextView) findViewById(R.id.tv_activity31);
+        /*tv_act3 = (TextView) findViewById(R.id.tv_activity31);*/
         profilePicture = (ImageView) findViewById(R.id.imageView_profileImage1);
         tagGroup = (TagView) findViewById(R.id.user_tag_group1);
         messageIcon = (ImageView) findViewById(R.id.messageIcon1);
         likeIcon = (ImageView) findViewById(R.id.likeIcon1);
+        tv_matchCount = (TextView) findViewById(R.id.tv_matchCount1);
+        tv_professionalProfileText = (TextView) findViewById(R.id.tv_professionalProfile);
+        tv_InterestedInText = (TextView) findViewById(R.id.tv_interestedActivities);
+        tv_moodTopic = (TextView)findViewById(R.id.tv_moodTopic);
 
         Intent intent = getIntent();
         userId = intent.getStringExtra("userId");
@@ -88,6 +93,7 @@ public class UserProfileActivity extends AppCompatActivity {
                 for (DataSnapshot userData : dataSnapshot.getChildren()){
                     if ("name".equalsIgnoreCase(userData.getKey())){
                         tv_name.setText(userData.getValue(String.class));
+                        userName = userData.getValue(String.class);
                     }
                     if ("age".equalsIgnoreCase(userData.getKey())){
                         age = userData.getValue(String.class);
@@ -108,26 +114,45 @@ public class UserProfileActivity extends AppCompatActivity {
                     if ("activity".equalsIgnoreCase(userData.getKey())) {
                         for (DataSnapshot children : userData.getChildren()){
                             if("act1".equalsIgnoreCase(children.getKey())){
-                                if(children.getValue(String.class) != null && !children.getValue(String.class).isEmpty()){
+                                if(children.getValue(String.class) != null && !children.getValue(String.class).trim().isEmpty()){
                                     tv_act1.setText(children.getValue(String.class));
                                 }else{
                                     tv_act1.setVisibility(View.GONE);
+                                    tv_InterestedInText.setVisibility(View.GONE);
                                 }
                             }
                             if("act2".equalsIgnoreCase(children.getKey())){
-                                if(children.getValue(String.class) != null && !children.getValue(String.class).isEmpty()){
+                                if(children.getValue(String.class) != null && !children.getValue(String.class).trim().isEmpty()){
                                     tv_act2.setText(children.getValue(String.class));
                                 }else{
+                                    tv_professionalProfileText.setVisibility(View.GONE);
                                     tv_act2.setVisibility(View.GONE);
                                 }
                             }
-                            if("act3".equalsIgnoreCase(children.getKey())){
+                            /*if("act3".equalsIgnoreCase(children.getKey())){
                                 if(children.getValue(String.class) != null && !children.getValue(String.class).isEmpty()){
                                     tv_act3.setText(children.getValue(String.class));
                                 }else{
                                     tv_act3.setVisibility(View.GONE);
                                 }
+                            }*/
+                        }
+                    }
+                    if("moods".equalsIgnoreCase(userData.getKey())){
+                        String mood = "";
+                        String moodTopic = "";
+                        for(DataSnapshot children : userData.getChildren()){
+                            if("mood".equalsIgnoreCase(children.getKey())){
+                                mood = children.getValue().toString();
                             }
+                            if("topic".equalsIgnoreCase(children.getKey())){
+                                moodTopic = children.getValue().toString();
+                            }
+                        }
+                        if("1".equalsIgnoreCase(mood) && moodTopic != null && !moodTopic.trim().isEmpty()){
+                            tv_moodTopic.setText(moodTopic);
+                        }else{
+                            tv_moodTopic.setVisibility(View.GONE);
                         }
                     }
                     if ("imageUrl".equalsIgnoreCase(userData.getKey())){
@@ -155,6 +180,7 @@ public class UserProfileActivity extends AppCompatActivity {
                         ArrayList<String> commonInterests = new ArrayList<String>();
                         if(myInterests != null || !myInterests.isEmpty()){
                             int matchCount = 0;
+                            commonInterests.clear();
                             for(String s : userInterests){
                                 if(myInterests.contains(s)){
                                     matchCount++;
@@ -162,6 +188,7 @@ public class UserProfileActivity extends AppCompatActivity {
                                 }
                             }
                             match = Math.round(((float)matchCount/(myInterests.size()))*100);
+                            tv_matchCount.setText("YOU CLICK "+match+"%");
                         }
                         tags.clear();
                         for(String s : commonInterests){
@@ -199,16 +226,14 @@ public class UserProfileActivity extends AppCompatActivity {
         });
 
 
-        final String finalUserId = userId;
-        final String finalUserName = userName;
-        final String finalImageUrl = imageUrl;
+
         messageIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, ChatActivity.class);
-                intent.putExtra("userId", finalUserId);
-                intent.putExtra("userName", finalUserName);
-                intent.putExtra("imageUrl", finalImageUrl);
+                intent.putExtra("userId", userId);
+                intent.putExtra("userName", userName);
+                intent.putExtra("imageUrl", imageUrl);
                 startActivity(intent);
             }
         });
@@ -217,7 +242,7 @@ public class UserProfileActivity extends AppCompatActivity {
         likeIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context,"You liked "+ finalUserName,Toast.LENGTH_SHORT).show();
+                Toast.makeText(context,"You liked "+ userName,Toast.LENGTH_SHORT).show();
                 String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
                 Firebase myRef = new Firebase("https://new-amigos.firebaseio.com/users/"+myId+"/people_i_liked/");
                 Firebase userRef = new Firebase("https://new-amigos.firebaseio.com/users/"+finalUserId1+"/people_who_liked_me/");

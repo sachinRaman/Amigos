@@ -92,6 +92,21 @@ public class ChatUsersDAO extends SQLiteOpenHelper {
         return true;
     }
 
+    public void removeFromChatList(String toId){
+        SQLiteDatabase db = this.getWritableDatabase();
+        try {
+            String sql="delete from chat_users where to_id in (?)";
+            SQLiteStatement statement=db.compileStatement(sql);
+            statement.bindString(1, toId);
+            statement.execute();
+        }
+        catch(Exception ex){
+            ex.printStackTrace();
+        }finally {
+            db.close();
+        }
+    }
+
     public ArrayList<ChatUsersVO> getMyChatList(String myId){
         ArrayList<ChatUsersVO> chatUsersVOArrayList = new ArrayList<ChatUsersVO>();
 

@@ -111,6 +111,25 @@ public class ApplicationCache {
                             userVO.setInterests(interests);
 
                         }
+                        if("moods".equalsIgnoreCase(userData.getKey())){
+                            for (DataSnapshot children : userData.getChildren()){
+                                if("interests".equalsIgnoreCase(children.getKey())){
+                                    ArrayList<String> myMoodsTags = new ArrayList<String>();
+                                    for (DataSnapshot snap1 : children.getChildren()){
+                                        if("1".equalsIgnoreCase(snap1.getValue().toString())){
+                                            myMoodsTags.add(snap1.getKey());
+                                        }
+                                    }
+                                    userVO.setMyMoodTags(myMoodsTags);
+                                }
+                                if("topic".equalsIgnoreCase(children.getKey())){
+                                    userVO.setMoodTopic(children.getValue().toString());
+                                }
+                                if("mood".equalsIgnoreCase(children.getKey())){
+                                    userVO.setMood(children.getValue().toString());
+                                }
+                            }
+                        }
 
                     }
                     userArrayList.add(userVO);
@@ -136,7 +155,7 @@ public class ApplicationCache {
     }
 
     public static synchronized void loadMyUserVO(){
-        Firebase myRef = new Firebase("https://new-amigos.firebaseio.com/users/"+myId+"/");
+        final Firebase myRef = new Firebase("https://new-amigos.firebaseio.com/users/"+myId+"/");
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -227,6 +246,25 @@ public class ApplicationCache {
                             }
                         }
                         myUserVO.setInterests(interests);
+                    }
+                    if("moods".equalsIgnoreCase(userData.getKey())){
+                        for (DataSnapshot children : userData.getChildren()){
+                            if("interests".equalsIgnoreCase(children.getKey())){
+                                ArrayList<String> myMoodsTags = new ArrayList<String>();
+                                for (DataSnapshot snap : children.getChildren()){
+                                    if("1".equalsIgnoreCase(snap.getValue().toString())){
+                                        myMoodsTags.add(snap.getKey());
+                                    }
+                                }
+                                myUserVO.setMyMoodTags(myMoodsTags);
+                            }
+                            if("topic".equalsIgnoreCase(children.getKey())){
+                                myUserVO.setMoodTopic(children.getValue().toString());
+                            }
+                            if("mood".equalsIgnoreCase(children.getKey())){
+                                myUserVO.setMood(children.getValue().toString());
+                            }
+                        }
                     }
                 }
             }

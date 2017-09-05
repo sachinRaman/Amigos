@@ -19,7 +19,10 @@ public class UserVO implements Serializable {
     String activity3;
     ArrayList<String> interests;
     String imageUrl;
-
+    String mood = "0";
+    ArrayList<String> myMoodTags = new ArrayList<String>();
+    String moodTopic ;
+    int match = 0;
 
     public String getId() {
         return id;
@@ -109,5 +112,35 @@ public class UserVO implements Serializable {
         this.imageUrl = imageUrl;
     }
 
+    public String getMood() {
+        return mood;
+    }
 
+    public void setMood(String mood) {
+        this.mood = mood;
+    }
+
+    public ArrayList<String> getMyMoodTags() {
+        return myMoodTags;
+    }
+
+    public void setMyMoodTags(ArrayList<String> myMoodTags) {
+        this.myMoodTags = myMoodTags;
+    }
+
+    public String getMoodTopic() {
+        return moodTopic;
+    }
+
+    public void setMoodTopic(String moodTopic) {
+        this.moodTopic = moodTopic;
+    }
+
+    public int getMatch() {
+        return match;
+    }
+
+    public void setMatch(int match) {
+        this.match = match;
+    }
 }

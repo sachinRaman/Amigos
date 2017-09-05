@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import com.amigos.sachin.ChatsFragments.MyChatFragment;
 import com.amigos.sachin.ChatsFragments.PeopleILikedFragment;
 import com.amigos.sachin.ChatsFragments.PeopleWhoLikedMeFragment;
+import com.amigos.sachin.CustomViews.CustomViewPager;
 import com.amigos.sachin.R;
 
 /**
@@ -28,7 +29,7 @@ import com.amigos.sachin.R;
 public class ChatsFragment extends Fragment {
 
     BottomNavigationView myChatsBottomNavigationView;
-    ViewPager myChatsViewPager;
+    CustomViewPager myChatsViewPager;
     private FragmentActivity myContext;
 
     public ChatsFragment(){
@@ -43,7 +44,8 @@ public class ChatsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view =  inflater.inflate(R.layout.fragment_main_chats,container,false);
-        myChatsViewPager = (ViewPager) view.findViewById(R.id.my_chats_viewpager);
+        myChatsViewPager = (CustomViewPager) view.findViewById(R.id.my_chats_viewpager);
+        myChatsViewPager.setPagingEnabled(false);
         myChatsViewPager.setAdapter(new MyPagerAdapter(getChildFragmentManager()));
 
         //Comment below code to enable swiping but dont forget to select the bottom navigation

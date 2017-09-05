@@ -184,7 +184,7 @@
                 android:paddingBottom="5dp"
                 android:paddingLeft="10dp"
                 android:paddingTop="10dp"
-                android:text="Write 3 interesting activities you did in recent past"
+                android:text="What are the activities that you like doing."
                 android:textSize="15sp" />
 
             <EditText
@@ -194,11 +194,22 @@
                 android:layout_marginBottom="10dp"
                 android:background="@color/backgroundColor"
                 android:ems="10"
-                android:hint="Write activity 1."
+                android:hint="Write activities"
                 android:inputType="textMultiLine"
                 android:padding="10dp"
                 android:textColor="@color/gray3"
                 android:textCursorDrawable="@null" />
+
+            <TextView
+                android:id="@+id/tv10"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="5dp"
+                android:paddingLeft="10dp"
+                android:paddingTop="10dp"
+                android:text="Professional Profile"
+                android:textSize="15sp" />
+
             <EditText
                 android:id="@+id/editText_act2"
                 android:layout_width="match_parent"
@@ -211,7 +222,7 @@
                 android:padding="10dp"
                 android:textColor="@color/gray3"
                 android:textCursorDrawable = "@null"/>
-            <EditText
+            <!--<EditText
                 android:id="@+id/editText_act3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -222,7 +233,7 @@
                 android:inputType="textMultiLine"
                 android:padding="10dp"
                 android:textColor="@color/gray3"
-                android:textCursorDrawable = "@null"/>
+                android:textCursorDrawable = "@null"/>-->
 
             <View
                 android:layout_width="match_parent"

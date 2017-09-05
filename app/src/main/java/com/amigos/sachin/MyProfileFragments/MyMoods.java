@@ -85,6 +85,9 @@ public class MyMoods extends Fragment {
         saveButton = (Button) view.findViewById(R.id.myMoodsButton);
         et_search = (EditText) view.findViewById(R.id.et_search);
 
+        mTagContainerLayoutMyMoodTags.removeAllTags();
+        mTagContainerLayoutAllTags.removeAllTags();
+
         if(!myMoodsSwitch.isChecked()){
             et_myMood.setVisibility(View.GONE);
             tv_addedTags.setVisibility(View.GONE);
@@ -102,6 +105,7 @@ public class MyMoods extends Fragment {
     }
 
     public void initialize(){
+
         Firebase myMoodsRef = new Firebase("https://new-amigos.firebaseio.com/users/" + myId + "/moods/");
         myMoodsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -132,6 +136,7 @@ public class MyMoods extends Fragment {
                         et_myMood.setText(snapshot.getValue().toString());
                     }
                     if("interests".equalsIgnoreCase(snapshot.getKey())){
+                        initialTags.clear();
                         for (DataSnapshot data : snapshot.getChildren()){
                             initialTags.add(data.getKey().toString());
                         }
@@ -316,6 +321,7 @@ public class MyMoods extends Fragment {
         ArrayList<String> music = PeevesList.getAllMusicInterests();
         ArrayList<String> technology = PeevesList.getAllTechnologyInterests();
 
+        allInterests.clear();
         allInterests.addAll(lifestyle);
         allInterests.addAll(arts);
         allInterests.addAll(entertainment);

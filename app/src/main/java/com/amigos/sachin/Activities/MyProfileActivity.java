@@ -84,7 +84,7 @@ public class MyProfileActivity extends AppCompatActivity {
         et_status = (EditText) findViewById(R.id.editText_status1);
         et_activity1 = (EditText) findViewById(R.id.editText_act11);
         et_activity2 = (EditText) findViewById(R.id.editText_act21);
-        et_activity3 = (EditText) findViewById(R.id.editText_act31);
+        /*et_activity3 = (EditText) findViewById(R.id.editText_act31);*/
         radioSexGroup = (RadioGroup) findViewById(R.id.radioSex1);
         okButton = (Button) findViewById(R.id.button1);
         imageView = (ImageView) findViewById(R.id.iv_profile_pic1);
@@ -123,9 +123,9 @@ public class MyProfileActivity extends AppCompatActivity {
                         if("act2".equalsIgnoreCase(children.getKey())){
                             et_activity2.setText(children.getValue().toString());
                         }
-                        if("act3".equalsIgnoreCase(children.getKey())){
+                        /*if("act3".equalsIgnoreCase(children.getKey())){
                             et_activity3.setText(children.getValue().toString());
-                        }
+                        }*/
                     }
                 }
                 if ("sex".equalsIgnoreCase(dataSnapshot.getKey())) {
@@ -187,7 +187,7 @@ public class MyProfileActivity extends AppCompatActivity {
                 myRef.child("sex").setValue(sexStr);
                 myRef.child("activity").child("act1").setValue(et_activity1.getText().toString());
                 myRef.child("activity").child("act2").setValue(et_activity2.getText().toString());
-                myRef.child("activity").child("act3").setValue(et_activity3.getText().toString());
+                /*myRef.child("activity").child("act3").setValue(et_activity3.getText().toString());*/
 
                 Toast.makeText(context,"Data updated successfully.",Toast.LENGTH_LONG).show();
 

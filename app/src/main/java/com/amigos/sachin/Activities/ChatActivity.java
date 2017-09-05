@@ -96,7 +96,8 @@ public class ChatActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent1 = new Intent(context,UserProfileActivity.class);
                 intent1.putExtra("userId",userId);
-                context.startActivity(intent1);
+                intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent1);
             }
         });
         tv_UserName.setOnClickListener(new View.OnClickListener() {
@@ -104,7 +105,8 @@ public class ChatActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent1 = new Intent(context,UserProfileActivity.class);
                 intent1.putExtra("userId",userId);
-                context.startActivity(intent1);
+                intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent1);
             }
         });
 
@@ -129,6 +131,13 @@ public class ChatActivity extends AppCompatActivity {
                                 Toast.makeText(ChatActivity.this,"You have blocked "+userName, Toast.LENGTH_LONG).show();
                                 onBackPressed();
                                 return true;
+                            case R.id.deleteChat:
+                                Firebase userChatRef = new Firebase("https://new-amigos.firebaseio.com/users/"+myId+"/chats/"
+                                        +userId+"/");
+                                userChatRef.setValue(null);
+                                ChatUsersDAO chatUsersDAO = new ChatUsersDAO(getApplicationContext());
+                                chatUsersDAO.removeFromChatList(userId);
+
                         }
                         return true;
                     }

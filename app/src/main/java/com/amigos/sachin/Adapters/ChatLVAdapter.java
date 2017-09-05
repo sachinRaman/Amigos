@@ -23,7 +23,10 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import jp.wasabeef.glide.transformations.CropSquareTransformation;
 
@@ -71,7 +74,20 @@ public class ChatLVAdapter extends ArrayAdapter<ChatUsersVO> implements View.OnC
         holder.tvName.setText("");
         final String[] userName = {""};
         ChatUsersVO chatUsersVO = chatUsersVoList.get(position);
-        holder.tvTime.setText(chatUsersVO.getTime());
+
+        String newDateString = chatUsersVO.getTime();
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
+        Date d = null;
+        try {
+            d = sdf.parse(chatUsersVO.getTime());
+            sdf.applyPattern("hh:mm a");
+            newDateString = sdf.format(d);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        holder.tvTime.setText(newDateString);
         holder.tvStatus.setText(chatUsersVO.getLastMessage());
         holder.tvMatch.setText("");
         if(chatUsersVO.getSeen() == 1){
