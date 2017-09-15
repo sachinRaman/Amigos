@@ -40,14 +40,6 @@
                     android:layout_alignRight="@+id/iv_profile_pic"
                     android:src="@drawable/profile_picture_edit" />
 
-                <ImageView
-                    android:id="@+id/settingsIcon"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentTop="true"
-                    android:src="@drawable/settings_icon" />
-
             </RelativeLayout>
 
             <TextView
@@ -156,6 +148,28 @@
                 android:textCursorDrawable = "@null"/>
 
             <TextView
+                android:id="@+id/tv10"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="5dp"
+                android:paddingLeft="10dp"
+                android:paddingTop="10dp"
+                android:text="Profession"
+                android:textSize="15sp" />
+
+            <EditText
+                android:id="@+id/editText_act2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/backgroundColor"
+                android:ems="10"
+                android:hint="Your profession? Academic background?"
+                android:inputType="textMultiLine"
+                android:padding="10dp"
+                android:textColor="@color/gray3"
+                android:textCursorDrawable="@null" />
+
+            <TextView
                 android:id="@+id/tv3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -184,44 +198,47 @@
                 android:paddingBottom="5dp"
                 android:paddingLeft="10dp"
                 android:paddingTop="10dp"
-                android:text="What are the activities that you like doing."
+                android:text="About me"
                 android:textSize="15sp" />
 
             <EditText
                 android:id="@+id/editText_act1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
+                android:layout_marginBottom="5dp"
                 android:background="@color/backgroundColor"
                 android:ems="10"
-                android:hint="Write activities"
+                android:hint="Tell us about yourself. Your hobbies?"
                 android:inputType="textMultiLine"
                 android:padding="10dp"
                 android:textColor="@color/gray3"
                 android:textCursorDrawable="@null" />
 
-            <TextView
-                android:id="@+id/tv10"
+            <RelativeLayout
+                android:id="@+id/layoutSettings"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingBottom="5dp"
-                android:paddingLeft="10dp"
-                android:paddingTop="10dp"
-                android:text="Professional Profile"
-                android:textSize="15sp" />
+                android:background="@color/backgroundColor">
 
-            <EditText
-                android:id="@+id/editText_act2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/backgroundColor"
-                android:ems="10"
-                android:layout_marginBottom="10dp"
-                android:hint="Write activity 2."
-                android:inputType="textMultiLine"
-                android:padding="10dp"
-                android:textColor="@color/gray3"
-                android:textCursorDrawable = "@null"/>
+                <ImageView
+                    android:id="@+id/settingsIcon1"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:src="@drawable/settings_icon"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@id/settingsIcon1"
+                    android:padding="10dp"
+                    android:text="Settings"
+                    android:textSize="16sp" />
+
+            </RelativeLayout>
+
+
             <!--<EditText
                 android:id="@+id/editText_act3"
                 android:layout_width="match_parent"
@@ -259,8 +276,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:background="@drawable/textboxborder"
-                android:backgroundTint="@color/colorPrimary"
+                android:background="@drawable/button_color"
                 android:minHeight="0dp"
                 android:minWidth="10dp"
                 android:paddingBottom="10dp"
@@ -274,7 +290,7 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="100dp"/>
+                android:layout_height="40dp"/>
 
 
         </RelativeLayout>

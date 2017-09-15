@@ -11,11 +11,11 @@
         android:id="@+id/my_likes"
         android:enabled="true"
         android:icon="@drawable/ic_thumb_up_white_24dp"
-        android:title="Likes"
+        android:title="People I Admire"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/my_liked"
         android:icon="@drawable/ic_favorite_white_24dp"
-        android:title="Liked"
+        android:title="My Admirers"
         app:showAsAction="ifRoom" />
 </menu>

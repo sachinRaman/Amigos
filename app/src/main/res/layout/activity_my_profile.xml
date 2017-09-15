@@ -7,7 +7,7 @@
     tools:context="com.amigos.sachin.Activities.MyProfileActivity">
 
     <ScrollView
-        android:layout_width="368dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:layout_editor_absoluteY="0dp"
         tools:layout_editor_absoluteX="8dp">
@@ -152,6 +152,28 @@
                 android:textCursorDrawable = "@null"/>
 
             <TextView
+                android:id="@+id/tv5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="5dp"
+                android:paddingLeft="10dp"
+                android:paddingTop="10dp"
+                android:text="Profession"
+                android:textSize="15sp" />
+
+            <EditText
+                android:id="@+id/editText_act21"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/backgroundColor"
+                android:ems="10"
+                android:hint="Your profession? Academic background?"
+                android:inputType="textMultiLine"
+                android:padding="10dp"
+                android:textColor="@color/gray3"
+                android:textCursorDrawable = "@null"/>
+
+            <TextView
                 android:id="@+id/tv3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -180,7 +202,7 @@
                 android:paddingBottom="5dp"
                 android:paddingLeft="10dp"
                 android:paddingTop="10dp"
-                android:text="What are the activities that you like doing."
+                android:text="About me"
                 android:textSize="15sp" />
 
             <EditText
@@ -190,34 +212,13 @@
                 android:layout_marginBottom="10dp"
                 android:background="@color/backgroundColor"
                 android:ems="10"
-                android:hint="Write activity 1."
+                android:hint="Tell us about yourself. Your hobbies?"
                 android:inputType="textMultiLine"
                 android:padding="10dp"
                 android:textColor="@color/gray3"
                 android:textCursorDrawable="@null" />
 
-            <TextView
-                android:id="@+id/tv5"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingBottom="5dp"
-                android:paddingLeft="10dp"
-                android:paddingTop="10dp"
-                android:text="Professional Profile"
-                android:textSize="15sp" />
 
-            <EditText
-                android:id="@+id/editText_act21"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/backgroundColor"
-                android:ems="10"
-                android:layout_marginBottom="10dp"
-                android:hint="Write activity 2."
-                android:inputType="textMultiLine"
-                android:padding="10dp"
-                android:textColor="@color/gray3"
-                android:textCursorDrawable = "@null"/>
             <!--<EditText
                 android:id="@+id/editText_act31"
                 android:layout_width="match_parent"
@@ -257,8 +258,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:background="@drawable/textboxborder"
-                android:backgroundTint="@color/colorPrimary"
+                android:background="@drawable/button_color"
                 android:minHeight="0dp"
                 android:minWidth="10dp"
                 android:paddingBottom="10dp"
@@ -270,9 +270,6 @@
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="100dp" />
 
 
         </RelativeLayout>

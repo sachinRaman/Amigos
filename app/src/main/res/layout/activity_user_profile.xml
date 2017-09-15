@@ -16,22 +16,42 @@
             android:orientation="vertical">
 
 
-            <ImageView
-                android:id="@+id/imageView_profileImage1"
-                android:layout_width="350dp"
-                android:layout_height="350dp"
-                android:layout_gravity="center"
-                android:background="@color/backgroundColor"
-                android:src="@drawable/ic_user" />
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center">
+
+                <ImageView
+                    android:id="@+id/imageView_profileImage1"
+                    android:layout_width="350dp"
+                    android:layout_height="350dp"
+                    android:background="@color/backgroundColor"
+                    android:src="@drawable/ic_user" />
+
+
+                <TextView
+                    android:id="@+id/tv_matchCount1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignEnd="@+id/imageView_profileImage1"
+                    android:layout_alignParentBottom="true"
+                    android:gravity="right"
+                    android:background="@drawable/textboxsharpborder"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+            </RelativeLayout>
+
 
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/gray1"
-                android:paddingBottom="5dp"
+                android:paddingBottom="15dp"
                 android:paddingLeft="10dp"
-                android:paddingTop="5dp">
+                android:paddingTop="15dp">
 
                 <TextView
                     android:id="@+id/tv_display_name1"
@@ -56,13 +76,12 @@
                 android:id="@+id/textView_info1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/gray1"
+                android:background="@color/backgroundColor"
                 android:clickable="false"
                 android:inputType="textMultiLine"
                 android:paddingBottom="10dp"
                 android:paddingLeft="10dp"
                 android:paddingTop="5dp"
-                android:text="Status"
                 android:textColor="@color/gray3"
                 android:textSize="18sp" />
 
@@ -71,30 +90,31 @@
                 android:layout_height="1dp"
                 android:background="#EEEEEE"/>
 
-            <TextView
-                android:id="@+id/tv_moodTopic"
+            <!--<TextView
+                android:id="@+id/tv_quoteTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/backgroundColor"
-                android:inputType="textMultiLine"
-                android:padding="10dp"
-                android:textColor="@color/gray3"
-                android:textSize="18sp" />
-
-            <TextView
-                android:id="@+id/tv_interestedActivities"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:background="@color/gray1"
                 android:paddingBottom="5dp"
                 android:paddingLeft="10dp"
                 android:paddingTop="15dp"
-                android:background="@color/gray1"
-                android:text="Interested in"
+                android:text="Quote"
                 android:textColor="@color/gray3"
-                android:textSize="15sp"/>
+                android:textSize="15sp"/>-->
 
             <TextView
-                android:id="@+id/tv_activity11"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/gray1"
+                android:paddingBottom="5dp"
+                android:paddingLeft="10dp"
+                android:paddingTop="15dp"
+                android:text="Activity of the hour"
+                android:textColor="@color/gray3"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/tv_moodTopic"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/backgroundColor"
@@ -111,7 +131,7 @@
                 android:paddingLeft="10dp"
                 android:paddingTop="15dp"
                 android:background="@color/gray1"
-                android:text="Professional profile"
+                android:text="Profession"
                 android:textColor="@color/gray3"
                 android:textSize="15sp"/>
 
@@ -124,6 +144,30 @@
                 android:padding="10dp"
                 android:textColor="@color/gray3"
                 android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/tv_interestedActivities"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/gray1"
+                android:paddingBottom="5dp"
+                android:paddingLeft="10dp"
+                android:paddingTop="15dp"
+                android:text="Intro"
+                android:textColor="@color/gray3"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/tv_activity11"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/backgroundColor"
+                android:inputType="textMultiLine"
+                android:padding="10dp"
+                android:textColor="@color/gray3"
+                android:textSize="18sp" />
+
+
 
             <!--<TextView
                 android:id="@+id/tv_activity31"
@@ -207,16 +251,29 @@
                 android:layout_alignParentTop="true"
                 android:src="@drawable/message_icon" />
 
-            <ImageView
-                android:id="@+id/likeIcon1"
+
+            <!--<ImageView
+                android:id="@+id/crossIcon"
                 android:layout_width="55dp"
                 android:layout_height="55dp"
-                android:layout_marginRight="10dp"
+
+                android:src="@drawable/cross_icon2"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true" />-->
+
+
+            <ImageView
+                android:id="@+id/likeIcon"
+                android:layout_width="55dp"
+                android:layout_height="55dp"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"
                 android:layout_gravity="right"
+                android:layout_marginRight="20dp"
                 android:src="@drawable/cross_icon" />
+
+
 
 
         </RelativeLayout>
@@ -227,21 +284,12 @@
             android:background="@color/textColor" />
 
     </LinearLayout>
-    <LinearLayout
+
+    <!--<LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true">
 
-        <TextView
-            android:id="@+id/tv_matchCount1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:gravity="right"
-            android:layout_marginTop="25dp"
-            android:textColor="@color/backgroundColor"
-            android:textStyle="bold"/>
-
-    </LinearLayout>
+    </LinearLayout>-->
 
 </RelativeLayout>

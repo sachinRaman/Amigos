@@ -7,14 +7,16 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
-        android:allowBackup="true"
         android:name=".Application.Amigos"
-        android:icon="@mipmap/ic_launcher"
+        android:allowBackup="true"
+        android:icon="@drawable/logo"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+
         android:theme="@style/AppTheme">
-        <activity android:name=".Activities.MainActivity"
+        <activity
+            android:name=".Activities.MainActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -48,12 +50,16 @@
             android:name=".Activities.MainTabsActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
-        <activity android:name=".Activities.SplashScreen"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".Activities.SplashScreen2"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".Activities.ChatActivity"
-            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".Activities.SplashScreen"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activities.SplashScreen2"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activities.ChatActivity"
+            android:screenOrientation="portrait"
+            android:noHistory="true"/>
 
         <service
             android:name=".Services.ChatService"
@@ -74,22 +80,42 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".Activities.MyProfileActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".Activities.InterestsTagsActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".Activities.MyMoodActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".Activities.UserProfileActivity"
-            android:screenOrientation="portrait">
+        <activity
+            android:name=".Activities.MyProfileActivity"
+            android:screenOrientation="portrait"
+            android:label="My Profile"/>
+        <activity
+            android:name=".Activities.InterestsTagsActivity"
+            android:screenOrientation="portrait"
+            android:label="My Interests"/>
+        <activity
+            android:name=".Activities.MyMoodActivity"
+            android:screenOrientation="portrait"
+            android:label="My Mood"/>
+        <activity
+            android:name=".Activities.UserProfileActivity"
+            android:screenOrientation="portrait"
+            android:noHistory="true">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.amigos.sachin.Activities.MainTabsActivity" />
         </activity>
-        <activity android:name=".Activities.SettingsActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".Activities.BlockListActivity"
-            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name=".Activities.SettingsActivity"
+            android:screenOrientation="portrait"
+            android:label="Settings"/>
+        <activity
+            android:name=".Activities.BlockListActivity"
+            android:screenOrientation="portrait"
+            android:label="Blocked Users"/>
+        <activity android:name=".Activities.ChatListActivity"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".Activities.SplashScreen2"
+            android:label="My Chats"/>
+        <activity android:name=".Activities.PeopleWhoLikedMeActivity"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".Activities.SplashScreen2"
+            android:label="My Admirers" ></activity>
     </application>
 
 </manifest>

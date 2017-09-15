@@ -3,18 +3,15 @@ package com.amigos.sachin.Activities;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.os.Bundle;
-import android.view.MotionEvent;
-import android.view.View;
+import android.widget.Toast;
 
 import com.amigos.sachin.Adapters.ViewPagerAdapter;
-
 import com.amigos.sachin.CustomViews.CustomViewPager;
 import com.amigos.sachin.MainFragments.ChatsFragment;
 import com.amigos.sachin.MainFragments.MyProfileFragment;
@@ -30,6 +27,11 @@ public class MainTabsActivity extends AppCompatActivity {
     private int[] tabIcons = {R.drawable.ic_account_circle_white_18dp,
             R.drawable.ic_group_white_18dp,
             R.drawable.ic_message_white_18dp};
+    Context context;
+    final int TIME_DELAY = 2000;
+    long back_pressed = 0;
+    int selectedTab = 1;
+    int bottomTab = 0;
 
 
     @Override
@@ -37,11 +39,17 @@ public class MainTabsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_tabs);
 
+        context = getApplicationContext();
+
         //Hide the action bar
         getSupportActionBar().hide();
 
         SharedPreferences sp = getSharedPreferences("com.amigos.sachin", Context.MODE_PRIVATE);
         String myId = sp.getString("myId","");
+
+        Intent intent = getIntent();
+        selectedTab = intent.getIntExtra("tab",1);
+        bottomTab = intent.getIntExtra("bottomTab",0);
 
         viewPager = (CustomViewPager) findViewById(R.id.viewpager);
         viewPager.setPagingEnabled(false);
@@ -49,7 +57,7 @@ public class MainTabsActivity extends AppCompatActivity {
 
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
-        TabLayout.Tab tab = tabLayout.getTabAt(1);
+        TabLayout.Tab tab = tabLayout.getTabAt(selectedTab);
         tab.select();
         setupTabIcons();
 
@@ -58,10 +66,14 @@ public class MainTabsActivity extends AppCompatActivity {
 
 
     private void setupViewPager(ViewPager viewPager) {
+        Bundle bundle=new Bundle();
+        bundle.putInt("bottomTab", bottomTab);
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(new MyProfileFragment(), "My Profile");
         adapter.addFragment(new UsersFragment(), "Users");
-        adapter.addFragment(new ChatsFragment(), "Chats");
+        ChatsFragment chatsFragment = new ChatsFragment();
+        chatsFragment.setArguments(bundle);
+        adapter.addFragment(chatsFragment, "Chats");
         viewPager.setAdapter(adapter);
     }
 
@@ -73,10 +85,19 @@ public class MainTabsActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        Intent a = new Intent(Intent.ACTION_MAIN);
-        a.addCategory(Intent.CATEGORY_HOME);
-        a.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(a);
+
+        if (back_pressed + TIME_DELAY > System.currentTimeMillis()) {
+            //super.onBackPressed();
+            Intent a = new Intent(Intent.ACTION_MAIN);
+            a.addCategory(Intent.CATEGORY_HOME);
+            a.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(a);
+        } else {
+            Toast.makeText(context, "Press once again to exit!",
+                    Toast.LENGTH_SHORT).show();
+        }
+        back_pressed = System.currentTimeMillis();
+
     }
 
     @Override

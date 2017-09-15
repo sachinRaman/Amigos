@@ -20,10 +20,16 @@ import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
+/*import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;*/
 
 import java.util.ArrayList;
 
 import jp.wasabeef.glide.transformations.CropSquareTransformation;
+
 
 /**
  * Created by Sachin on 8/30/2017.
@@ -78,7 +84,7 @@ public class LikedUsersLVAdapter extends ArrayAdapter<LikedUserVO> implements Vi
         final String[] imageUrl = {""};
 
         Firebase userRef = new Firebase("https://new-amigos.firebaseio.com/users/"+userId+"/");
-        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        userRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for(DataSnapshot child : dataSnapshot.getChildren()){
@@ -113,11 +119,49 @@ public class LikedUsersLVAdapter extends ArrayAdapter<LikedUserVO> implements Vi
             }
         });
 
+        /*DatabaseReference firebaseRef = FirebaseDatabase.getInstance().getReference();
+
+        firebaseRef.child("users").child(userId).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot child : dataSnapshot.getChildren()){
+                    if("name".equalsIgnoreCase(child.getKey())){
+                        if(child.getValue().toString() != null && !child.getValue().toString().isEmpty()) {
+                            holder.tvName.setText(child.getValue().toString());
+                            userName[0] = child.getValue().toString();
+                        }else{
+                            holder.tvName.setText("User");
+                            userName[0] = "User";
+                        }
+                    }
+                    if("status".equalsIgnoreCase(child.getKey())){
+                        holder.tvStatus.setText(child.getValue().toString());
+                    }
+                    if("imageUrl".equalsIgnoreCase(child.getKey())){
+                        for(DataSnapshot children : child.getChildren()){
+                            if(userId.equalsIgnoreCase(children.getKey())){
+                                imageUrl[0] = children.getValue().toString();
+                                Glide.with(context).load(imageUrl[0])
+                                        .bitmapTransform(new CropSquareTransformation(context)).thumbnail(0.5f).crossFade()
+                                        .diskCacheStrategy(DiskCacheStrategy.ALL).into(holder.profilePicImageView);
+                            }
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });*/
+
         holder.view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context,UserProfileActivity.class);
                 intent.putExtra("userId",userId);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent);
             }
         });

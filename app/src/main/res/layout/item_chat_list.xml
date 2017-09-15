@@ -41,7 +41,8 @@
                 android:layout_alignParentLeft="true"
                 android:focusableInTouchMode="false"
                 android:padding="5dp"
-                android:text="TextView"
+                android:textColor="@color/gray3"
+                android:text=""
                 android:textSize="21sp" />
 
             <TextView
@@ -56,7 +57,7 @@
                 android:focusableInTouchMode="false"
                 android:gravity="right"
                 android:padding="5dp"
-                android:text="TextView"
+                android:text=""
                 android:textColor="@color/md_grey_500"
                 android:textSize="13sp" />
 
@@ -80,7 +81,7 @@
                 android:layout_toLeftOf="@+id/tv_time_last_message"
                 android:singleLine="true"
                 android:padding="5dp"
-                android:text="TextView"
+                android:text=""
                 android:textColor="@color/md_grey_700"
                 android:textSize="16sp" />
 
@@ -91,7 +92,7 @@
                 android:layout_alignBaseline="@+id/tv_status"
                 android:padding="5dp"
                 android:gravity="right"
-                android:text="TextView"
+                android:text=""
                 android:layout_alignParentRight="true"
                 android:textColor="@color/md_grey_500"
                 android:textSize="13sp" />

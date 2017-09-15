@@ -1,5 +1,7 @@
 package com.amigos.sachin.Adapters;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -8,6 +10,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import com.amigos.sachin.AllUsersFragments.AllUsersFragment;
 import com.amigos.sachin.ApplicationCache.ApplicationCache;
 import com.amigos.sachin.VO.UserVO;
+import com.bumptech.glide.Glide;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -27,6 +30,7 @@ public class SwipeAllUsersAdapter extends FragmentStatePagerAdapter {
     public SwipeAllUsersAdapter(FragmentManager fm) {
         super(fm);
     }
+    String myId;
 
     @Override
     public Fragment getItem(final int position) {
@@ -34,7 +38,19 @@ public class SwipeAllUsersAdapter extends FragmentStatePagerAdapter {
         final Fragment fragment = new AllUsersFragment();
 
         UserVO myUserVO = ApplicationCache.myUserVO;
+        myId = myUserVO.getId();
         ArrayList<UserVO> userVOArrayList = ApplicationCache.userVOArrayList;
+        ArrayList<String> peopleIBolcked = ApplicationCache.peopleIBlockedList;
+        ArrayList<String> peopleWhoBlockedMe = ApplicationCache.peopleWhoBlockedMeList;
+
+        for( int i = userVOArrayList.size() - 1; i >= 0 ; i--){
+            String userId = userVOArrayList.get(i).getId();
+            if( peopleIBolcked.contains(userId) || peopleWhoBlockedMe.contains(userId) || myId.equalsIgnoreCase(userId) ){
+                userVOArrayList.remove(i);
+            }
+        }
+
+
         for(UserVO userVO : userVOArrayList){
             if(myUserVO.getInterests() != null && !myUserVO.getInterests().isEmpty()){
                 int matchCount = 0;

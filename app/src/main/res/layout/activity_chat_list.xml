@@ -1,23 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.amigos.sachin.ChatsFragments.PeopleWhoLikedMeFragment">
+    tools:context="com.amigos.sachin.Activities.ChatListActivity">
 
     <ListView
-    android:id="@+id/peopleWhoLikedMeListView"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"></ListView>
+        android:id="@+id/chatListView1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></ListView>
 
     <TextView
-        android:id="@+id/tv_noAdmirersTextView"
+        android:id="@+id/tv_emptyChat1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="You have no admirers yet. Keep exploring and you'll find genuine admirers."
+        android:text="You have no chats yet."
         android:layout_centerVertical="true"
+        android:gravity="center"
         android:textSize="20sp"
         android:visibility="gone"
-        android:gravity="center"
         android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

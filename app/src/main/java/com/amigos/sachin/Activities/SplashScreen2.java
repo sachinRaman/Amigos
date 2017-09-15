@@ -5,25 +5,30 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.View;
+import android.widget.Toast;
 
 import com.amigos.sachin.ApplicationCache.ApplicationCache;
 import com.amigos.sachin.R;
+import com.amigos.sachin.Utils.ToastHandler;
 
 public class SplashScreen2 extends AppCompatActivity {
 
     String myId;
     SharedPreferences sp;
+    int tab = 1;
+    int bottomTab = 0;
+    Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen2);
+        context = getApplicationContext();
         getSupportActionBar().hide();
+        Intent intent = getIntent();
+        tab = intent.getIntExtra("tab",1);
+        bottomTab = intent.getIntExtra("bottomTab",0);
         startHeavyProcessing();
     }
 
@@ -44,13 +49,29 @@ public class SplashScreen2 extends AppCompatActivity {
             ApplicationCache applicationCache = new ApplicationCache();
 
 
-            for (int i = 0; i < 3; i++) {
+            for (int i = 0; i < 5; i++) {
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {
                     Thread.interrupted();
                 }
             }
+            while(ApplicationCache.userVOArrayList.isEmpty()){
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(context,"You have poor internet connection.\nLoading the data might take some time.",1000).show();
+                    }
+                });
+                /*ToastHandler mToastHandler = new ToastHandler(context);
+                mToastHandler.showToast("Internet connection is poor",1000);*/
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    Thread.interrupted();
+                }
+            }
+
             return "whatever result you have";
         }
 
@@ -58,6 +79,8 @@ public class SplashScreen2 extends AppCompatActivity {
         protected void onPostExecute(String result) {
             Intent intent = new Intent(SplashScreen2.this, MainTabsActivity.class);
             intent.putExtra("data", result);
+            intent.putExtra("tab",tab);
+            intent.putExtra("bottomTab",bottomTab);
             startActivity(intent);
             finish();
         }

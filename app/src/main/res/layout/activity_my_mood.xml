@@ -20,8 +20,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
+                android:layout_marginTop="15dp"
                 android:gravity="center_horizontal"
-                android:text="Do you have something on your mind?"
+                android:text="Have something on your mind?"
                 android:textSize="18sp" />
 
             <LinearLayout
@@ -29,22 +30,25 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="40dp">
+                android:layout_marginTop="55dp">
 
                 <TextView
                     android:id="@+id/textView4"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignBaseline="@+id/switch1"
+                    android:layout_marginRight="20dp"
                     android:text="No"
-                    android:layout_marginRight="10dp"
-                    android:textSize="18sp"/>
+                    android:textSize="18sp" />
 
                 <Switch
                     android:id="@+id/switch11"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
+                    android:scaleX="1.5"
+                    android:scaleY="1.5"
+                    android:minHeight="50dp"
                     android:theme="@style/SCBSwitch" />
 
                 <TextView
@@ -52,36 +56,65 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignBaseline="@+id/switch1"
+                    android:layout_marginLeft="20dp"
                     android:text="Yes"
-                    android:layout_marginLeft="10dp"
-                    android:textSize="18sp"/>
+                    android:textSize="18sp" />
 
             </LinearLayout>
 
+            <TextView
+                android:id="@+id/tv_moodOffText1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/gray1"
+                android:layout_below="@+id/linearLayout11"
+                android:paddingBottom="5dp"
+                android:paddingLeft="10dp"
+                android:paddingTop="10dp"
+                android:textSize="15sp"
+                android:textColor="@color/gray3"
+                android:visibility="gone"
+                android:layout_marginTop="20dp"
+                android:text="You have not selected any topic for discussion. You will be matched with users on the basis of your interests. Update your topic for discussion for better experience."/>
+
+            <TextView
+                android:id="@+id/tv_moodTextBox1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/linearLayout11"
+                android:layout_marginTop="20dp"
+                android:background="@color/gray1"
+                android:paddingBottom="5dp"
+                android:paddingLeft="10dp"
+                android:paddingTop="10dp"
+                android:text="What do you want to do now?"
+                android:textSize="15sp" />
 
             <EditText
                 android:id="@+id/et_myMood1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
-                android:layout_below="@+id/linearLayout11"
-                android:layout_marginTop="20dp"
-                android:hint="What's on your mind"
+                android:layout_below="@+id/tv_moodTextBox1"
+                android:background="@color/backgroundColor"
+                android:hint="Play poker, discuss philosophy, ..."
+                android:padding="10dp"
                 android:textColor="@color/textColor" />
 
             <TextView
                 android:id="@+id/tv_addedTags1"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_below="@+id/et_myMood1"
-                android:layout_marginTop="10dp"
-                android:text="Added Tags" />
+                android:background="@color/gray1"
+                android:paddingLeft="10dp"
+                android:textSize="4dp" />
 
             <co.lujun.androidtagview.TagContainerLayout
                 android:id="@+id/chosenTags1"
                 android:layout_width="match_parent"
-                android:layout_height="130dp"
+                android:layout_height="match_parent"
                 android:layout_below="@+id/tv_addedTags1"
                 android:layout_margin="0dp"
                 android:layout_marginTop="33dp"
@@ -95,28 +128,39 @@
 
             <TextView
                 android:id="@+id/tv_allTags1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_below="@+id/tv_addedTags1"
-                android:layout_marginTop="140dp"
-                android:text="Add upto 5 tags." />
-
-            <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/chosenTags1"
+                android:background="@color/gray1"
+                android:paddingBottom="5dp"
+                android:paddingLeft="10dp"
+                android:paddingTop="10dp"
+                android:text="Add relevant tags for the activity(upto 5)" />
+
+            <EditText
                 android:id="@+id/et_search1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_below="@+id/tv_allTags1"
-                android:hint="Search Here..."
-                android:textColor="@color/textColor"/>
+                android:background="@color/backgroundColor"
+                android:hint="Search for tags here.."
+                android:padding="10dp"
+                android:textColor="@color/textColor" />
+
+            <View
+                android:id="@+id/viewBlankLine1"
+                android:layout_width="match_parent"
+                android:layout_height="5dp"
+                android:layout_below="@+id/et_search1"
+                android:background="#EEEEEE" />
 
             <co.lujun.androidtagview.TagContainerLayout
                 android:id="@+id/allTags1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/et_search1"
-                android:layout_margin="0dp"
-                android:layout_marginTop="33dp"
+                android:layout_below="@+id/viewBlankLine1"
+                android:layout_margin="5dp"
                 android:padding="10dp"
                 app:container_enable_drag="false"
                 app:horizontal_interval="10dp"
@@ -126,8 +170,8 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="300dp"
-                android:layout_below="@+id/allTags1"/>
+                android:layout_height="200dp"
+                android:layout_below="@+id/allTags1" />
 
         </RelativeLayout>
 
@@ -149,22 +193,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:background="@drawable/textboxborder"
-                android:backgroundTint="@color/colorPrimary"
+                android:background="@drawable/button_color"
                 android:minHeight="0dp"
                 android:minWidth="10dp"
                 android:paddingBottom="10dp"
                 android:paddingLeft="20dp"
                 android:paddingRight="20dp"
                 android:paddingTop="10dp"
-                android:text="Save"
+                android:text="OK"
                 android:textColor="@color/actionBarTextColor"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="100dp" />
+                android:layout_height="50dp" />
 
 
         </RelativeLayout>

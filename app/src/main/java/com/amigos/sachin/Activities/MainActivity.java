@@ -22,6 +22,7 @@ import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
+import com.facebook.HttpMethod;
 import com.facebook.Profile;
 import com.facebook.ProfileTracker;
 import com.facebook.login.LoginResult;
@@ -39,14 +40,13 @@ import java.util.Arrays;
 public class MainActivity extends AppCompatActivity {
 
     LoginButton loginButton;
-    TextView textView;
     CallbackManager callbackManager;
     private String facebook_id,f_name, m_name, l_name, gender, profile_image, full_name, email_id;
     long fb_id;
     String profile_name;
     String birthday;
-    ImageView imageView;
     String TAG = "Main Activity";
+    int tab = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,11 +54,11 @@ public class MainActivity extends AppCompatActivity {
         FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_main);
 
+        getSupportActionBar().hide();
+
         Firebase.setAndroidContext(this);
 
         loginButton = (LoginButton)findViewById(R.id.button_fb_login);
-        textView = (TextView) findViewById(R.id.textView);
-        imageView = (ImageView)findViewById(R.id.imageView);
         callbackManager = CallbackManager.Factory.create();
 
         loginButton.setReadPermissions(Arrays.asList(
@@ -70,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
             }
             //startService(new Intent(ChatService.class.getName()));
             Intent intent = new Intent(MainActivity.this,SplashScreen2.class);
+            intent.putExtra("tab",tab);
             startActivity(intent);
         }
 
@@ -92,10 +93,7 @@ public class MainActivity extends AppCompatActivity {
                                 m_name = currentProfile.getMiddleName();
                                 l_name = currentProfile.getLastName();
                                 full_name = currentProfile.getName();
-                                if(currentProfile.getProfilePictureUri(400, 400) != null) {
-                                    profile_image = currentProfile.getProfilePictureUri(400, 400).toString();
-                                    new ImageLoadTask(currentProfile.getProfilePictureUri(400, 400).toString(), imageView).execute();
-                                }
+                                profile_image = currentProfile.getProfilePictureUri(400, 400).toString();
                                 profileTracker.stopTracking();
                             }
                         }
@@ -107,13 +105,9 @@ public class MainActivity extends AppCompatActivity {
                     m_name = profile.getMiddleName();
                     l_name = profile.getLastName();
                     full_name = profile.getName();
-                    if(profile.getProfilePictureUri(400, 400) != null) {
-                        profile_image = profile.getProfilePictureUri(400, 400).toString();
-                        new ImageLoadTask(profile.getProfilePictureUri(400, 400).toString(), imageView).execute();
-                    }
+                    profile_image = profile.getProfilePictureUri(400, 400).toString();
                 }
                 //profileTracker.startTracking();
-
 
 
                 GraphRequest request = GraphRequest.newMeRequest(
@@ -147,16 +141,7 @@ public class MainActivity extends AppCompatActivity {
                                     //profile_name=object.getString("name");
                                     fb_id=object.getLong("id");
                                     //birthday = object.getString("birthday"); // 01/31/1980 format
-                                    textView.setText("facebook_id: "+ facebook_id+
-                                            "\nf_name: " + f_name+
-                                            "\nm_name: " + m_name+
-                                            "\nl_name: " + l_name+
-                                            "\nfull_name: " + full_name+
-                                            "\nemail_id: " + email_id+
-                                            "\ngender: " + gender+
-                                            "\nprofile_name: " + profile_name+
-                                            "\nbirthday: " + birthday+
-                                            "\nfb_id: " + fb_id);
+
                                     String myId = fb_id +"-"+profile_name;
                                     Firebase userRef = new Firebase("https://new-amigos.firebaseio.com/users/"+ myId+ "/");
                                     if(profile_name != null) {
@@ -217,12 +202,11 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onCancel() {
-                textView.setText("Login Cancelled.");
+
             }
 
             @Override
             public void onError(FacebookException error) {
-                textView.setText("Error.");
                 error.printStackTrace();
             }
         });

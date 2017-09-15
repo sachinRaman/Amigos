@@ -3,7 +3,10 @@ package com.amigos.sachin.MyProfileFragments;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -12,17 +15,25 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.amigos.sachin.ApplicationCache.ApplicationCache;
+import com.amigos.sachin.MainFragments.UsersFragment;
 import com.amigos.sachin.R;
+import com.amigos.sachin.VO.UserVO;
 import com.amigos.sachin.Values.PeevesList;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
+/*import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;*/
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -32,21 +43,28 @@ import java.util.Set;
 import co.lujun.androidtagview.TagContainerLayout;
 import co.lujun.androidtagview.TagView;
 
+//import com.firebase.client.DataSnapshot;
+
 
 public class MyMoods extends Fragment {
 
     TagContainerLayout mTagContainerLayoutMyMoodTags;
     TagContainerLayout mTagContainerLayoutAllTags;
-    Switch myMoodsSwitch;
+    /*Switch myMoodsSwitch;*/
+    ImageView myMoodsSwitch;
     int myMoodsTagCount = 0;
     Context context;
     EditText et_myMood, et_search;
-    TextView tv_addedTags,tv_allTags;
+    TextView tv_addedTags,tv_allTags,tv_moodTextBox, tv_moodOffText;
     LinearLayout linearLayoutButton;
     Button saveButton;
+    View viewBlankLine;
     String myId;
     ArrayList<String> initialTags = new ArrayList<String>();
     ArrayList<String> allInterests = new ArrayList<String>();
+    Drawable res1,res2;
+    String mood = "0";
+    UserVO myVO;
 
     public MyMoods() {
 
@@ -75,20 +93,42 @@ public class MyMoods extends Fragment {
         SharedPreferences sp = context.getSharedPreferences("com.amigos.sachin",Context.MODE_PRIVATE);
         myId = sp.getString("myId","");
 
+        int imageResource2 = getResources().getIdentifier("@drawable/switch_on", null, context.getPackageName());
+        int imageResource1 = getResources().getIdentifier("@drawable/switch_off", null, context.getPackageName());
+
+        res1 = getResources().getDrawable(imageResource1);
+        res2 = getResources().getDrawable(imageResource2);
+
         mTagContainerLayoutAllTags = (TagContainerLayout) view.findViewById(R.id.allTags);
         mTagContainerLayoutMyMoodTags = (TagContainerLayout) view.findViewById(R.id.chosenTags);
-        myMoodsSwitch = (Switch) view.findViewById(R.id.switch1);
+        myMoodsSwitch = (ImageView) view.findViewById(R.id.switch1);
         et_myMood = (EditText) view.findViewById(R.id.et_myMood);
         tv_addedTags = (TextView) view.findViewById(R.id.tv_addedTags);
         tv_allTags = (TextView) view.findViewById(R.id.tv_allTags);
+        tv_moodTextBox = (TextView) view.findViewById(R.id.tv_moodTextBox);
         linearLayoutButton = (LinearLayout) view.findViewById(R.id.linearLayout_button);
         saveButton = (Button) view.findViewById(R.id.myMoodsButton);
         et_search = (EditText) view.findViewById(R.id.et_search);
+        viewBlankLine = (View) view.findViewById(R.id.viewBlankLine);
+        tv_moodOffText = (TextView) view.findViewById(R.id.tv_moodOffText);
 
         mTagContainerLayoutMyMoodTags.removeAllTags();
         mTagContainerLayoutAllTags.removeAllTags();
 
-        if(!myMoodsSwitch.isChecked()){
+        tv_moodOffText.setVisibility(View.VISIBLE);
+
+        et_myMood.setVisibility(View.GONE);
+        tv_addedTags.setVisibility(View.GONE);
+        tv_allTags.setVisibility(View.GONE);
+        mTagContainerLayoutAllTags.setVisibility(View.GONE);
+        mTagContainerLayoutMyMoodTags.setVisibility(View.GONE);
+        linearLayoutButton.setVisibility(View.GONE);
+        et_search.setVisibility(View.GONE);
+        viewBlankLine.setVisibility(View.GONE);
+        tv_moodTextBox.setVisibility(View.GONE);
+        tv_moodOffText.setVisibility(View.VISIBLE);
+
+        /*if(!myMoodsSwitch.isChecked()){
             et_myMood.setVisibility(View.GONE);
             tv_addedTags.setVisibility(View.GONE);
             tv_allTags.setVisibility(View.GONE);
@@ -96,7 +136,10 @@ public class MyMoods extends Fragment {
             mTagContainerLayoutMyMoodTags.setVisibility(View.GONE);
             linearLayoutButton.setVisibility(View.GONE);
             et_search.setVisibility(View.GONE);
-        }
+            viewBlankLine.setVisibility(View.GONE);
+            tv_moodTextBox.setVisibility(View.GONE);
+            tv_moodOffText.setVisibility(View.VISIBLE);
+        }*/
         initialize();
         updateAllInterests();
         setListeners();
@@ -106,10 +149,96 @@ public class MyMoods extends Fragment {
 
     public void initialize(){
 
-        Firebase myMoodsRef = new Firebase("https://new-amigos.firebaseio.com/users/" + myId + "/moods/");
-        myMoodsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        myVO =  ApplicationCache.myUserVO;
+        if("1".equalsIgnoreCase(myVO.getMood())){
+            mood = "1";
+            myMoodsSwitch.setImageDrawable(res2);
+            et_myMood.setVisibility(View.VISIBLE);
+            tv_addedTags.setVisibility(View.VISIBLE);
+            tv_allTags.setVisibility(View.VISIBLE);
+            mTagContainerLayoutAllTags.setVisibility(View.VISIBLE);
+            mTagContainerLayoutMyMoodTags.setVisibility(View.VISIBLE);
+            linearLayoutButton.setVisibility(View.VISIBLE);
+            et_search.setVisibility(View.VISIBLE);
+            tv_moodTextBox.setVisibility(View.VISIBLE);
+            viewBlankLine.setVisibility(View.VISIBLE);
+            tv_moodOffText.setVisibility(View.GONE);
+        }else{
+            mood = "0";
+            myMoodsSwitch.setImageDrawable(res1);
+            et_myMood.setVisibility(View.GONE);
+            tv_addedTags.setVisibility(View.GONE);
+            tv_allTags.setVisibility(View.GONE);
+            mTagContainerLayoutAllTags.setVisibility(View.GONE);
+            mTagContainerLayoutMyMoodTags.setVisibility(View.GONE);
+            linearLayoutButton.setVisibility(View.GONE);
+            et_search.setVisibility(View.GONE);
+            tv_moodTextBox.setVisibility(View.GONE);
+            viewBlankLine.setVisibility(View.GONE);
+            tv_moodOffText.setVisibility(View.VISIBLE);
+        }
+        if(myVO.getMoodTopic() != null){
+            et_myMood.setText(myVO.getMoodTopic());
+        }
+        if(myVO.getMyMoodTags() != null){
+            initialTags = ApplicationCache.myUserVO.getMyMoodTags();
+            mTagContainerLayoutMyMoodTags.removeAllTags();
+            mTagContainerLayoutMyMoodTags.setTags(initialTags);
+            myMoodsTagCount = initialTags.size();
+            for (int i = 0; i<initialTags.size(); i++){
+                TagView tag = mTagContainerLayoutMyMoodTags.getTagView(i);
+                tag.setTagBackgroundColor(Color.WHITE);
+                tag.setTagTextColor(Color.parseColor("#F4514E"));
+                tag.setTagBorderColor(Color.parseColor("#F4514E"));
+            }
+        }
+
+
+        /*Firebase myMoodsRef = new Firebase("https://new-amigos.firebaseio.com/users/" + myId + "/moods/");
+        myMoodsRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    if("mood".equalsIgnoreCase(snapshot.getKey())){
+                        if("1".equalsIgnoreCase(snapshot.getValue().toString())){
+
+                        }else{
+
+                        }
+                    }
+                    if("topic".equalsIgnoreCase(snapshot.getKey())){
+                        et_myMood.setText(snapshot.getValue().toString());
+                    }
+                    if("interests".equalsIgnoreCase(snapshot.getKey())){
+                        initialTags.clear();
+                        for (DataSnapshot data : snapshot.getChildren()){
+                            initialTags.add(data.getKey().toString());
+                        }
+                        initialTags = ApplicationCache.myUserVO.getMyMoodTags();
+                        mTagContainerLayoutMyMoodTags.removeAllTags();
+                        mTagContainerLayoutMyMoodTags.setTags(initialTags);
+                        myMoodsTagCount = initialTags.size();
+                        for (int i = 0; i<initialTags.size(); i++){
+                            TagView tag = mTagContainerLayoutMyMoodTags.getTagView(i);
+                            tag.setTagBackgroundColor(Color.WHITE);
+                            tag.setTagTextColor(Color.parseColor("#F4514E"));
+                            tag.setTagBorderColor(Color.parseColor("#F4514E"));
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });*/
+
+        /*DatabaseReference firebaseRef = FirebaseDatabase.getInstance().getReference();
+
+        firebaseRef.child("users").child(myId).child("moods").addListenerForSingleValueEvent(new com.google.firebase.database.ValueEventListener() {
+            @Override
+            public void onDataChange(com.google.firebase.database.DataSnapshot dataSnapshot) {
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                     if("mood".equalsIgnoreCase(snapshot.getKey())){
                         if("1".equalsIgnoreCase(snapshot.getValue().toString())){
@@ -121,6 +250,9 @@ public class MyMoods extends Fragment {
                             mTagContainerLayoutMyMoodTags.setVisibility(View.VISIBLE);
                             linearLayoutButton.setVisibility(View.VISIBLE);
                             et_search.setVisibility(View.VISIBLE);
+                            tv_moodTextBox.setVisibility(View.VISIBLE);
+                            viewBlankLine.setVisibility(View.VISIBLE);
+                            tv_moodOffText.setVisibility(View.GONE);
                         }else{
                             myMoodsSwitch.setChecked(false);
                             et_myMood.setVisibility(View.GONE);
@@ -130,6 +262,9 @@ public class MyMoods extends Fragment {
                             mTagContainerLayoutMyMoodTags.setVisibility(View.GONE);
                             linearLayoutButton.setVisibility(View.GONE);
                             et_search.setVisibility(View.GONE);
+                            tv_moodTextBox.setVisibility(View.GONE);
+                            viewBlankLine.setVisibility(View.GONE);
+                            tv_moodOffText.setVisibility(View.VISIBLE);
                         }
                     }
                     if("topic".equalsIgnoreCase(snapshot.getKey())){
@@ -154,19 +289,31 @@ public class MyMoods extends Fragment {
             }
 
             @Override
-            public void onCancelled(FirebaseError firebaseError) {
+            public void onCancelled(DatabaseError databaseError) {
 
             }
-        });
+        });*/
     }
 
     private void setListeners() {
         myMoodsSwitch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                if ("0".equalsIgnoreCase(mood)) {
+                    mood = "1";
+                    ApplicationCache.myUserVO.setMood("1");
+                }else{
+                    mood = "0";
+                    ApplicationCache.myUserVO.setMood("0");
+                }
+
+                reloadData();
+
                 Firebase moodsRef = new Firebase("https://new-amigos.firebaseio.com/moods/");
                 Firebase myMoodsRef = new Firebase("https://new-amigos.firebaseio.com/users/"+myId+"/moods/");
-                if(!myMoodsSwitch.isChecked()){
+                if("0".equalsIgnoreCase(mood)){
+                    myMoodsSwitch.setImageDrawable(res1);
                     myMoodsRef.child("mood").setValue("0");
                     et_myMood.setVisibility(View.GONE);
                     tv_addedTags.setVisibility(View.GONE);
@@ -175,7 +322,11 @@ public class MyMoods extends Fragment {
                     mTagContainerLayoutMyMoodTags.setVisibility(View.GONE);
                     linearLayoutButton.setVisibility(View.GONE);
                     et_search.setVisibility(View.GONE);
+                    tv_moodTextBox.setVisibility(View.GONE);
+                    viewBlankLine.setVisibility(View.GONE);
+                    tv_moodOffText.setVisibility(View.VISIBLE);
                 }else{
+                    myMoodsSwitch.setImageDrawable(res2);
                     myMoodsRef.child("mood").setValue("1");
                     et_myMood.setVisibility(View.VISIBLE);
                     tv_addedTags.setVisibility(View.VISIBLE);
@@ -184,6 +335,9 @@ public class MyMoods extends Fragment {
                     mTagContainerLayoutMyMoodTags.setVisibility(View.VISIBLE);
                     linearLayoutButton.setVisibility(View.VISIBLE);
                     et_search.setVisibility(View.VISIBLE);
+                    tv_moodTextBox.setVisibility(View.VISIBLE);
+                    viewBlankLine.setVisibility(View.VISIBLE);
+                    tv_moodOffText.setVisibility(View.GONE);
                 }
             }
         });
@@ -204,7 +358,16 @@ public class MyMoods extends Fragment {
                         tag.setTagTextColor(Color.parseColor("#F4514E"));
                         tag.setTagBorderColor(Color.parseColor("#F4514E"));
                         myMoodsTagCount++;
-                        Toast.makeText(context,text + " added.",Toast.LENGTH_LONG).show();
+                        et_search.setText("");
+                        final Toast toast = Toast.makeText(context,text + " added.",Toast.LENGTH_SHORT);
+                        toast.show();
+                        Handler handler = new Handler();
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                toast.cancel();
+                            }
+                        }, 1000);
                     }
                 }else{
                     Toast.makeText(context,"You can choose upto 5 tags only",Toast.LENGTH_LONG).show();
@@ -242,14 +405,20 @@ public class MyMoods extends Fragment {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 if (et_myMood.getText() == null || et_myMood.getText().toString().trim().isEmpty()){
                     Toast.makeText(context,"Mention what's on your mind.",Toast.LENGTH_SHORT).show();
                 }else {
-                    List<String> myTags = new ArrayList<String>();
-                    myTags = mTagContainerLayoutMyMoodTags.getTags();
+                    ArrayList<String> myTags = new ArrayList<String>();
+                    myTags = (ArrayList<String>)mTagContainerLayoutMyMoodTags.getTags();
                     if (myTags.isEmpty()) {
                         Toast.makeText(context, "Choose atleast one tag.", Toast.LENGTH_SHORT).show();
                     } else {
+
+                        ApplicationCache.myUserVO.setMoodTopic(et_myMood.getText().toString().trim());
+                        ApplicationCache.myUserVO.setMyMoodTags(myTags);
+                        reloadData();
+
                         Firebase moodsRef = new Firebase("https://new-amigos.firebaseio.com/moods/");
                         Firebase myMoodsRef = new Firebase("https://new-amigos.firebaseio.com/users/" + myId + "/moods/");
                         for (String s1: initialTags){
@@ -261,7 +430,7 @@ public class MyMoods extends Fragment {
                             myMoodsRef.child("topic").setValue(et_myMood.getText().toString().trim());
                             myMoodsRef.child("interests").child(s).setValue("1");
                         }
-                        Toast.makeText(context,"Data saved.",Toast.LENGTH_LONG).show();
+                        Toast.makeText(context,"Data saved.",Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -312,6 +481,10 @@ public class MyMoods extends Fragment {
         });
     }
 
+    public static void reloadData(){
+        new LongOperation().execute("");
+    }
+
     public void updateAllInterests(){
         ArrayList<String> lifestyle = PeevesList.getAllLifestyleInterests();
         ArrayList<String> arts = PeevesList.getAllArtsInterests();
@@ -349,6 +522,29 @@ public class MyMoods extends Fragment {
             tag.setTagTextColor(Color.parseColor("#F4514E"));
             tag.setTagBorderColor(Color.parseColor("#F4514E"));
         }
+    }
+
+
+    private static class LongOperation extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... params) {
+            //some heavy processing resulting in a Data String
+
+            return "whatever result you have";
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            UsersFragment usersFragment = new UsersFragment();
+            usersFragment.reloadAllUsers();
+        }
+
+        @Override
+        protected void onPreExecute() {}
+
+        @Override
+        protected void onProgressUpdate(Void... values) {}
     }
 
 }

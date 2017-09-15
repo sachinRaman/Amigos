@@ -33,12 +33,21 @@ import android.widget.Toast;
 import com.amigos.sachin.R;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+//import com.firebase.client.ChildEventListener;
+//import com.firebase.client.DataSnapshot;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+/*import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;*/
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -96,6 +105,7 @@ public class MyProfileActivity extends AppCompatActivity {
     }
 
     public void fillData(){
+
         Firebase myRef = new Firebase("https://new-amigos.firebaseio.com/users/"+myId+"/");
         myRef.addChildEventListener(new ChildEventListener() {
             @Override
@@ -139,10 +149,45 @@ public class MyProfileActivity extends AppCompatActivity {
                     for(DataSnapshot children : dataSnapshot.getChildren()){
                         if(myId.equalsIgnoreCase(children.getKey())){
                             imageUrl = children.getValue().toString();
+                            /*Glide.with(context.getApplicationContext())
+                                    .load(imageUrl)   //passing your url to load image.
+                                    .override(18, 18)  //just set override like this
+                                    .error(R.drawable.ic_user)
+                                    .listener(glide_callback)
+                                    .animate(R.anim.rotate_backward)
+                                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                    .into(imageView);*/
+                            /*Glide.with(context)
+                                    .load(imageUrl)
+                                    .asBitmap()
+                                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                    .into(new SimpleTarget<Bitmap>() {
+                                        @Override
+                                        public void onResourceReady(Bitmap bitmap, GlideAnimation anim) {
+                                            // Do something with bitmap here.
+                                            imageView.setImageBitmap(bitmap);
+                                            Log.e("GalleryAdapter","Glide getMedium ");
+
+                                            Glide.with(context)
+                                                    .load(imageUrl)
+                                                    .asBitmap()
+                                                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                                    .into(new SimpleTarget<Bitmap>() {
+                                                        @Override
+                                                        public void onResourceReady(Bitmap bitmap, GlideAnimation anim) {
+                                                            // Do something with bitmap here.
+                                                            imageView.setImageBitmap(bitmap);
+                                                            Log.e("GalleryAdapter","Glide getLarge ");
+                                                        }
+                                                    });
+                                        }
+                                    });*/
+
+
                             Glide.with(context).load(imageUrl)
                                     .bitmapTransform(new CropSquareTransformation(context),
                                             new CropCircleTransformation(context))
-                                    .thumbnail(0.5f).crossFade().diskCacheStrategy(DiskCacheStrategy.ALL).into(imageView);
+                                    .thumbnail(0.01f).crossFade().diskCacheStrategy(DiskCacheStrategy.ALL).into(imageView);
                         }
                     }
                 }
@@ -168,6 +213,79 @@ public class MyProfileActivity extends AppCompatActivity {
 
             }
         });
+
+        /*DatabaseReference firebaseRef = FirebaseDatabase.getInstance().getReference();
+        firebaseRef.child("users").child(myId).addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                Log.i(TAG, "onChildAdded");
+                Log.i(TAG, "" + dataSnapshot.getValue());
+
+                if ("name".equalsIgnoreCase(dataSnapshot.getKey())) {
+                    et_name.setText(dataSnapshot.getValue().toString());
+                }
+                if ("age".equalsIgnoreCase(dataSnapshot.getKey())) {
+                    et_age.setText(dataSnapshot.getValue().toString());
+                }
+                if ("place".equalsIgnoreCase(dataSnapshot.getKey())) {
+                    et_place.setText(dataSnapshot.getValue().toString());
+                }
+                if ("status".equalsIgnoreCase(dataSnapshot.getKey())) {
+                    et_status.setText(dataSnapshot.getValue().toString());
+                }
+                if ("activity".equalsIgnoreCase(dataSnapshot.getKey())) {
+                    for (DataSnapshot children : dataSnapshot.getChildren()){
+                        if("act1".equalsIgnoreCase(children.getKey())){
+                            et_activity1.setText(children.getValue().toString());
+                        }
+                        if("act2".equalsIgnoreCase(children.getKey())){
+                            et_activity2.setText(children.getValue().toString());
+                        }
+                        *//*if("act3".equalsIgnoreCase(children.getKey())){
+                            et_activity3.setText(children.getValue().toString());
+                        }*//*
+                    }
+                }
+                if ("sex".equalsIgnoreCase(dataSnapshot.getKey())) {
+                    if("male".equalsIgnoreCase(dataSnapshot.getValue().toString())){
+                        radioSexGroup.check(R.id.radioMale1);
+                    }else if("female".equalsIgnoreCase(dataSnapshot.getValue().toString())){
+                        radioSexGroup.check(R.id.radioFemale1);
+                    }
+                }
+                if ("imageUrl".equalsIgnoreCase(dataSnapshot.getKey())){
+                    for(DataSnapshot children : dataSnapshot.getChildren()){
+                        if(myId.equalsIgnoreCase(children.getKey())){
+                            imageUrl = children.getValue().toString();
+                            Glide.with(context).load(imageUrl)
+                                    .bitmapTransform(new CropSquareTransformation(context),
+                                            new CropCircleTransformation(context))
+                                    .thumbnail(0.5f).crossFade().diskCacheStrategy(DiskCacheStrategy.ALL).into(imageView);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });*/
         updateData();
     }
 

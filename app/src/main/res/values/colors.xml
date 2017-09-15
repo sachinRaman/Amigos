@@ -8,8 +8,8 @@
     <color name="textColor">#000000</color>
     <color name="navigationBarColor">#000000</color>
 
-    <color name="itemIconTint">#ffffff</color>
-    <color name="itemTextColor">#ffffff</color>
+    <color name="itemIconTint">@color/bottom_navigation_color_selector</color>
+    <color name="itemTextColor">@color/bottom_navigation_color_selector</color>
 
     <color name="navigationSelected">#ffffff</color>
     <color name="navigationNotSelected">#FF8D7F</color>

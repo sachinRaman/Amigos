@@ -9,9 +9,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.amigos.sachin.Adapters.ChatLVAdapter;
 import com.amigos.sachin.Adapters.LikedUsersLVAdapter;
+import com.amigos.sachin.ApplicationCache.ApplicationCache;
 import com.amigos.sachin.DAO.PeopleILikedDAO;
 import com.amigos.sachin.R;
 import com.amigos.sachin.VO.LikedUserVO;
@@ -30,6 +32,7 @@ public class PeopleILikedFragment extends Fragment {
     static ListView likedListView;
     static String myId;
     static LikedUsersLVAdapter likedLVAdapter;
+    static TextView tv_noLikesTextView;
 
     public PeopleILikedFragment() {
 
@@ -57,9 +60,20 @@ public class PeopleILikedFragment extends Fragment {
         likedListView = (ListView) view.findViewById(R.id.peopleILikedListView);
         SharedPreferences sp = context.getSharedPreferences("com.amigos.sachin",Context.MODE_PRIVATE);
         myId = sp.getString("myId","");
+        tv_noLikesTextView = (TextView) view.findViewById(R.id.tv_noLikesTextView);
 
         final PeopleILikedDAO peopleILikedDAO = new PeopleILikedDAO(context);
         ArrayList<LikedUserVO> peopleILikedVOArrayList = peopleILikedDAO.getAllPeopleIliked();
+
+        ArrayList<String> peopleIBolcked = ApplicationCache.peopleIBlockedList;
+        ArrayList<String> peopleWhoBlockedMe = ApplicationCache.peopleWhoBlockedMeList;
+
+        for( int i = peopleILikedVOArrayList.size() - 1; i >= 0 ; i--){
+            String userId = peopleILikedVOArrayList.get(i).getId();
+            if( peopleIBolcked.contains(userId) || peopleWhoBlockedMe.contains(userId) || myId.equalsIgnoreCase(userId) ){
+                peopleILikedVOArrayList.remove(i);
+            }
+        }
 
 
 
@@ -71,30 +85,20 @@ public class PeopleILikedFragment extends Fragment {
                 return 1;
             }
         });
+
+        if (peopleILikedVOArrayList.isEmpty()){
+            likedListView.setVisibility(View.GONE);
+            tv_noLikesTextView.setVisibility(View.VISIBLE);
+        }else{
+            likedListView.setVisibility(View.VISIBLE);
+            tv_noLikesTextView.setVisibility(View.GONE);
+        }
 
         likedLVAdapter = new LikedUsersLVAdapter(context,peopleILikedVOArrayList,likedListView);
         likedListView.setAdapter(likedLVAdapter);
         return view;
     }
 
-    public static void reloadLikedPeopleList(){
-        final PeopleILikedDAO peopleILikedDAO = new PeopleILikedDAO(context);
-        ArrayList<LikedUserVO> peopleILikedVOArrayList = peopleILikedDAO.getAllPeopleIliked();
-
-
-
-        Collections.sort(peopleILikedVOArrayList, new Comparator<LikedUserVO>() {
-            @Override
-            public int compare(LikedUserVO lhs, LikedUserVO rhs) {
-                if ( lhs.getTime().compareTo(rhs.getTime()) > 0 )
-                    return -1;
-                return 1;
-            }
-        });
-
-        likedLVAdapter = new LikedUsersLVAdapter(context,peopleILikedVOArrayList,likedListView);
-        likedListView.setAdapter(likedLVAdapter);
-    }
 
     @Override
     public void onResume() {
@@ -102,6 +106,16 @@ public class PeopleILikedFragment extends Fragment {
         final PeopleILikedDAO peopleILikedDAO = new PeopleILikedDAO(context);
         ArrayList<LikedUserVO> peopleILikedVOArrayList = peopleILikedDAO.getAllPeopleIliked();
 
+        ArrayList<String> peopleIBolcked = ApplicationCache.peopleIBlockedList;
+        ArrayList<String> peopleWhoBlockedMe = ApplicationCache.peopleWhoBlockedMeList;
+
+        for( int i = peopleILikedVOArrayList.size() - 1; i >= 0 ; i--){
+            String userId = peopleILikedVOArrayList.get(i).getId();
+            if( peopleIBolcked.contains(userId) || peopleWhoBlockedMe.contains(userId) || myId.equalsIgnoreCase(userId) ){
+                peopleILikedVOArrayList.remove(i);
+            }
+        }
+
 
 
         Collections.sort(peopleILikedVOArrayList, new Comparator<LikedUserVO>() {
@@ -112,6 +126,14 @@ public class PeopleILikedFragment extends Fragment {
                 return 1;
             }
         });
+
+        if (peopleILikedVOArrayList.isEmpty()){
+            likedListView.setVisibility(View.GONE);
+            tv_noLikesTextView.setVisibility(View.VISIBLE);
+        }else{
+            likedListView.setVisibility(View.VISIBLE);
+            tv_noLikesTextView.setVisibility(View.GONE);
+        }
 
         likedLVAdapter = new LikedUsersLVAdapter(context,peopleILikedVOArrayList,likedListView);
         likedListView.setAdapter(likedLVAdapter);

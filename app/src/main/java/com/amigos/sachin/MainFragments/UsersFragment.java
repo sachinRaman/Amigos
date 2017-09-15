@@ -4,6 +4,7 @@ package com.amigos.sachin.MainFragments;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,8 +19,9 @@ import com.amigos.sachin.R;
 
 public class UsersFragment extends Fragment {
 
-    ViewPager viewPagerAllUsers;
+    static ViewPager viewPagerAllUsers;
     Context context;
+    static FragmentManager fm;
 
     public UsersFragment(){
 
@@ -33,12 +35,18 @@ public class UsersFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main_users,container,false);
-        viewPagerAllUsers = (ViewPager) view.findViewById(R.id.viewpager_allusers);
         context = getActivity();
 
-        SwipeAllUsersAdapter swipeAllUsersAdapter = new SwipeAllUsersAdapter(getChildFragmentManager());
-        viewPagerAllUsers.setAdapter(swipeAllUsersAdapter);
+        viewPagerAllUsers = (ViewPager) view.findViewById(R.id.viewpager_allusers);
+        fm = getChildFragmentManager();
+
+        reloadAllUsers();
 
         return view;
+    }
+
+    public void reloadAllUsers() {
+        SwipeAllUsersAdapter swipeAllUsersAdapter = new SwipeAllUsersAdapter(fm);
+        viewPagerAllUsers.setAdapter(swipeAllUsersAdapter);
     }
 }
