@@ -46,13 +46,15 @@ public class MyMoodActivity extends AppCompatActivity {
     int myMoodsTagCount = 0;
     Context context;
     EditText et_myMood, et_search;
-    TextView tv_addedTags,tv_allTags, tv_moodTextBox, tv_moodOffText;
+    TextView tv_addedTags,tv_allTags, tv_moodTextBox, tv_moodOffText, tv_loadMore;
     LinearLayout linearLayoutButton;
     Button saveButton;
     String myId;
     ArrayList<String> initialTags = new ArrayList<String>();
     ArrayList<String> allInterests = new ArrayList<String>();
+    ArrayList<String> shortList = new ArrayList<String>();
     View viewBlankLine;
+    int interestsFlag = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +64,8 @@ public class MyMoodActivity extends AppCompatActivity {
         context = getApplicationContext();
         SharedPreferences sp = context.getSharedPreferences("com.amigos.sachin",Context.MODE_PRIVATE);
         myId = sp.getString("myId","");
+
+        Firebase.setAndroidContext(context);
 
         mTagContainerLayoutAllTags = (TagContainerLayout) findViewById(R.id.allTags1);
         mTagContainerLayoutMyMoodTags = (TagContainerLayout) findViewById(R.id.chosenTags1);
@@ -75,6 +79,7 @@ public class MyMoodActivity extends AppCompatActivity {
         tv_moodTextBox = (TextView) findViewById(R.id.tv_moodTextBox1);
         tv_moodOffText = (TextView) findViewById(R.id.tv_moodOffText1);
         viewBlankLine = (View) findViewById(R.id.viewBlankLine1);
+        tv_loadMore = (TextView) findViewById(R.id.tv_loadMore1);
 
         tv_moodOffText.setVisibility(View.VISIBLE);
 
@@ -86,6 +91,7 @@ public class MyMoodActivity extends AppCompatActivity {
             mTagContainerLayoutMyMoodTags.setVisibility(View.GONE);
             et_search.setVisibility(View.GONE);
             tv_moodTextBox.setVisibility(View.GONE);
+            tv_loadMore.setVisibility(View.GONE);
             tv_moodOffText.setVisibility(View.VISIBLE);
             viewBlankLine.setVisibility(View.GONE);
         }
@@ -111,6 +117,7 @@ public class MyMoodActivity extends AppCompatActivity {
                             mTagContainerLayoutMyMoodTags.setVisibility(View.VISIBLE);
                             et_search.setVisibility(View.VISIBLE);
                             tv_moodTextBox.setVisibility(View.VISIBLE);
+                            tv_loadMore.setVisibility(View.VISIBLE);
                             tv_moodOffText.setVisibility(View.GONE);
                             viewBlankLine.setVisibility(View.VISIBLE);
                         }else{
@@ -123,6 +130,7 @@ public class MyMoodActivity extends AppCompatActivity {
                             et_search.setVisibility(View.GONE);
                             viewBlankLine.setVisibility(View.GONE);
                             tv_moodTextBox.setVisibility(View.GONE);
+                            tv_loadMore.setVisibility(View.GONE);
                             tv_moodOffText.setVisibility(View.VISIBLE);
                         }
                     }
@@ -153,115 +161,6 @@ public class MyMoodActivity extends AppCompatActivity {
             }
         });
 
-        /*DatabaseReference userRef = FirebaseDatabase.getInstance().getReference();
-        userRef.child("users").child(myId).child("moods").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
-                    if("mood".equalsIgnoreCase(snapshot.getKey())){
-                        if("1".equalsIgnoreCase(snapshot.getValue().toString())){
-                            myMoodsSwitch.setChecked(true);
-                            et_myMood.setVisibility(View.VISIBLE);
-                            tv_addedTags.setVisibility(View.VISIBLE);
-                            tv_allTags.setVisibility(View.VISIBLE);
-                            mTagContainerLayoutAllTags.setVisibility(View.VISIBLE);
-                            mTagContainerLayoutMyMoodTags.setVisibility(View.VISIBLE);
-                            et_search.setVisibility(View.VISIBLE);
-                            tv_moodTextBox.setVisibility(View.VISIBLE);
-                            tv_moodOffText.setVisibility(View.GONE);
-                            viewBlankLine.setVisibility(View.VISIBLE);
-                        }else{
-                            myMoodsSwitch.setChecked(false);
-                            et_myMood.setVisibility(View.GONE);
-                            tv_addedTags.setVisibility(View.GONE);
-                            tv_allTags.setVisibility(View.GONE);
-                            mTagContainerLayoutAllTags.setVisibility(View.GONE);
-                            mTagContainerLayoutMyMoodTags.setVisibility(View.GONE);
-                            et_search.setVisibility(View.GONE);
-                            viewBlankLine.setVisibility(View.GONE);
-                            tv_moodTextBox.setVisibility(View.GONE);
-                            tv_moodOffText.setVisibility(View.VISIBLE);
-                        }
-                    }
-                    if("topic".equalsIgnoreCase(snapshot.getKey())){
-                        et_myMood.setText(snapshot.getValue().toString());
-                    }
-                    if("interests".equalsIgnoreCase(snapshot.getKey())){
-                        for (DataSnapshot data : snapshot.getChildren()){
-                            initialTags.add(data.getKey().toString());
-                        }
-                        mTagContainerLayoutMyMoodTags.setTags(initialTags);
-                        myMoodsTagCount = initialTags.size();
-                        for (int i = 0; i<initialTags.size(); i++){
-                            TagView tag = mTagContainerLayoutMyMoodTags.getTagView(i);
-                            tag.setTagBackgroundColor(Color.WHITE);
-                            tag.setTagTextColor(Color.parseColor("#F4514E"));
-                            tag.setTagBorderColor(Color.parseColor("#F4514E"));
-                        }
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });*/
-
-        /*Firebase myMoodsRef = new Firebase("https://new-amigos.firebaseio.com/users/" + myId + "/moods/");
-        myMoodsRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
-                    if("mood".equalsIgnoreCase(snapshot.getKey())){
-                        if("1".equalsIgnoreCase(snapshot.getValue().toString())){
-                            myMoodsSwitch.setChecked(true);
-                            et_myMood.setVisibility(View.VISIBLE);
-                            tv_addedTags.setVisibility(View.VISIBLE);
-                            tv_allTags.setVisibility(View.VISIBLE);
-                            mTagContainerLayoutAllTags.setVisibility(View.VISIBLE);
-                            mTagContainerLayoutMyMoodTags.setVisibility(View.VISIBLE);
-                            et_search.setVisibility(View.VISIBLE);
-                            tv_moodTextBox.setVisibility(View.VISIBLE);
-                            tv_moodOffText.setVisibility(View.GONE);
-                            viewBlankLine.setVisibility(View.VISIBLE);
-                        }else{
-                            myMoodsSwitch.setChecked(false);
-                            et_myMood.setVisibility(View.GONE);
-                            tv_addedTags.setVisibility(View.GONE);
-                            tv_allTags.setVisibility(View.GONE);
-                            mTagContainerLayoutAllTags.setVisibility(View.GONE);
-                            mTagContainerLayoutMyMoodTags.setVisibility(View.GONE);
-                            et_search.setVisibility(View.GONE);
-                            viewBlankLine.setVisibility(View.GONE);
-                            tv_moodTextBox.setVisibility(View.GONE);
-                            tv_moodOffText.setVisibility(View.VISIBLE);
-                        }
-                    }
-                    if("topic".equalsIgnoreCase(snapshot.getKey())){
-                        et_myMood.setText(snapshot.getValue().toString());
-                    }
-                    if("interests".equalsIgnoreCase(snapshot.getKey())){
-                        for (DataSnapshot data : snapshot.getChildren()){
-                            initialTags.add(data.getKey().toString());
-                        }
-                        mTagContainerLayoutMyMoodTags.setTags(initialTags);
-                        myMoodsTagCount = initialTags.size();
-                        for (int i = 0; i<initialTags.size(); i++){
-                            TagView tag = mTagContainerLayoutMyMoodTags.getTagView(i);
-                            tag.setTagBackgroundColor(Color.WHITE);
-                            tag.setTagTextColor(Color.parseColor("#F4514E"));
-                            tag.setTagBorderColor(Color.parseColor("#F4514E"));
-                        }
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-
-            }
-        });*/
     }
 
     private void setListeners() {
@@ -300,7 +199,7 @@ public class MyMoodActivity extends AppCompatActivity {
         mTagContainerLayoutAllTags.setOnTagClickListener(new TagView.OnTagClickListener() {
             @Override
             public void onTagClick(int position, String text) {
-                if (myMoodsTagCount < 5){
+                if (myMoodsTagCount < 7){
                     List<String> myTags = new ArrayList<String>();
                     myTags = mTagContainerLayoutMyMoodTags.getTags();
                     if(myTags.contains(text)){
@@ -399,7 +298,7 @@ public class MyMoodActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if(s.toString().isEmpty()){
+                /*if(s.toString().isEmpty()){
                     mTagContainerLayoutAllTags.removeAllTags();
                     mTagContainerLayoutAllTags.setTags(allInterests);
                     for (int i = 0; i<allInterests.size(); i++){
@@ -426,6 +325,45 @@ public class MyMoodActivity extends AppCompatActivity {
                         tag.setTagTextColor(Color.parseColor("#F4514E"));
                         tag.setTagBorderColor(Color.parseColor("#F4514E"));
                     }
+                }*/
+                if(s.toString().isEmpty()){
+                    if(interestsFlag == 1) {
+                        mTagContainerLayoutAllTags.removeAllTags();
+                        mTagContainerLayoutAllTags.setTags(allInterests);
+                        for (int i = 0; i < allInterests.size(); i++) {
+                            TagView tag = mTagContainerLayoutAllTags.getTagView(i);
+                            tag.setTagBackgroundColor(Color.WHITE);
+                            tag.setTagTextColor(Color.parseColor("#F4514E"));
+                            tag.setTagBorderColor(Color.parseColor("#F4514E"));
+                        }
+                    }else{
+                        mTagContainerLayoutAllTags.removeAllTags();
+                        mTagContainerLayoutAllTags.setTags(shortList);
+                        for (int i = 0; i < shortList.size(); i++) {
+                            TagView tag = mTagContainerLayoutAllTags.getTagView(i);
+                            tag.setTagBackgroundColor(Color.WHITE);
+                            tag.setTagTextColor(Color.parseColor("#F4514E"));
+                            tag.setTagBorderColor(Color.parseColor("#F4514E"));
+                        }
+                    }
+                }else {
+                    ArrayList<String> searchArrayList = new ArrayList<String>();
+                    Set<String> set = new HashSet<String>();
+                    for (String s1 : allInterests) {
+                        if (s1.toLowerCase().contains(s.toString().toLowerCase())) {
+                            set.add(s1);
+                        }
+                    }
+                    mTagContainerLayoutAllTags.removeAllTags();
+                    searchArrayList.clear();
+                    searchArrayList.addAll(set);
+                    mTagContainerLayoutAllTags.setTags(searchArrayList);
+                    for (int i = 0; i < searchArrayList.size(); i++) {
+                        TagView tag = mTagContainerLayoutAllTags.getTagView(i);
+                        tag.setTagBackgroundColor(Color.WHITE);
+                        tag.setTagTextColor(Color.parseColor("#F4514E"));
+                        tag.setTagBorderColor(Color.parseColor("#F4514E"));
+                    }
                 }
             }
 
@@ -434,10 +372,39 @@ public class MyMoodActivity extends AppCompatActivity {
 
             }
         });
+
+        tv_loadMore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(interestsFlag == 0){
+                    interestsFlag = 1;
+                    tv_loadMore.setText("Click to load less tags...");
+                    mTagContainerLayoutAllTags.removeAllTags();
+                    mTagContainerLayoutAllTags.setTags(allInterests);
+                    for (int i = 0; i < allInterests.size(); i++) {
+                        TagView tag = mTagContainerLayoutAllTags.getTagView(i);
+                        tag.setTagBackgroundColor(Color.WHITE);
+                        tag.setTagTextColor(Color.parseColor("#F4514E"));
+                        tag.setTagBorderColor(Color.parseColor("#F4514E"));
+                    }
+                }else{
+                    interestsFlag = 0;
+                    tv_loadMore.setText("Click to load more tags...");
+                    mTagContainerLayoutAllTags.removeAllTags();
+                    mTagContainerLayoutAllTags.setTags(shortList);
+                    for (int i = 0; i < shortList.size(); i++) {
+                        TagView tag = mTagContainerLayoutAllTags.getTagView(i);
+                        tag.setTagBackgroundColor(Color.WHITE);
+                        tag.setTagTextColor(Color.parseColor("#F4514E"));
+                        tag.setTagBorderColor(Color.parseColor("#F4514E"));
+                    }
+                }
+            }
+        });
     }
 
     public void updateAllInterests(){
-        ArrayList<String> lifestyle = PeevesList.getAllLifestyleInterests();
+        /*ArrayList<String> lifestyle = PeevesList.getAllLifestyleInterests();
         ArrayList<String> arts = PeevesList.getAllArtsInterests();
         ArrayList<String> entertainment = PeevesList.getAllEntertainmentInterests();
         ArrayList<String> business = PeevesList.getAllBusinessInterests();
@@ -469,6 +436,41 @@ public class MyMoodActivity extends AppCompatActivity {
         mTagContainerLayoutMyMoodTags.setBorderColor(Color.WHITE);
 
         for (int i = 0; i<allInterests.size(); i++){
+            TagView tag = mTagContainerLayoutAllTags.getTagView(i);
+            tag.setTagBackgroundColor(Color.WHITE);
+            tag.setTagTextColor(Color.parseColor("#F4514E"));
+            tag.setTagBorderColor(Color.parseColor("#F4514E"));
+        }*/
+        ArrayList<String> allTopics = PeevesList.getAllNewInterestsTopics();
+        shortList.clear();
+        for(int i = 0; i<40; i++){
+            shortList.add(allTopics.get(i));
+        }
+
+        allInterests.clear();
+        allInterests.addAll(allTopics);
+        /*allInterests.addAll(lifestyle);
+        allInterests.addAll(arts);
+        allInterests.addAll(entertainment);
+        allInterests.addAll(business);
+        allInterests.addAll(sports);
+        allInterests.addAll(music);
+        allInterests.addAll(technology);*/
+
+        mTagContainerLayoutAllTags.setRippleDuration(100);
+        mTagContainerLayoutAllTags.setTags(shortList);
+        mTagContainerLayoutAllTags.setBackgroundColor(Color.WHITE);
+        mTagContainerLayoutAllTags.setVerticalInterval(5.0f);
+        mTagContainerLayoutAllTags.setHorizontalInterval(5.0f);
+        mTagContainerLayoutAllTags.setBorderColor(Color.WHITE);
+
+        mTagContainerLayoutMyMoodTags.setRippleDuration(100);
+        mTagContainerLayoutMyMoodTags.setBackgroundColor(Color.WHITE);
+        mTagContainerLayoutMyMoodTags.setVerticalInterval(5.0f);
+        mTagContainerLayoutMyMoodTags.setHorizontalInterval(5.0f);
+        mTagContainerLayoutMyMoodTags.setBorderColor(Color.WHITE);
+
+        for (int i = 0; i<shortList.size(); i++){
             TagView tag = mTagContainerLayoutAllTags.getTagView(i);
             tag.setTagBackgroundColor(Color.WHITE);
             tag.setTagTextColor(Color.parseColor("#F4514E"));

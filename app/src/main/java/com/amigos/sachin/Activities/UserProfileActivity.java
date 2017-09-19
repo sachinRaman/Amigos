@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amigos.sachin.ApplicationCache.ApplicationCache;
+import com.amigos.sachin.ChatsFragments.PeopleILikedFragment;
 import com.amigos.sachin.DAO.PeopleILikedDAO;
 import com.amigos.sachin.R;
 import com.amigos.sachin.VO.UserVO;
@@ -35,7 +36,9 @@ import com.google.firebase.database.ValueEventListener;*/
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import jp.wasabeef.glide.transformations.CropSquareTransformation;
 
@@ -64,6 +67,7 @@ public class UserProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_user_profile);
 
         context = getApplicationContext();
+        Firebase.setAndroidContext(context);
         SharedPreferences sp = context.getSharedPreferences("com.amigos.sachin",Context.MODE_PRIVATE);
         myId = sp.getString("myId","");
         UserVO thisUserVO;
@@ -75,10 +79,11 @@ public class UserProfileActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("");
 
         UserVO myVO = ApplicationCache.myUserVO;
-        myInterests = myVO.getInterests();
-        myName = myVO.getName();
+        /*myInterests = myVO.getInterests();*/
+        myName = sp.getString("name","");
 
-
+        Set<String> interests = sp.getStringSet("interests", new HashSet<String>());
+        myInterests.addAll(interests);
 
         tv_name = (TextView) findViewById(R.id.tv_display_name1);
         tv_extra_info = (TextView) findViewById(R.id.tv_extra_info1) ;
@@ -98,7 +103,9 @@ public class UserProfileActivity extends AppCompatActivity {
         Intent intent = getIntent();
         userId = intent.getStringExtra("userId");
 
-        thisUserVO = ApplicationCache.thisUserVOMap.get(userId);
+        tv_matchCount.setText("YOU CLICK 0%");
+
+        /*thisUserVO = ApplicationCache.thisUserVOMap.get(userId);*/
         /*if(thisUserVO != null){
             tv_name.setText(thisUserVO.getName());
             userName = thisUserVO.getName();
@@ -335,6 +342,7 @@ public class UserProfileActivity extends AppCompatActivity {
             });
         }*/
 
+
         Firebase userRef = new Firebase("https://new-amigos.firebaseio.com/users/" + userId + "/");
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -537,6 +545,7 @@ public class UserProfileActivity extends AppCompatActivity {
 
                     }
                 });
+
 
                 /*DatabaseReference thisRef = FirebaseDatabase.getInstance().getReference();
 

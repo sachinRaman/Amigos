@@ -2,6 +2,7 @@ package com.amigos.sachin.Adapters;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -46,6 +47,7 @@ public class BlockListArrayAdapter extends ArrayAdapter<LikedUserVO> implements 
     ListView blockedListView;
     private static LayoutInflater inflater=null;
     String myId;
+    String imageUrl = "";
 
     public BlockListArrayAdapter(Context ctx, ArrayList<LikedUserVO> blockedList, ListView blockedListView) {
         super(ctx, R.layout.item_chat_list, blockedList);
@@ -69,6 +71,7 @@ public class BlockListArrayAdapter extends ArrayAdapter<LikedUserVO> implements 
             SharedPreferences sp = context.getSharedPreferences("com.amigos.sachin",Context.MODE_PRIVATE);
             myId = sp.getString("myId","");
 
+
             holder.tvName = (TextView) convertView.findViewById(R.id.tv_name);
             holder.tvMatch = (TextView) convertView.findViewById(R.id.tv_match_info);
             holder.profilePicImageView = (ImageView) convertView.findViewById(R.id.iv_profile);
@@ -91,6 +94,7 @@ public class BlockListArrayAdapter extends ArrayAdapter<LikedUserVO> implements 
         userRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                imageUrl = "";
                 for(DataSnapshot child : dataSnapshot.getChildren()){
                     if("name".equalsIgnoreCase(child.getKey())){
                         if(child.getValue().toString() != null && !child.getValue().toString().isEmpty()) {
@@ -105,13 +109,19 @@ public class BlockListArrayAdapter extends ArrayAdapter<LikedUserVO> implements 
                     if("imageUrl".equalsIgnoreCase(child.getKey())){
                         for(DataSnapshot children : child.getChildren()){
                             if(userId.equalsIgnoreCase(children.getKey())){
-                                String imageUrl = children.getValue().toString();
+                                imageUrl = children.getValue().toString();
                                 Glide.with(context).load(imageUrl)
                                         .bitmapTransform(new CropSquareTransformation(context)).thumbnail(0.5f).crossFade()
                                         .diskCacheStrategy(DiskCacheStrategy.ALL).into(holder.profilePicImageView);
                             }
                         }
                     }
+                }
+                if(imageUrl.isEmpty()){
+                    holder.profilePicImageView.setImageBitmap(null);
+                    int imageResource1 = context.getResources().getIdentifier("@drawable/ic_user", null, context.getPackageName());
+                    Drawable res1 = context.getResources().getDrawable(imageResource1);
+                    holder.profilePicImageView.setImageDrawable(res1);
                 }
             }
 

@@ -12,13 +12,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
 import com.amigos.sachin.Adapters.ViewPagerAdapter;
+import com.amigos.sachin.ApplicationCache.ApplicationCache;
 import com.amigos.sachin.CustomViews.CustomViewPager;
 import com.amigos.sachin.MainFragments.ChatsFragment;
 import com.amigos.sachin.MainFragments.MyProfileFragment;
 import com.amigos.sachin.MainFragments.UsersFragment;
 import com.amigos.sachin.R;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class MainTabsActivity extends AppCompatActivity {
 
@@ -60,7 +63,7 @@ public class MainTabsActivity extends AppCompatActivity {
         TabLayout.Tab tab = tabLayout.getTabAt(selectedTab);
         tab.select();
         setupTabIcons();
-
+        updateSharedPreferences();
     }
 
 
@@ -109,5 +112,19 @@ public class MainTabsActivity extends AppCompatActivity {
                 fragment.onRequestPermissionsResult(requestCode, permissions, grantResults);
             }
         }
+    }
+
+    public void updateSharedPreferences(){
+        SharedPreferences sp = getSharedPreferences("com.amigos.sachin", Context.MODE_PRIVATE);
+        Set<String> set = new HashSet<String>();
+        Set set1 = new HashSet<String>();
+        set1.addAll(ApplicationCache.peopleIBlockedList);
+        set1.addAll(ApplicationCache.peopleWhoBlockedMeList);
+
+        set.addAll(ApplicationCache.myUserVO.getInterests());
+        sp.edit().putStringSet("interests", set)
+                .putString("name",ApplicationCache.myUserVO.getName())
+                .putStringSet("blocked",set1)
+                .apply();
     }
 }

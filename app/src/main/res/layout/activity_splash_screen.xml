@@ -14,18 +14,27 @@
         android:text="Welcome to Amigos"
         android:textColor="@color/actionBarTextColor"
         android:textSize="24sp"
-        android:layout_marginTop="208dp"
+        android:layout_marginTop="72dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
 
     <TextView
         android:id="@+id/textView7"
-        android:layout_width="wrap_content"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_below="@+id/textView2"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="22dp"
-        android:text="Find a friend for every mood"
+        android:gravity="center"
+        android:text="Explore your thoughts, questions and interests with the right people"
         android:textColor="@color/backgroundColor"
         android:textSize="18sp" />
+
+    <ProgressBar
+        android:id="@+id/progressBarSplashScreen"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true" />
 </RelativeLayout>

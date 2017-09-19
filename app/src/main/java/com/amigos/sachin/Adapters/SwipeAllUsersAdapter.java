@@ -100,6 +100,6 @@ public class SwipeAllUsersAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getCount() {
-        return 20;
+        return 30;
     }
 }

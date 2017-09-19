@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.amigos.sachin.Activities.ChatActivity;
 import com.amigos.sachin.ApplicationCache.ApplicationCache;
+import com.amigos.sachin.ChatsFragments.PeopleILikedFragment;
 import com.amigos.sachin.DAO.PeopleILikedDAO;
 import com.amigos.sachin.R;
 import com.amigos.sachin.VO.UserVO;
@@ -91,7 +92,6 @@ public class AllUsersFragment extends Fragment {
         tagGroup = (TagView) view.findViewById(R.id.user_tag_group);
         messageIcon = (ImageView) view.findViewById(R.id.messageIcon);
         likeIcon = (ImageView) view.findViewById(R.id.likeIcon);
-        /*crossIcon = (ImageView) view.findViewById(R.id.crossIcon);*/
         tv_InterestedInText = (TextView) view.findViewById(R.id.tv_interestedActivities);
         tv_professionalProfileText = (TextView) view.findViewById(R.id.tv_professionalProfile);
         tv_moodTopic = (TextView) view.findViewById(R.id.tv_moodTopic);
@@ -103,31 +103,6 @@ public class AllUsersFragment extends Fragment {
                 Glide.with(context).load(userVO.getImageUrl()).error(R.drawable.ic_user)
                         .bitmapTransform(new CropSquareTransformation(context))
                         .thumbnail(0.01f).crossFade().diskCacheStrategy(DiskCacheStrategy.ALL).into(profilePicture);
-                /*Glide.with(context)
-                        .load(imageUrl)
-                        .asBitmap()
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .into(new SimpleTarget<Bitmap>() {
-                            @Override
-                            public void onResourceReady(Bitmap bitmap, GlideAnimation anim) {
-                                // Do something with bitmap here.
-                                profilePicture.setImageBitmap(bitmap);
-                                Log.e("GalleryAdapter","Glide getMedium ");
-
-                                Glide.with(context)
-                                        .load(userVO.getImageUrl())
-                                        .asBitmap()
-                                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-                                        .into(new SimpleTarget<Bitmap>() {
-                                            @Override
-                                            public void onResourceReady(Bitmap bitmap, GlideAnimation anim) {
-                                                // Do something with bitmap here.
-                                                profilePicture.setImageBitmap(bitmap);
-                                                Log.e("GalleryAdapter","Glide getLarge ");
-                                            }
-                                        });
-                            }
-                        });*/
             }
         }
 
@@ -277,6 +252,7 @@ public class AllUsersFragment extends Fragment {
                             }
                         }
                         peopleILikedDAO.addUserToPeopleILikedList(finalUserId1,name,status,imageUrl);
+                        PeopleILikedFragment.reloadPeopleILikedList();
                     }
 
                     @Override

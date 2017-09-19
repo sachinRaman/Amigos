@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!--<color name="colorPrimary">#f4514e</color>-->
+
+    <!--1a9b81-->
     <color name="colorPrimary">#f4514e</color>
     <color name="colorPrimaryDark">#b8100c</color>
     <color name="colorAccent">#f3f3f3</color>
@@ -10,6 +13,8 @@
 
     <color name="itemIconTint">@color/bottom_navigation_color_selector</color>
     <color name="itemTextColor">@color/bottom_navigation_color_selector</color>
+    <!--<color name="itemIconTint">@color/gray3</color>
+    <color name="itemTextColor">@color/gray3</color>-->
 
     <color name="navigationSelected">#ffffff</color>
     <color name="navigationNotSelected">#FF8D7F</color>

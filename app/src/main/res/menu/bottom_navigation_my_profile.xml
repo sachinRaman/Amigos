@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item
+    <!--<item
         android:id="@+id/my_mood"
         android:enabled="true"
         android:icon="@drawable/ic_sentiment_very_satisfied_white_24dp"
@@ -17,6 +17,25 @@
         android:id="@+id/my_interests"
         android:enabled="true"
         android:icon="@drawable/ic_star_white_24dp"
+        android:title="My Interests"
+        app:showAsAction="ifRoom" />-->
+
+    <item
+        android:id="@+id/my_mood"
+        android:enabled="true"
+        android:icon="@drawable/ic_mood_black_24dp"
+        android:title="My Mood"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/my_profile"
+        android:enabled="true"
+        android:icon="@drawable/ic_person_black_24dp"
+        android:title="My Profile"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/my_interests"
+        android:enabled="true"
+        android:icon="@drawable/ic_grade_black_24dp"
         android:title="My Interests"
         app:showAsAction="ifRoom" />
 </menu>

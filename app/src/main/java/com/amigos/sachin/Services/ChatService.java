@@ -15,6 +15,7 @@ import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
+import com.amigos.sachin.Activities.ChatActivity;
 import com.amigos.sachin.Activities.ChatListActivity;
 import com.amigos.sachin.Activities.MainActivity;
 import com.amigos.sachin.Activities.MainTabsActivity;
@@ -67,70 +68,6 @@ public class ChatService extends Service {
 
         final Firebase myChatRef = new Firebase("https://new-amigos.firebaseio.com/message_notification/"+myId+"/");
 
-        /*myChatRef.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                int chatNumber = 0;
-                int messageNumber = 0;
-                ArrayList<NotificationVO> notificationVOArrayList = new ArrayList<NotificationVO>();
-                for(DataSnapshot child : dataSnapshot.getChildren()){
-                    chatNumber++;
-                    String id = child.getKey();
-                    for(DataSnapshot snap : child.getChildren()){
-                        String userName = snap.getKey();
-                        String time = null;
-                        String message = "";
-                        for(DataSnapshot data : snap.getChildren()){
-                            time = data.getKey();
-                            message +="\t"+ data.getValue().toString() + "\n";
-                            messageNumber++;
-                            ChatUsersDAO chatUsersDAO = new ChatUsersDAO(context);
-                            chatUsersDAO.addToChatList(id,myId,data.getValue().toString(),1);
-                        }
-                        NotificationVO notificationVO = new NotificationVO();
-                        notificationVO.id = id;
-                        notificationVO.name = userName;
-                        notificationVO.message = message;
-                        notificationVO.time = time;
-                        notificationVOArrayList.add(notificationVO);
-                    }
-                }
-                *//*Collections.sort(notificationVOArrayList, new Comparator<NotificationVO>() {
-                    @Override
-                    public int compare(NotificationVO lhs, NotificationVO rhs) {
-                        if ( lhs.time.compareTo(rhs.time) > 0 )
-                            return -1;
-                        return 1;
-                    }
-                });*//*
-                if (chatNumber > 0) {
-                    sendNotification(chatNumber, messageNumber, notificationVOArrayList);
-                }
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                int i = 0;
-                i = 5*2;
-                int j = i;
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-
-            }
-        });*/
-
         myChatRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -177,7 +114,7 @@ public class ChatService extends Service {
                         return 1;
                     }
                 });
-                if (chatNumber > 0) {
+                if (chatNumber > 0 && ChatActivity.chatFlag != 1) {
                     sendNotification(chatNumber, messageNumber, notificationVOArrayList);
                 }
             }
@@ -289,9 +226,9 @@ public class ChatService extends Service {
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP );
         //int id = (int) System.currentTimeMillis();
 
-        ApplicationCache.loadMyUserVO();
+        /*ApplicationCache.loadMyUserVO();
 
-        ApplicationCache.loadThisUserVO(userId);
+        ApplicationCache.loadThisUserVO(userId);*/
 
         int id = 0;
 
@@ -308,7 +245,37 @@ public class ChatService extends Service {
 
         Firebase myRef = new Firebase("https://new-amigos.firebaseio.com/users/"+myId+"/");
         final int finalId = id;
-        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), finalId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+
+            String title = null;
+            String message = name + " admired your profile.";
+
+            NotificationCompat.Builder alarmNotificationBuilder = new NotificationCompat.Builder(context)
+                    .setSmallIcon(R.drawable.logo)
+                    .setTicker("Amigos").setWhen(0)
+                    .setContentTitle("Amigos")
+                    .setStyle(new NotificationCompat.BigTextStyle().bigText(message))
+                    .setContentText(message)
+                    .setContentIntent(pendingIntent)
+                    .setAutoCancel(true);
+
+            //alarmNotificationBuilder.setContentText("Message :" + message).setNumber(++numMessages);
+
+            alarmNotificationBuilder.setDefaults(Notification.DEFAULT_SOUND);
+            Notification newMessageNotification = alarmNotificationBuilder.build();
+            NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            newMessageNotification.flags |= Notification.FLAG_AUTO_CANCEL;
+            notificationManager.notify(finalId, newMessageNotification);
+        }
+
+            //MyChatFragment.reloadChatList();
+            //ChatListActivity.reloadChatList();
+
+        /*myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for(DataSnapshot userData : dataSnapshot.getChildren()){
@@ -362,7 +329,7 @@ public class ChatService extends Service {
             public void onCancelled(FirebaseError firebaseError) {
 
             }
-        });
+        });*/
 
     }
 }

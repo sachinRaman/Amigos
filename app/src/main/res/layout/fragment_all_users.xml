@@ -67,6 +67,7 @@
                     android:layout_height="wrap_content"
                     android:paddingLeft="10dp"
                     android:clickable="false"
+                    android:singleLine="true"
                     android:textSize="18sp" />
 
             </LinearLayout>
@@ -98,7 +99,7 @@
                 android:paddingBottom="5dp"
                 android:paddingLeft="10dp"
                 android:paddingTop="15dp"
-                android:text="Activity of the hour"
+                android:text="Topic of the hour"
                 android:textColor="@color/gray3"
                 android:textSize="15sp" />
 

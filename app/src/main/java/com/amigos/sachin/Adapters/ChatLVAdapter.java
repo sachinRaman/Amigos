@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -89,7 +90,7 @@ public class ChatLVAdapter extends ArrayAdapter<ChatUsersVO> implements View.OnC
         Date d = null;
         try {
             d = sdf.parse(chatUsersVO.getTime());
-            sdf.applyPattern("hh:mm a");
+            sdf.applyPattern("dd MMM");
             newDateString = sdf.format(d);
         } catch (ParseException e) {
             e.printStackTrace();
@@ -136,6 +137,12 @@ public class ChatLVAdapter extends ArrayAdapter<ChatUsersVO> implements View.OnC
                             }
                         }
                     }
+                }
+                if(imageUrl[0].isEmpty()){
+                    holder.profilePicImageView.setImageBitmap(null);
+                    int imageResource1 = context.getResources().getIdentifier("@drawable/ic_user", null, context.getPackageName());
+                    Drawable res1 = context.getResources().getDrawable(imageResource1);
+                    holder.profilePicImageView.setImageDrawable(res1);
                 }
             }
 

@@ -81,6 +81,8 @@ public class InterestsTagsActivity extends AppCompatActivity {
 
         updateTagColors(mTagContainerLayout,tags,topic);
 
+        Firebase.setAndroidContext(context);
+
         final InterestsDAO interestsDAO = new InterestsDAO(context);
         final Firebase usersInterestsRef = new Firebase("https://new-amigos.firebaseio.com/users/"+myId+"/interests_list/"+topic+"/");
 

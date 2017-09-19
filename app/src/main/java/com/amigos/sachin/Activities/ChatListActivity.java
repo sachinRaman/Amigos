@@ -27,7 +27,9 @@ import com.google.firebase.database.ValueEventListener;*/
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 
 public class ChatListActivity extends AppCompatActivity {
@@ -39,6 +41,7 @@ public class ChatListActivity extends AppCompatActivity {
     static TextView tv_emptyChat;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,10 +49,13 @@ public class ChatListActivity extends AppCompatActivity {
 
         getSupportActionBar().setTitle("My Chats");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
+        context = getApplicationContext();
+        Firebase.setAndroidContext(context);
         ApplicationCache.loadMyUserVO();
 
-        context = getApplicationContext();
+
+
+
         chatListView = (ListView) findViewById(R.id.chatListView1);
         SharedPreferences sp = context.getSharedPreferences("com.amigos.sachin",Context.MODE_PRIVATE);
         myId = sp.getString("myId","");
@@ -120,6 +126,18 @@ public class ChatListActivity extends AppCompatActivity {
     private static void loadChatData() {
         ChatUsersDAO chatUsersDAO = new ChatUsersDAO(context);
         ArrayList<ChatUsersVO> chatUsersVOArrayList = chatUsersDAO.getMyChatList(myId);
+        SharedPreferences sp;
+        sp = context.getSharedPreferences("com.amigos.sachin", Context.MODE_PRIVATE);
+        Set<String> blockedUsersSet = sp.getStringSet("blocked", new HashSet<String>());
+        ArrayList<String> blockedUsers = new ArrayList<String>();
+        blockedUsers.addAll(blockedUsersSet);
+
+        for( int i = chatUsersVOArrayList.size() - 1; i >= 0 ; i--){
+            String userId = chatUsersVOArrayList.get(i).getUserId();
+            if( blockedUsers.contains(userId) || myId.equalsIgnoreCase(userId) ){
+                chatUsersVOArrayList.remove(i);
+            }
+        }
 
         Collections.sort(chatUsersVOArrayList, new Comparator<ChatUsersVO>() {
             @Override
@@ -148,10 +166,10 @@ public class ChatListActivity extends AppCompatActivity {
         loadChatData();
     }
 
-    @Override
+    /*@Override
     public void onBackPressed() {
         super.onBackPressed();
         Intent intent = new Intent(context, SplashScreen2.class);
         startActivity(intent);
-    }
+    }*/
 }

@@ -1,5 +1,8 @@
 package com.amigos.sachin.ApplicationCache;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+
 import com.amigos.sachin.VO.LikedUserVO;
 import com.amigos.sachin.VO.UserVO;
 import com.firebase.client.DataSnapshot;
@@ -22,6 +25,8 @@ import java.util.Map;
 
 public class ApplicationCache {
 
+
+    public static Context context;
     public static String myId;
     public static ArrayList<UserVO> userVOArrayList = new ArrayList<UserVO>();
     public static Map<String, UserVO> userVOMap = new HashMap<String, UserVO>();
@@ -376,6 +381,7 @@ public class ApplicationCache {
                         }
                     }
                 }
+
             }
 
             @Override

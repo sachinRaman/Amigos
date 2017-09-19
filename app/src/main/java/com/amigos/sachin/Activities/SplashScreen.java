@@ -6,6 +6,8 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import com.amigos.sachin.DAO.InterestsDAO;
 import com.amigos.sachin.R;
@@ -20,6 +22,7 @@ public class SplashScreen extends AppCompatActivity {
     String TAG = "SplashScreen";
     String myId = "";
     SharedPreferences sp;
+    ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +31,10 @@ public class SplashScreen extends AppCompatActivity {
         Intent startChatService = new Intent(this, ChatService.class);
         startService(startChatService);
         getSupportActionBar().hide();
+
+        progressBar = (ProgressBar) findViewById(R.id.progressBarSplashScreen);
+        progressBar.setVisibility(View.VISIBLE);
+
         startHeavyProcessing();
     }
 
@@ -79,6 +86,7 @@ public class SplashScreen extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String result) {
+            progressBar.setVisibility(View.GONE);
             Intent intent = new Intent(SplashScreen.this, MyProfileActivity.class);
             intent.putExtra("data", result);
             startActivity(intent);

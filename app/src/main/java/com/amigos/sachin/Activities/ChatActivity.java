@@ -1,6 +1,7 @@
 package com.amigos.sachin.Activities;
 
 import android.app.AlertDialog;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -65,6 +66,7 @@ public class ChatActivity extends AppCompatActivity {
     ChatArrayAdapter chatArrayAdapter;
     TextView chatText;
     String myName;
+    public static int chatFlag = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,10 +76,13 @@ public class ChatActivity extends AppCompatActivity {
 
         context = getApplicationContext();
         myName = ApplicationCache.myUserVO.getName();
+        //chatFlag = 1;
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         actionBar.setCustomView(R.layout.action_bar_chat);
+
+        cancelNotification(context,12345);
 
         final ImageView photoIcon = (ImageView)findViewById(R.id.actionBarPhotoIcon);
         final TextView tv_UserName = (TextView)findViewById(R.id.actionBarUserName);
@@ -379,7 +384,7 @@ public class ChatActivity extends AppCompatActivity {
         Firebase newUserMessageRef = userMsgRef.push();
         Firebase messageNotificationRef = new Firebase("https://new-amigos.firebaseio.com/message_notification/"+userId+"/"+
                 myId+"/"+myName+"/" );
-        DateFormat dateFormat = new SimpleDateFormat("hh:mm a");
+        DateFormat dateFormat = new SimpleDateFormat("dd MMM hh:mm a");
         Date date = new Date();
         String time = dateFormat.format(date);
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
@@ -407,6 +412,7 @@ public class ChatActivity extends AppCompatActivity {
         /*DatabaseReference userRef = FirebaseDatabase.getInstance().getReference();
         myChatRef = userRef.child("users").child(myId).child("chats").child(userId);
         userChatRef = userRef.child("users").child(userId).child("chats").child(myId);*/
+        chatFlag = 0;
         myChatRef= new Firebase("https://new-amigos.firebaseio.com/users/"+myId+"/chats/"+userId+"/" );
         userChatRef= new Firebase("https://new-amigos.firebaseio.com/users/"+userId+"/chats/"+myId+"/" );
         myChatRef.removeEventListener(valueEventListener);
@@ -420,8 +426,15 @@ public class ChatActivity extends AppCompatActivity {
         /*DatabaseReference userRef = FirebaseDatabase.getInstance().getReference();
         myChatRef = userRef.child("users").child(myId).child("chats").child(userId);
         userChatRef = userRef.child("users").child(userId).child("chats").child(myId);*/
+        chatFlag = 0;
         myChatRef= new Firebase("https://new-amigos.firebaseio.com/users/"+myId+"/chats/"+userId+"/" );
         userChatRef= new Firebase("https://new-amigos.firebaseio.com/users/"+userId+"/chats/"+myId+"/" );
         myChatRef.removeEventListener(valueEventListener);
+    }
+
+    public static void cancelNotification(Context ctx, int notifyId) {
+        String ns = Context.NOTIFICATION_SERVICE;
+        NotificationManager nMgr = (NotificationManager) ctx.getSystemService(ns);
+        nMgr.cancel(notifyId);
     }
 }

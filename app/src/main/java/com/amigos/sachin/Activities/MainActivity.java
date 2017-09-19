@@ -4,11 +4,15 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Base64;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -34,7 +38,10 @@ import org.json.JSONObject;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
@@ -74,6 +81,8 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         }
 
+
+
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
 
             private ProfileTracker profileTracker;
@@ -108,6 +117,25 @@ public class MainActivity extends AppCompatActivity {
                     profile_image = profile.getProfilePictureUri(400, 400).toString();
                 }
                 //profileTracker.startTracking();
+                /*Bundle params = new Bundle();
+                new GraphRequest(AccessToken.getCurrentAccessToken(), "me", params, HttpMethod.GET,
+                        new GraphRequest.Callback() {
+                            @Override
+                            public void onCompleted(GraphResponse response) {
+                                if (response != null) {
+                                    try {
+                                        JSONObject data = response.getJSONObject();
+                                        if (data.has("picture")) {
+                                            String profilePicUrl = data.getJSONObject("picture").getJSONObject("data").getString("url");
+                                            //Bitmap profilePic = BitmapFactory.decodeStream(profilePicUrl.openConnection().getInputStream());
+                                            // set profilePic bitmap to imageview
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                        }).executeAsync();*/
 
 
                 GraphRequest request = GraphRequest.newMeRequest(
@@ -154,15 +182,22 @@ public class MainActivity extends AppCompatActivity {
                                         userRef.child("emailId").setValue(email_id);
                                     }
                                     if(profile_image != null){
+                                        /*URL imageURL = new URL("https://graph.facebook.com/" + fb_id + "/picture?type=large");
+                                        userRef.child("imageUrl").child(myId).setValue(imageURL.toString());*/
                                         userRef.child("imageUrl").child(myId).setValue(profile_image);
+                                    }else {
+                                        URL imageUrl = new URL("https://graph.facebook.com/"+fb_id+"/picture?height=400&width=400");
+                                        userRef.child("imageUrl").child(myId).setValue(imageUrl.toString());
                                     }
                                     if(birthday != null){
                                         userRef.child("birthday").setValue(birthday);
                                     }
                                     //Creating fake profiles
-                                    /*for (int i = 0; i<25 ; i++){
-                                        Firebase ref = new Firebase("https://new-amigos.firebaseio.com/users/test"+i+ "/");
-                                        if(profile_name != null) {
+                                    for (int i = 0; i<25 ; i++){
+                                        Firebase ref = new Firebase("https://new-amigos.firebaseio.com/users/test"+i+ "/interests_list/arts/Painting");
+                                        ref.setValue("1");
+                                        /*ref.setValue(null);*/
+                                        /*if(profile_name != null) {
                                             ref.child("name").setValue(profile_name);
                                         }
                                         if (gender != null){
@@ -176,14 +211,16 @@ public class MainActivity extends AppCompatActivity {
                                         }
                                         if(birthday != null){
                                             ref.child("birthday").setValue(birthday);
-                                        }
-                                    }*/
+                                        }*/
+                                    }
                                     SharedPreferences sp=getApplicationContext().getSharedPreferences("com.amigos.sachin", Context.MODE_PRIVATE);
                                     sp.edit().putString("myId",""+ myId).apply();
-                                    //startService(new Intent(ChatService.class.getName()));
+                                    startService(new Intent(ChatService.class.getName()));
 
 
                                 } catch (JSONException e) {
+                                    e.printStackTrace();
+                                } catch (MalformedURLException e) {
                                     e.printStackTrace();
                                 }
                                 Intent intent = new Intent(MainActivity.this,SplashScreen.class);

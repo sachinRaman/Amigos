@@ -2,6 +2,7 @@ package com.amigos.sachin.Adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,6 +42,7 @@ public class LikedUsersLVAdapter extends ArrayAdapter<LikedUserVO> implements Vi
     Context context;
     ListView likedListView;
     private static LayoutInflater inflater=null;
+    Drawable res;
 
     public LikedUsersLVAdapter(Context ctx, ArrayList<LikedUserVO> chatVoList, ListView chatListView) {
         super(ctx, R.layout.item_chat_list,chatVoList);
@@ -110,6 +112,13 @@ public class LikedUsersLVAdapter extends ArrayAdapter<LikedUserVO> implements Vi
                             }
                         }
                     }
+
+                }
+                if(imageUrl[0].isEmpty()){
+                    holder.profilePicImageView.setImageBitmap(null);
+                    int imageResource1 = context.getResources().getIdentifier("@drawable/ic_user", null, context.getPackageName());
+                    Drawable res1 = context.getResources().getDrawable(imageResource1);
+                    holder.profilePicImageView.setImageDrawable(res1);
                 }
             }
 

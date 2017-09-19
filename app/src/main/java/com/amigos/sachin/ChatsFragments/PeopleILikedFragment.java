@@ -62,40 +62,7 @@ public class PeopleILikedFragment extends Fragment {
         myId = sp.getString("myId","");
         tv_noLikesTextView = (TextView) view.findViewById(R.id.tv_noLikesTextView);
 
-        final PeopleILikedDAO peopleILikedDAO = new PeopleILikedDAO(context);
-        ArrayList<LikedUserVO> peopleILikedVOArrayList = peopleILikedDAO.getAllPeopleIliked();
-
-        ArrayList<String> peopleIBolcked = ApplicationCache.peopleIBlockedList;
-        ArrayList<String> peopleWhoBlockedMe = ApplicationCache.peopleWhoBlockedMeList;
-
-        for( int i = peopleILikedVOArrayList.size() - 1; i >= 0 ; i--){
-            String userId = peopleILikedVOArrayList.get(i).getId();
-            if( peopleIBolcked.contains(userId) || peopleWhoBlockedMe.contains(userId) || myId.equalsIgnoreCase(userId) ){
-                peopleILikedVOArrayList.remove(i);
-            }
-        }
-
-
-
-        Collections.sort(peopleILikedVOArrayList, new Comparator<LikedUserVO>() {
-            @Override
-            public int compare(LikedUserVO lhs, LikedUserVO rhs) {
-                if ( lhs.getTime().compareTo(rhs.getTime()) > 0 )
-                    return -1;
-                return 1;
-            }
-        });
-
-        if (peopleILikedVOArrayList.isEmpty()){
-            likedListView.setVisibility(View.GONE);
-            tv_noLikesTextView.setVisibility(View.VISIBLE);
-        }else{
-            likedListView.setVisibility(View.VISIBLE);
-            tv_noLikesTextView.setVisibility(View.GONE);
-        }
-
-        likedLVAdapter = new LikedUsersLVAdapter(context,peopleILikedVOArrayList,likedListView);
-        likedListView.setAdapter(likedLVAdapter);
+        reloadPeopleILikedList();
         return view;
     }
 
@@ -103,6 +70,10 @@ public class PeopleILikedFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        reloadPeopleILikedList();
+    }
+
+    public static void reloadPeopleILikedList() {
         final PeopleILikedDAO peopleILikedDAO = new PeopleILikedDAO(context);
         ArrayList<LikedUserVO> peopleILikedVOArrayList = peopleILikedDAO.getAllPeopleIliked();
 
@@ -115,9 +86,6 @@ public class PeopleILikedFragment extends Fragment {
                 peopleILikedVOArrayList.remove(i);
             }
         }
-
-
-
         Collections.sort(peopleILikedVOArrayList, new Comparator<LikedUserVO>() {
             @Override
             public int compare(LikedUserVO lhs, LikedUserVO rhs) {

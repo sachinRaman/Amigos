@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item
+    <!--<item
         android:id="@+id/my_chats"
         android:enabled="true"
         android:icon="@drawable/ic_forum_white_24dp"
@@ -15,7 +15,25 @@
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/my_liked"
-        android:icon="@drawable/ic_favorite_white_24dp"
+        android:icon="@drawable/ic_stars_white_24dp"
+        android:title="My Admirers"
+        app:showAsAction="ifRoom" />-->
+
+    <item
+        android:id="@+id/my_chats"
+        android:enabled="true"
+        android:icon="@drawable/ic_forum_black_24dp"
+        android:title="My Chats"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/my_likes"
+        android:enabled="true"
+        android:icon="@drawable/ic_thumb_up_black_24dp"
+        android:title="People I Admire"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/my_liked"
+        android:icon="@drawable/ic_stars_black_24dp"
         android:title="My Admirers"
         app:showAsAction="ifRoom" />
 </menu>

@@ -1,11 +1,14 @@
 package com.amigos.sachin.Activities;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.amigos.sachin.ApplicationCache.ApplicationCache;
@@ -19,6 +22,8 @@ public class SplashScreen2 extends AppCompatActivity {
     int tab = 1;
     int bottomTab = 0;
     Context context;
+    ProgressDialog progress;
+    ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +31,16 @@ public class SplashScreen2 extends AppCompatActivity {
         setContentView(R.layout.activity_splash_screen2);
         context = getApplicationContext();
         getSupportActionBar().hide();
+
+        /*progress = new ProgressDialog(this, ProgressDialog.THEME_HOLO_DARK);
+        progress.setTitle("Loading");
+        progress.setMessage("Data is loading please wait...");
+        progress.setCancelable(false); // disable dismiss by tapping outside of the dialog
+        progress.show();*/
+
+        progressBar = (ProgressBar) findViewById(R.id.progressBarSplashScreen2);
+        progressBar.setVisibility(View.VISIBLE);
+
         Intent intent = getIntent();
         tab = intent.getIntExtra("tab",1);
         bottomTab = intent.getIntExtra("bottomTab",0);
@@ -77,6 +92,8 @@ public class SplashScreen2 extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String result) {
+            /*progress.dismiss();*/
+            progressBar.setVisibility(View.GONE);
             Intent intent = new Intent(SplashScreen2.this, MainTabsActivity.class);
             intent.putExtra("data", result);
             intent.putExtra("tab",tab);

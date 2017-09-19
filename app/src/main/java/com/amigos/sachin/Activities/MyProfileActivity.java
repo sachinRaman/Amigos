@@ -106,6 +106,8 @@ public class MyProfileActivity extends AppCompatActivity {
 
     public void fillData(){
 
+        Firebase.setAndroidContext(context);
+
         Firebase myRef = new Firebase("https://new-amigos.firebaseio.com/users/"+myId+"/");
         myRef.addChildEventListener(new ChildEventListener() {
             @Override

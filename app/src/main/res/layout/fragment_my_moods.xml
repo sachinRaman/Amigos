@@ -24,7 +24,7 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="15dp"
                 android:gravity="center_horizontal"
-                android:text="Have something on your mind?"
+                android:text="Do you have something on your mind?"
                 android:textSize="18sp" />
 
             <LinearLayout
@@ -95,7 +95,7 @@
                 android:paddingBottom="5dp"
                 android:paddingLeft="10dp"
                 android:paddingTop="10dp"
-                android:text="What do you want to do now?"
+                android:text="What are you wondering?"
                 android:textSize="15sp" />
 
             <EditText
@@ -105,7 +105,7 @@
                 android:layout_alignParentStart="true"
                 android:layout_below="@+id/tv_moodTextBox"
                 android:background="@color/backgroundColor"
-                android:hint="Play poker, discuss philosophy, ..."
+                android:hint="A thought? A question? An activity..."
                 android:padding="10dp"
                 android:textColor="@color/textColor" />
 
@@ -144,7 +144,7 @@
                 android:paddingBottom="5dp"
                 android:paddingLeft="10dp"
                 android:paddingTop="10dp"
-                android:text="Add relevant tags for the activity(upto 5)" />
+                android:text="Add relevant tags for the activity(upto 7)" />
 
             <EditText
                 android:id="@+id/et_search"
@@ -176,10 +176,24 @@
                 app:tag_theme="pure_teal"
                 app:vertical_interval="10dp" />
 
+            <TextView
+                android:id="@+id/tv_loadMore"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/allTags"
+                android:background="@color/gray1"
+                android:gravity="center"
+                android:paddingBottom="5dp"
+                android:paddingLeft="10dp"
+                android:paddingTop="10dp"
+                android:text="Click to load more tags..."
+                android:textSize="14sp" />
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
-                android:layout_below="@+id/allTags" />
+                android:layout_below="@+id/allTags"
+                />
 
         </RelativeLayout>
 
