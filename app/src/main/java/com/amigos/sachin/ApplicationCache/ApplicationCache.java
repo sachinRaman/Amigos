@@ -322,6 +322,16 @@ public class ApplicationCache {
                             }
                         }
                     }
+                    if("peopleIRemoved".equalsIgnoreCase(userData.getKey())){
+                        ArrayList<String> peopleIRemoved = new ArrayList<String>();
+                        peopleIRemoved.clear();
+                        for(DataSnapshot children : userData.getChildren()){
+                            if("1".equalsIgnoreCase(children.getValue().toString())){
+                                peopleIRemoved.add(children.getKey());
+                            }
+                        }
+                        myUserVO.setPeopleIRemoved(peopleIRemoved);
+                    }
                     if ("status".equalsIgnoreCase(userData.getKey())){
                         status = userData.getValue(String.class);
                         myUserVO.setStatus(status);

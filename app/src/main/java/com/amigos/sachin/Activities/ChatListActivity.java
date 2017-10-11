@@ -53,13 +53,13 @@ public class ChatListActivity extends AppCompatActivity {
         Firebase.setAndroidContext(context);
         ApplicationCache.loadMyUserVO();
 
-
-
-
         chatListView = (ListView) findViewById(R.id.chatListView1);
         SharedPreferences sp = context.getSharedPreferences("com.amigos.sachin",Context.MODE_PRIVATE);
         myId = sp.getString("myId","");
         tv_emptyChat = (TextView) findViewById(R.id.tv_emptyChat1);
+
+        Firebase activeRef = new Firebase("https://new-amigos.firebaseio.com/users/"+myId+"/active/");
+        activeRef.setValue("1");
 
         Firebase.setAndroidContext(context);
         Firebase interestsRef = new Firebase("https://new-amigos.firebaseio.com/users/"+myId+"/interests_list/");
@@ -166,6 +166,12 @@ public class ChatListActivity extends AppCompatActivity {
         loadChatData();
     }
 
+    @Override
+    protected void onResume() {
+        Firebase activeRef = new Firebase("https://new-amigos.firebaseio.com/users/"+myId+"/active/");
+        activeRef.setValue("1");
+        super.onResume();
+    }
     /*@Override
     public void onBackPressed() {
         super.onBackPressed();

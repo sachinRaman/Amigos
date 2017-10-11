@@ -33,6 +33,7 @@ public class ChatsFragment extends Fragment {
     CustomViewPager myChatsViewPager;
     private FragmentActivity myContext;
     int bottomTab = 0;
+    MenuItem prevMenuItem;
 
     public ChatsFragment(){
 
@@ -47,18 +48,19 @@ public class ChatsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view =  inflater.inflate(R.layout.fragment_main_chats,container,false);
         myChatsViewPager = (CustomViewPager) view.findViewById(R.id.my_chats_viewpager);
-        myChatsViewPager.setPagingEnabled(false);
+        /*myChatsViewPager.setPagingEnabled(false);*/
         myChatsViewPager.setAdapter(new MyPagerAdapter(getChildFragmentManager()));
 
         bottomTab =getArguments().getInt("bottomTab");
 
         //Comment below code to enable swiping but dont forget to select the bottom navigation
-        myChatsViewPager.setOnTouchListener(new View.OnTouchListener() {
+        /*myChatsViewPager.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 return true;
             }
-        });
+        });*/
+
 
         myChatsBottomNavigationView = (BottomNavigationView) view.findViewById(R.id.bottom_navigation_my_chats);
         myChatsBottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -82,7 +84,36 @@ public class ChatsFragment extends Fragment {
         });
         if (bottomTab == 2){
             myChatsBottomNavigationView.setSelectedItemId(R.id.my_liked);
+            prevMenuItem = myChatsBottomNavigationView.getMenu().getItem(2);
         }
+
+        prevMenuItem = myChatsBottomNavigationView.getMenu().getItem(0);
+
+        myChatsViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                if (prevMenuItem != null) {
+                    prevMenuItem.setChecked(false);
+                }
+                else
+                {
+                    myChatsBottomNavigationView.getMenu().getItem(0).setChecked(false);
+                }
+
+                myChatsBottomNavigationView.getMenu().getItem(position).setChecked(true);
+                prevMenuItem = myChatsBottomNavigationView.getMenu().getItem(position);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
 
         return view;
     }

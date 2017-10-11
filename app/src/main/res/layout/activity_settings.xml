@@ -76,7 +76,36 @@
                 android:layout_height="1dp"
                 android:background="@color/gray1"/>
 
-            <!--<LinearLayout
+            <LinearLayout
+                android:id="@+id/layout_search_people"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:src="@drawable/blocked_user_icon" />
+
+                <TextView
+                    android:id="@+id/tv_search_people"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Search People"
+                    android:padding="10dp"
+                    android:textColor="@color/textColor"
+                    android:textSize="22sp" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/gray1"/>
+
+            <LinearLayout
                 android:id="@+id/layout_facebook_logout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -93,7 +122,7 @@
                     android:id="@+id/tv_facebook_logout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Logout"
+                    android:text="Logout from Facebook."
                     android:padding="10dp"
                     android:textColor="@color/textColor"
                     android:textSize="22sp" />
@@ -103,7 +132,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@color/gray1"/>-->
+                android:background="@color/gray1"/>
 
 
         </LinearLayout>

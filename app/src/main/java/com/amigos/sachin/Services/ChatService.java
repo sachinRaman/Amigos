@@ -14,6 +14,7 @@ import android.os.IBinder;
 import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+import android.widget.RemoteViews;
 
 import com.amigos.sachin.Activities.ChatActivity;
 import com.amigos.sachin.Activities.ChatListActivity;
@@ -47,6 +48,7 @@ public class ChatService extends Service {
     String myId;
     Context context;
     DataSnapshot prevDataSnapshot;
+    public static String thisUserId = null;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -55,8 +57,10 @@ public class ChatService extends Service {
 
     @Override
     public void onCreate() {
+        String s = "";
         super.onCreate();
     }
+
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -103,18 +107,27 @@ public class ChatService extends Service {
                         notificationVO.name = userName;
                         notificationVO.message = message;
                         notificationVO.time = time;
-                        notificationVOArrayList.add(notificationVO);
+                        if(thisUserId != null){
+                            if(!thisUserId.equalsIgnoreCase(id)){
+                                notificationVOArrayList.add(notificationVO);
+                            }
+                        }else{
+                            notificationVOArrayList.add(notificationVO);
+                        }
                     }
                 }
                 Collections.sort(notificationVOArrayList, new Comparator<NotificationVO>() {
                     @Override
                     public int compare(NotificationVO lhs, NotificationVO rhs) {
-                        if ( lhs.time.compareTo(rhs.time) > 0 )
+                        if ( lhs.time.compareTo(rhs.time) > 0 ) {
                             return -1;
-                        return 1;
+                        }else if(lhs.time.compareTo(rhs.time) < 0){
+                            return 1;
+                        }
+                        return 0;
                     }
                 });
-                if (chatNumber > 0 && ChatActivity.chatFlag != 1) {
+                if (chatNumber > 0 ) {
                     sendNotification(chatNumber, messageNumber, notificationVOArrayList);
                 }
             }
@@ -152,6 +165,7 @@ public class ChatService extends Service {
 
     @Override
     public void onTaskRemoved(Intent rootIntent){
+        super.onTaskRemoved(rootIntent);
         Log.i("ChatService","onTaskRemoved of chatservice");
         Intent restartServiceIntent = new Intent(getApplicationContext(), this.getClass());
         restartServiceIntent.setPackage(getPackageName());
@@ -159,25 +173,75 @@ public class ChatService extends Service {
         PendingIntent restartServicePendingIntent =  PendingIntent.getService(getApplicationContext(), 1, restartServiceIntent, PendingIntent.FLAG_ONE_SHOT);
         AlarmManager alarmService = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
         alarmService.set(
-                AlarmManager.ELAPSED_REALTIME,
+                AlarmManager.ELAPSED_REALTIME_WAKEUP,
                 SystemClock.elapsedRealtime() + 1000,
                 restartServicePendingIntent);
 
-        super.onTaskRemoved(rootIntent);
+        Intent startChatService = new Intent(this, ChatService.class);
+        startService(startChatService);
+
+    }
+
+    @Override
+    public void onDestroy() {
+        Intent startChatService = new Intent(this, ChatService.class);
+        startService(startChatService);
     }
 
     public void sendNotification(int chatNumber, int messageNumber, ArrayList<NotificationVO> notificationVOArrayList){
 
         Intent notificationIntent = new Intent(getApplicationContext(), ChatListActivity.class);
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP );
+        int id = 12345;
+        String message = "";
+
+
+        /*RemoteViews contentView = new RemoteViews(getPackageName(), R.layout.custommessagenotification);
+        contentView.setTextViewText(R.id.notification_message_no, "Custom notification");
+        contentView.setTextViewText(R.id.text, "This is a custom layout");
+
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
+                .setSmallIcon(R.drawable.icon)
+                .setContent(contentView);
+
+        Notification notification = mBuilder.build();
+        notification.flags |= Notification.FLAG_AUTO_CANCEL;
+        notification.defaults |= Notification.DEFAULT_SOUND;
+        notification.defaults |= Notification.DEFAULT_VIBRATE;
+        notificationManager.notify(1, notification);*/
+
+
+
+
+
         /*notificationIntent.putExtra("tab",2);
         notificationIntent.putExtra("bottomTab",0);*/
         //int id = (int) System.currentTimeMillis();
-        int id = 12345;
-        String message = "";
+
+
         for(NotificationVO notificationVO: notificationVOArrayList){
             message += notificationVO.name +" :\n";
             message += notificationVO.message;
+            final String userId = notificationVO.id;
+            Firebase userMsgRef= new Firebase("https://new-amigos.firebaseio.com/users/"+notificationVO.id+"/chats/"+myId+"/");
+            userMsgRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for(DataSnapshot data: dataSnapshot.getChildren()){
+                        if(data.child("-seen").getValue() != null) {
+                            String seen = data.child("-seen").getValue().toString();
+                            if (!"3".equalsIgnoreCase(seen) && !userId.equalsIgnoreCase(data.getKey()) && !myId.equalsIgnoreCase(data.getKey())) {
+                                data.child("-seen").getRef().setValue("2");
+                            }
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(FirebaseError firebaseError) {
+
+                }
+            });
         }
 
         PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), id, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -275,7 +339,7 @@ public class ChatService extends Service {
             //MyChatFragment.reloadChatList();
             //ChatListActivity.reloadChatList();
 
-        /*myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for(DataSnapshot userData : dataSnapshot.getChildren()){
@@ -329,7 +393,7 @@ public class ChatService extends Service {
             public void onCancelled(FirebaseError firebaseError) {
 
             }
-        });*/
+        });
 
     }
 }

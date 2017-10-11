@@ -31,6 +31,7 @@ public class SwipeAllUsersAdapter extends FragmentStatePagerAdapter {
         super(fm);
     }
     String myId;
+    public static ArrayList<UserVO> userVOArrayList = new ArrayList<UserVO>();
 
     @Override
     public Fragment getItem(final int position) {
@@ -39,13 +40,15 @@ public class SwipeAllUsersAdapter extends FragmentStatePagerAdapter {
 
         UserVO myUserVO = ApplicationCache.myUserVO;
         myId = myUserVO.getId();
-        ArrayList<UserVO> userVOArrayList = ApplicationCache.userVOArrayList;
+        /*userVOArrayList.clear();*/
+        userVOArrayList = ApplicationCache.userVOArrayList;
         ArrayList<String> peopleIBolcked = ApplicationCache.peopleIBlockedList;
         ArrayList<String> peopleWhoBlockedMe = ApplicationCache.peopleWhoBlockedMeList;
 
         for( int i = userVOArrayList.size() - 1; i >= 0 ; i--){
             String userId = userVOArrayList.get(i).getId();
-            if( peopleIBolcked.contains(userId) || peopleWhoBlockedMe.contains(userId) || myId.equalsIgnoreCase(userId) ){
+            if( peopleIBolcked.contains(userId) || peopleWhoBlockedMe.contains(userId) || myId.equalsIgnoreCase(userId)
+                    || myUserVO.getPeopleIRemoved().contains(userId)){
                 userVOArrayList.remove(i);
             }
         }
@@ -54,9 +57,13 @@ public class SwipeAllUsersAdapter extends FragmentStatePagerAdapter {
         for(UserVO userVO : userVOArrayList){
             if(myUserVO.getInterests() != null && !myUserVO.getInterests().isEmpty()){
                 int matchCount = 0;
-                for(String s : userVO.getInterests()){
-                    if(myUserVO.getInterests().contains(s)){
-                        matchCount++;
+                if(userVO != null) {
+                    if(userVO.getInterests() != null) {
+                        for (String s : userVO.getInterests()) {
+                            if (myUserVO.getInterests().contains(s)) {
+                                matchCount++;
+                            }
+                        }
                     }
                 }
                 userVO.setMatch(Math.round(((float)matchCount/(myUserVO.getInterests().size()))*100));
@@ -81,9 +88,12 @@ public class SwipeAllUsersAdapter extends FragmentStatePagerAdapter {
         Collections.sort(userVOArrayList, new Comparator<UserVO>() {
             @Override
             public int compare(UserVO lhs, UserVO rhs) {
-                if ( lhs.getMatch() > rhs.getMatch())
+                if ( lhs.getMatch() > rhs.getMatch()) {
                     return -1;
-                return 1;
+                }else if (lhs.getMatch() < rhs.getMatch()){
+                    return 1;
+                }
+                return 0;
             }
         });
 
@@ -92,7 +102,7 @@ public class SwipeAllUsersAdapter extends FragmentStatePagerAdapter {
         Bundle bundle = new Bundle();
         bundle.putSerializable("userData",userVOArrayList.get(position));
         //bundle.putString("id",userVOArrayList[position].getId());
-        bundle.putInt("message",position + 1);
+        bundle.putInt("position",position);
         fragment.setArguments(bundle);
         return fragment;
 
@@ -100,6 +110,6 @@ public class SwipeAllUsersAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getCount() {
-        return 30;
+        return 40;
     }
 }

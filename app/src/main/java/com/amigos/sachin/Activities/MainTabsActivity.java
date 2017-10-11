@@ -3,12 +3,15 @@ package com.amigos.sachin.Activities;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.amigos.sachin.Adapters.ViewPagerAdapter;
@@ -18,6 +21,7 @@ import com.amigos.sachin.MainFragments.ChatsFragment;
 import com.amigos.sachin.MainFragments.MyProfileFragment;
 import com.amigos.sachin.MainFragments.UsersFragment;
 import com.amigos.sachin.R;
+import com.firebase.client.Firebase;
 
 import java.util.HashSet;
 import java.util.List;
@@ -35,6 +39,8 @@ public class MainTabsActivity extends AppCompatActivity {
     long back_pressed = 0;
     int selectedTab = 1;
     int bottomTab = 0;
+    String myId;
+    ImageView search_icon;
 
 
     @Override
@@ -47,8 +53,13 @@ public class MainTabsActivity extends AppCompatActivity {
         //Hide the action bar
         getSupportActionBar().hide();
 
+        Firebase.setAndroidContext(context);
+
         SharedPreferences sp = getSharedPreferences("com.amigos.sachin", Context.MODE_PRIVATE);
-        String myId = sp.getString("myId","");
+        myId = sp.getString("myId","");
+
+        Firebase activeRef = new Firebase("https://new-amigos.firebaseio.com/users/"+myId+"/active/");
+        activeRef.setValue("1");
 
         Intent intent = getIntent();
         selectedTab = intent.getIntExtra("tab",1);
@@ -57,6 +68,15 @@ public class MainTabsActivity extends AppCompatActivity {
         viewPager = (CustomViewPager) findViewById(R.id.viewpager);
         viewPager.setPagingEnabled(false);
         setupViewPager(viewPager);
+
+        search_icon = (ImageView) findViewById(R.id.search_icon);
+        search_icon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainTabsActivity.this,SearchActivity.class);
+                startActivity(intent);
+            }
+        });
 
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
@@ -121,10 +141,19 @@ public class MainTabsActivity extends AppCompatActivity {
         set1.addAll(ApplicationCache.peopleIBlockedList);
         set1.addAll(ApplicationCache.peopleWhoBlockedMeList);
 
-        set.addAll(ApplicationCache.myUserVO.getInterests());
+        if(ApplicationCache.myUserVO.getInterests() != null) {
+            set.addAll(ApplicationCache.myUserVO.getInterests());
+        }
         sp.edit().putStringSet("interests", set)
                 .putString("name",ApplicationCache.myUserVO.getName())
                 .putStringSet("blocked",set1)
                 .apply();
+    }
+
+    @Override
+    protected void onResume() {
+        Firebase activeRef = new Firebase("https://new-amigos.firebaseio.com/users/"+myId+"/active/");
+        activeRef.setValue("1");
+        super.onResume();
     }
 }

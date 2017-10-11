@@ -23,7 +23,7 @@ public class UserVO implements Serializable {
     ArrayList<String> myMoodTags = new ArrayList<String>();
     String moodTopic ;
     int match = 0;
-
+    ArrayList<String> peopleIRemoved = new ArrayList<String>();
 
     public String getId() {
         return id;
@@ -143,5 +143,13 @@ public class UserVO implements Serializable {
 
     public void setMatch(int match) {
         this.match = match;
+    }
+
+    public ArrayList<String> getPeopleIRemoved() {
+        return peopleIRemoved;
+    }
+
+    public void setPeopleIRemoved(ArrayList<String> peopleIRemoved) {
+        this.peopleIRemoved = peopleIRemoved;
     }
 }

@@ -24,6 +24,7 @@ public class SplashScreen2 extends AppCompatActivity {
     Context context;
     ProgressDialog progress;
     ProgressBar progressBar;
+    int flag = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +76,10 @@ public class SplashScreen2 extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(context,"You have poor internet connection.\nLoading the data might take some time.",1000).show();
+                        if (flag == 0) {
+                            flag = 1;
+                            Toast.makeText(context, "You have poor internet connection.\nLoading the data might take some time.", 3000).show();
+                        }
                     }
                 });
                 /*ToastHandler mToastHandler = new ToastHandler(context);

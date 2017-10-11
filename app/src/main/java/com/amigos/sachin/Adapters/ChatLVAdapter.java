@@ -2,9 +2,14 @@ package com.amigos.sachin.Adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +37,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;*/
 //import com.firebase.client.ValueEventListener;
 
+import org.w3c.dom.Text;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -48,6 +55,7 @@ public class ChatLVAdapter extends ArrayAdapter<ChatUsersVO> implements View.OnC
     ArrayList<ChatUsersVO> chatUsersVoList;
     Context context;
     ListView chatListView;
+    String myId;
     private static LayoutInflater inflater=null;
 
     public ChatLVAdapter(Context ctx, ArrayList<ChatUsersVO> chatVoList, ListView chatListView) {
@@ -74,6 +82,7 @@ public class ChatLVAdapter extends ArrayAdapter<ChatUsersVO> implements View.OnC
             holder.profilePicImageView = (ImageView) convertView.findViewById(R.id.iv_profile);
             holder.tvStatus = (TextView) convertView.findViewById(R.id.tv_status);
             holder.tvTime = (TextView) convertView.findViewById(R.id.tv_time_last_message);
+            holder.tv_greenDot = (TextView) convertView.findViewById(R.id.green_dot);
             holder.view = (LinearLayout)convertView.findViewById(R.id.holder_LinearLayout);
             convertView.setTag(holder);
         }else{
@@ -82,7 +91,8 @@ public class ChatLVAdapter extends ArrayAdapter<ChatUsersVO> implements View.OnC
 
         //holder.tvName.setText("");
         final String[] userName = {""};
-        ChatUsersVO chatUsersVO = chatUsersVoList.get(position);
+        final ChatUsersVO chatUsersVO = chatUsersVoList.get(position);
+        final String userId = chatUsersVO.getUserId();
 
         String newDateString = chatUsersVO.getTime();
 
@@ -95,6 +105,34 @@ public class ChatLVAdapter extends ArrayAdapter<ChatUsersVO> implements View.OnC
         } catch (ParseException e) {
             e.printStackTrace();
         }
+
+        SharedPreferences sp = context.getSharedPreferences("com.amigos.sachin",Context.MODE_PRIVATE);
+        myId = sp.getString("myId","");
+
+        Firebase activeRef = new Firebase("https://new-amigos.firebaseio.com/users/"+chatUsersVO.getUserId()+"/active/");
+        activeRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.getValue() != null) {
+                    if ("0".equalsIgnoreCase(dataSnapshot.getValue().toString()) && chatUsersVO.getUserId().equalsIgnoreCase(userId)) {
+                        holder.tv_greenDot.setVisibility(View.GONE);
+                        /*holder.tv_greenDot.getBackground().setColorFilter(Color.TRANSPARENT, PorterDuff.Mode.SRC);
+                        holder.tv_greenDot.setBackgroundTintList(ColorStateList.valueOf(Color.TRANSPARENT));*/
+                    } else if ("1".equalsIgnoreCase(dataSnapshot.getValue().toString()) && chatUsersVO.getUserId().equalsIgnoreCase(userId)) {
+                        holder.tv_greenDot.setVisibility(View.VISIBLE);
+                        /*holder.tv_greenDot.getBackground().setColorFilter(Color.GREEN, PorterDuff.Mode.SRC);
+                        holder.tv_greenDot.setBackgroundTintList(ColorStateList.valueOf(Color.GREEN));*/
+                    }
+                }else{
+                    holder.tv_greenDot.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });
 
         Typeface typeFaceCalibri = Typeface.createFromAsset(context.getAssets(),"fonts/Calibri/Calibri.ttf");
         holder.tvTime.setTypeface(typeFaceCalibri);
@@ -109,7 +147,6 @@ public class ChatLVAdapter extends ArrayAdapter<ChatUsersVO> implements View.OnC
             holder.tvMatch.setText("New Message");
             holder.tvMatch.setTextColor(Color.parseColor("#40a8e0"));
         }
-        final String userId = chatUsersVO.getUserId();
         final String[] imageUrl = {""};
 
         Firebase userRef = new Firebase("https://new-amigos.firebaseio.com/users/"+userId+"/");
@@ -222,6 +259,7 @@ public class ChatLVAdapter extends ArrayAdapter<ChatUsersVO> implements View.OnC
         TextView tvMatch;
         TextView tvStatus;
         TextView tvTime;
+        TextView tv_greenDot;
         ImageView profilePicImageView;
         View view;
 

@@ -6,15 +6,15 @@
 
 
     <LinearLayout
-        android:layout_width="250dp"
+        android:layout_width="300dp"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:clickable="false">
+        android:layout_alignParentTop="true"
+        android:clickable="false"
+        android:orientation="vertical">
 
-        <TextView
+        <hani.momanii.supernova_emoji_library.Helper.EmojiconTextView
             android:id="@+id/msgr"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -26,24 +26,25 @@
             android:layout_marginRight="20dp"
             android:layout_marginTop="8dp"
             android:background="@drawable/chatbubbleright"
+            android:clickable="false"
             android:paddingBottom="5dp"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             android:paddingTop="5dp"
             android:text="Sampleleft"
             android:textColor="@color/textColor"
-            android:textSize="16sp"
-            android:clickable="false"/>
+            android:textSize="16sp" />
+
         <TextView
             android:id="@+id/time_right"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="left"
+            android:clickable="false"
             android:paddingRight="2dp"
             android:text="time"
             android:textColor="@color/gray2"
-            android:textSize="8sp"
-            android:clickable="false"/>
+            android:textSize="8sp" />
 
     </LinearLayout>
 </RelativeLayout>

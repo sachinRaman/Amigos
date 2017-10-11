@@ -194,8 +194,8 @@ public class MyMoods extends Fragment {
             for (int i = 0; i<initialTags.size(); i++){
                 TagView tag = mTagContainerLayoutMyMoodTags.getTagView(i);
                 tag.setTagBackgroundColor(Color.WHITE);
-                tag.setTagTextColor(Color.parseColor("#F4514E"));
-                tag.setTagBorderColor(Color.parseColor("#F4514E"));
+                tag.setTagTextColor(context.getResources().getColor(R.color.colorPrimary));
+                tag.setTagBorderColor(context.getResources().getColor(R.color.colorPrimary));
             }
         }
     }
@@ -270,8 +270,8 @@ public class MyMoods extends Fragment {
                         mTagContainerLayoutMyMoodTags.addTag(text);
                         TagView tag = mTagContainerLayoutMyMoodTags.getTagView(myMoodsTagCount);
                         tag.setTagBackgroundColor(Color.WHITE);
-                        tag.setTagTextColor(Color.parseColor("#F4514E"));
-                        tag.setTagBorderColor(Color.parseColor("#F4514E"));
+                        tag.setTagTextColor(context.getResources().getColor(R.color.colorPrimary));
+                        tag.setTagBorderColor(context.getResources().getColor(R.color.colorPrimary));
                         myMoodsTagCount++;
                         et_search.setText("");
                         final Toast toast = Toast.makeText(context,text + " added.",Toast.LENGTH_SHORT);
@@ -366,8 +366,8 @@ public class MyMoods extends Fragment {
                         for (int i = 0; i < allInterests.size(); i++) {
                             TagView tag = mTagContainerLayoutAllTags.getTagView(i);
                             tag.setTagBackgroundColor(Color.WHITE);
-                            tag.setTagTextColor(Color.parseColor("#F4514E"));
-                            tag.setTagBorderColor(Color.parseColor("#F4514E"));
+                            tag.setTagTextColor(context.getResources().getColor(R.color.colorPrimary));
+                            tag.setTagBorderColor(context.getResources().getColor(R.color.colorPrimary));
                         }
                     }else{
                         mTagContainerLayoutAllTags.removeAllTags();
@@ -375,8 +375,8 @@ public class MyMoods extends Fragment {
                         for (int i = 0; i < shortList.size(); i++) {
                             TagView tag = mTagContainerLayoutAllTags.getTagView(i);
                             tag.setTagBackgroundColor(Color.WHITE);
-                            tag.setTagTextColor(Color.parseColor("#F4514E"));
-                            tag.setTagBorderColor(Color.parseColor("#F4514E"));
+                            tag.setTagTextColor(context.getResources().getColor(R.color.colorPrimary));
+                            tag.setTagBorderColor(context.getResources().getColor(R.color.colorPrimary));
                         }
                     }
                 }else {
@@ -394,8 +394,8 @@ public class MyMoods extends Fragment {
                     for (int i = 0; i < searchArrayList.size(); i++) {
                         TagView tag = mTagContainerLayoutAllTags.getTagView(i);
                         tag.setTagBackgroundColor(Color.WHITE);
-                        tag.setTagTextColor(Color.parseColor("#F4514E"));
-                        tag.setTagBorderColor(Color.parseColor("#F4514E"));
+                        tag.setTagTextColor(context.getResources().getColor(R.color.colorPrimary));
+                        tag.setTagBorderColor(context.getResources().getColor(R.color.colorPrimary));
                     }
                 }
             }
@@ -417,8 +417,8 @@ public class MyMoods extends Fragment {
                     for (int i = 0; i < allInterests.size(); i++) {
                         TagView tag = mTagContainerLayoutAllTags.getTagView(i);
                         tag.setTagBackgroundColor(Color.WHITE);
-                        tag.setTagTextColor(Color.parseColor("#F4514E"));
-                        tag.setTagBorderColor(Color.parseColor("#F4514E"));
+                        tag.setTagTextColor(context.getResources().getColor(R.color.colorPrimary));
+                        tag.setTagBorderColor(context.getResources().getColor(R.color.colorPrimary));
                     }
                 }else{
                     interestsFlag = 0;
@@ -428,8 +428,8 @@ public class MyMoods extends Fragment {
                     for (int i = 0; i < shortList.size(); i++) {
                         TagView tag = mTagContainerLayoutAllTags.getTagView(i);
                         tag.setTagBackgroundColor(Color.WHITE);
-                        tag.setTagTextColor(Color.parseColor("#F4514E"));
-                        tag.setTagBorderColor(Color.parseColor("#F4514E"));
+                        tag.setTagTextColor(context.getResources().getColor(R.color.colorPrimary));
+                        tag.setTagBorderColor(context.getResources().getColor(R.color.colorPrimary));
                     }
                 }
             }
@@ -480,8 +480,8 @@ public class MyMoods extends Fragment {
         for (int i = 0; i<shortList.size(); i++){
             TagView tag = mTagContainerLayoutAllTags.getTagView(i);
             tag.setTagBackgroundColor(Color.WHITE);
-            tag.setTagTextColor(Color.parseColor("#F4514E"));
-            tag.setTagBorderColor(Color.parseColor("#F4514E"));
+            tag.setTagTextColor(context.getResources().getColor(R.color.colorPrimary));
+            tag.setTagBorderColor(context.getResources().getColor(R.color.colorPrimary));
         }
     }
 
@@ -499,6 +499,7 @@ public class MyMoods extends Fragment {
         protected void onPostExecute(String result) {
             UsersFragment usersFragment = new UsersFragment();
             usersFragment.reloadAllUsers();
+
         }
 
         @Override

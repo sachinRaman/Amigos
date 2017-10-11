@@ -27,6 +27,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
@@ -34,6 +35,7 @@ import android.widget.Toast;
 
 import com.amigos.sachin.Activities.SettingsActivity;
 import com.amigos.sachin.R;
+import com.amigos.sachin.Services.UploadService;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.firebase.client.ChildEventListener;
@@ -80,6 +82,7 @@ public class MyInfoFragment extends Fragment {
     View view;
     SharedPreferences sp;
     public static StorageReference storageReference;
+    public static ProgressBar progressBar;
 
     public MyInfoFragment() {
 
@@ -96,7 +99,6 @@ public class MyInfoFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
@@ -117,6 +119,8 @@ public class MyInfoFragment extends Fragment {
         storageReference = storage.getReference();
 
         context = getActivity();
+        Firebase.setAndroidContext(context);
+
         et_name = (EditText) view.findViewById(R.id.et_display_name);
         et_age = (EditText) view.findViewById(R.id.age);
         et_place = (EditText) view.findViewById(R.id.place);
@@ -129,6 +133,7 @@ public class MyInfoFragment extends Fragment {
         imageView = (ImageView) view.findViewById(R.id.iv_profile_pic);
         profilePhotoEdit = (ImageView) view.findViewById(R.id.profilePhotoEdit);
         settingsIcon = (RelativeLayout) view.findViewById(R.id.layoutSettings);
+        progressBar = (ProgressBar) view.findViewById(R.id.progressBar_image);
         sp = context.getSharedPreferences("com.amigos.sachin", Context.MODE_PRIVATE);
         myId = sp.getString("myId", "");
 
@@ -155,7 +160,11 @@ public class MyInfoFragment extends Fragment {
                     et_name.setText(dataSnapshot.getValue().toString());
                 }
                 if ("age".equalsIgnoreCase(dataSnapshot.getKey())) {
-                    et_age.setText(dataSnapshot.getValue().toString());
+                    if(isNumeric(dataSnapshot.getValue().toString().trim())) {
+                        et_age.setText(dataSnapshot.getValue().toString().trim());
+                    }else{
+                        et_age.setText("");
+                    }
                 }
                 if ("place".equalsIgnoreCase(dataSnapshot.getKey())) {
                     et_place.setText(dataSnapshot.getValue().toString());
@@ -217,80 +226,6 @@ public class MyInfoFragment extends Fragment {
             }
         });
 
-
-        /*DatabaseReference firebaseRef = FirebaseDatabase.getInstance().getReference();
-
-        firebaseRef.child("users").child(myId).addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                Log.i(TAG, "onChildAdded");
-                Log.i(TAG, "" + dataSnapshot.getValue());
-
-                if ("name".equalsIgnoreCase(dataSnapshot.getKey())) {
-                    et_name.setText(dataSnapshot.getValue().toString());
-                }
-                if ("age".equalsIgnoreCase(dataSnapshot.getKey())) {
-                    et_age.setText(dataSnapshot.getValue().toString());
-                }
-                if ("place".equalsIgnoreCase(dataSnapshot.getKey())) {
-                    et_place.setText(dataSnapshot.getValue().toString());
-                }
-                if ("status".equalsIgnoreCase(dataSnapshot.getKey())) {
-                    et_status.setText(dataSnapshot.getValue().toString());
-                }
-                if ("activity".equalsIgnoreCase(dataSnapshot.getKey())) {
-                    for (DataSnapshot children : dataSnapshot.getChildren()){
-                        if("act1".equalsIgnoreCase(children.getKey())){
-                            et_activity1.setText(children.getValue().toString());
-                        }
-                        if("act2".equalsIgnoreCase(children.getKey())){
-                            et_activity2.setText(children.getValue().toString());
-                        }
-                        *//*if("act3".equalsIgnoreCase(children.getKey())){
-                            et_activity3.setText(children.getValue().toString());
-                        }*//*
-                    }
-                }
-                if ("sex".equalsIgnoreCase(dataSnapshot.getKey())) {
-                    if("male".equalsIgnoreCase(dataSnapshot.getValue().toString())){
-                        radioSexGroup.check(R.id.radioMale);
-                    }else if("female".equalsIgnoreCase(dataSnapshot.getValue().toString())){
-                        radioSexGroup.check(R.id.radioFemale);
-                    }
-                }
-                if ("imageUrl".equalsIgnoreCase(dataSnapshot.getKey())){
-                    for(DataSnapshot children : dataSnapshot.getChildren()){
-                        if(myId.equalsIgnoreCase(children.getKey())){
-                            imageUrl = children.getValue().toString();
-                            Glide.with(context).load(imageUrl)
-                                    .bitmapTransform(new CropSquareTransformation(context),
-                                            new CropCircleTransformation(context))
-                                    .thumbnail(0.5f).crossFade().diskCacheStrategy(DiskCacheStrategy.ALL).into(imageView);
-                        }
-                    }
-                }
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });*/
         updateData();
     }
 
@@ -346,6 +281,10 @@ public class MyInfoFragment extends Fragment {
         });
     }
 
+    public boolean isNumeric(String s) {
+        return s != null && s.matches("[-+]?\\d*\\.?\\d+");
+    }
+
     public void showFileChooser(View view) {
 
         Intent intent = new Intent();
@@ -380,12 +319,15 @@ public class MyInfoFragment extends Fragment {
                 bitmap = getSquareCroppedBitmap(bitmap);
                 bitmap = getCircularCroppedBitmap(bitmap);
                 imageView.setImageBitmap(bitmap);
-                AsyncTask.execute(new Runnable() {
+                Intent intent = new Intent(context, UploadService.class);
+                intent.putExtra("filePath",filePath);
+                context.startService(intent);
+                /*AsyncTask.execute(new Runnable() {
                     @Override
                     public void run() {
                         uploadFile();
                     }
-                });
+                });*/
             } catch (Exception ex) {
                 ex.printStackTrace();
             }

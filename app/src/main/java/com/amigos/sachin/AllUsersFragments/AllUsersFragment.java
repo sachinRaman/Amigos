@@ -17,10 +17,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amigos.sachin.Activities.ChatActivity;
+import com.amigos.sachin.Adapters.SwipeAllUsersAdapter;
 import com.amigos.sachin.ApplicationCache.ApplicationCache;
 import com.amigos.sachin.ChatsFragments.PeopleILikedFragment;
 import com.amigos.sachin.DAO.PeopleILikedDAO;
+import com.amigos.sachin.MainFragments.UsersFragment;
 import com.amigos.sachin.R;
+import com.amigos.sachin.VO.LikedUserVO;
 import com.amigos.sachin.VO.UserVO;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -44,6 +47,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import jp.wasabeef.glide.transformations.CropCircleTransformation;
 import jp.wasabeef.glide.transformations.CropSquareTransformation;
 
 
@@ -78,6 +82,7 @@ public class AllUsersFragment extends Fragment {
         UserVO myVO = ApplicationCache.myUserVO;
         myInterests = myVO.getInterests();
         final UserVO userVO = (UserVO) bundle.getSerializable("userData");
+        final int position = bundle.getInt("position");
         String age = null, sex = null, place = null;
         String userName = null, userId = null, imageUrl = null;
 
@@ -87,27 +92,29 @@ public class AllUsersFragment extends Fragment {
         tv_act1 = (TextView) view.findViewById(R.id.tv_activity1);
         tv_act2 = (TextView) view.findViewById(R.id.tv_activity2);
         //tv_act3 = (TextView) view.findViewById(R.id.tv_activity3);
-        tv_matchCount = (TextView) view.findViewById(R.id.tv_matchCount);
+        /*tv_matchCount = (TextView) view.findViewById(R.id.tv_matchCount);*/
         profilePicture = (ImageView) view.findViewById(R.id.imageView_profileImage);
         tagGroup = (TagView) view.findViewById(R.id.user_tag_group);
         messageIcon = (ImageView) view.findViewById(R.id.messageIcon);
         likeIcon = (ImageView) view.findViewById(R.id.likeIcon);
+        crossIcon = (ImageView) view.findViewById(R.id.crossIcon);
         tv_InterestedInText = (TextView) view.findViewById(R.id.tv_interestedActivities);
         tv_professionalProfileText = (TextView) view.findViewById(R.id.tv_professionalProfile);
-        tv_moodTopic = (TextView) view.findViewById(R.id.tv_moodTopic);
-        tv_moodTopicTextView = (TextView) view.findViewById(R.id.tv_moodTopicTextView);
+        /*tv_moodTopic = (TextView) view.findViewById(R.id.tv_moodTopic);
+        tv_moodTopicTextView = (TextView) view.findViewById(R.id.tv_moodTopicTextView);*/
 
         if(userVO.getImageUrl() != null){
             imageUrl = userVO.getImageUrl();
             if(!imageUrl.isEmpty()) {
                 Glide.with(context).load(userVO.getImageUrl()).error(R.drawable.ic_user)
-                        .bitmapTransform(new CropSquareTransformation(context))
+                        .bitmapTransform(new CropSquareTransformation(context), new CropCircleTransformation(context))
                         .thumbnail(0.01f).crossFade().diskCacheStrategy(DiskCacheStrategy.ALL).into(profilePicture);
             }
         }
 
         if(userVO.getId() != null){
             userId = userVO.getId();
+            String finalUserId = userId;
         }
         if(userVO.getName() != null){
             tv_name.setText(userVO.getName());
@@ -135,23 +142,26 @@ public class AllUsersFragment extends Fragment {
         }else{
             tv_act3.setVisibility(View.GONE);
         }*/
-        if ("1".equalsIgnoreCase(userVO.getMood())){
+        /*if ("1".equalsIgnoreCase(userVO.getMood())){
             tv_moodTopic.setText(userVO.getMoodTopic());
         }else{
             tv_moodTopic.setVisibility(View.GONE);
             tv_moodTopicTextView.setVisibility(View.GONE);
-        }
+        }*/
         if(userVO.getInterests() != null){
             userInterests = userVO.getInterests();
         }
-        int match = userVO.getMatch();
+        /*int match = userVO.getMatch();
         if (match == 0){
             tv_matchCount.setText("YOU CLICK 0%");
+            tv_matchCount.setVisibility(View.GONE);
         }else if(match%100 == 0){
+            tv_matchCount.setVisibility(View.VISIBLE);
             tv_matchCount.setText("YOU CLICK 100%");
         }else{
+            tv_matchCount.setVisibility(View.VISIBLE);
             tv_matchCount.setText("YOU CLICK " + userVO.getMatch() % 100 + "%");
-        }
+        }*/
         if(userVO.getAge() != null){
             age = userVO.getAge();
         }
@@ -162,7 +172,7 @@ public class AllUsersFragment extends Fragment {
             place = userVO.getPlace();
         }
         String finalInfo = "";
-        if( age != null && !age.isEmpty()){
+        if( age != null && !age.isEmpty() && isNumeric(age.trim()) ){
             finalInfo += age+" / ";
         }
         if(sex != null &&  !sex.isEmpty()){
@@ -190,8 +200,8 @@ public class AllUsersFragment extends Fragment {
         tags.clear();
         for(String s : commonInterests){
             Tag tag = new Tag(s);
-            tag.tagTextColor = Color.parseColor("#F4514E");
-            tag.layoutBorderColor = Color.parseColor("#F4514E");
+            tag.tagTextColor = context.getResources().getColor(R.color.colorPrimary);
+            tag.layoutBorderColor = context.getResources().getColor(R.color.colorPrimary);
             tag.layoutColor = Color.parseColor("#FFFFFF");
             tag.layoutBorderSize = 1.0F;
             tag.layoutColorPress = Color.WHITE;
@@ -219,91 +229,75 @@ public class AllUsersFragment extends Fragment {
         likeIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context,"You admired "+ finalUserName,Toast.LENGTH_SHORT).show();
-                String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
-                Firebase myRef = new Firebase("https://new-amigos.firebaseio.com/users/"+myId+"/people_i_liked/");
-                Firebase userRef = new Firebase("https://new-amigos.firebaseio.com/users/"+finalUserId1+"/people_who_liked_me/");
-                Firebase likedNotificationRef = new Firebase("https://new-amigos.firebaseio.com/liked_notifications/"
-                        +finalUserId1+"/");
-                myRef.child(finalUserId1).setValue(timeStamp);
-                userRef.child(myId).setValue(timeStamp);
-                likedNotificationRef.child(myId).child(myName).setValue(timeStamp);
 
                 final PeopleILikedDAO peopleILikedDAO = new PeopleILikedDAO(context);
+                ArrayList<String> peopleILikedArrayList = peopleILikedDAO.getAllPeopleIlikedId();
+                if(peopleILikedArrayList.contains(finalUserId)){
+                    Toast.makeText(context,"You have already admired "+ finalUserName,Toast.LENGTH_SHORT).show();
+                }else {
 
-                Firebase thisUserRef = new Firebase("https://new-amigos.firebaseio.com/users/"+finalUserId1+"/");
-                thisUserRef.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        String name = null, status = null, imageUrl = null;
-                        for (DataSnapshot snap : dataSnapshot.getChildren()){
-                            if ("name".equalsIgnoreCase(snap.getKey())) {
-                                name = snap.getValue().toString();
-                            }
-                            if ("status".equalsIgnoreCase(snap.getKey())) {
-                                status = snap.getValue().toString();
-                            }
-                            if ("imageUrl".equalsIgnoreCase(snap.getKey())){
-                                for(DataSnapshot children : snap.getChildren()){
-                                    if(finalUserId1.equalsIgnoreCase(children.getKey())){
-                                        imageUrl = children.getValue().toString();
+                    Toast.makeText(context, "You admired " + finalUserName, Toast.LENGTH_SHORT).show();
+                    String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
+                    Firebase myRef = new Firebase("https://new-amigos.firebaseio.com/users/" + myId + "/people_i_liked/");
+                    Firebase userRef = new Firebase("https://new-amigos.firebaseio.com/users/" + finalUserId1 + "/people_who_liked_me/");
+                    Firebase likedNotificationRef = new Firebase("https://new-amigos.firebaseio.com/liked_notifications/"
+                            + finalUserId1 + "/");
+                    myRef.child(finalUserId1).setValue(timeStamp);
+                    userRef.child(myId).setValue(timeStamp);
+                    likedNotificationRef.child(myId).child(myName).setValue(timeStamp);
+
+                    Firebase thisUserRef = new Firebase("https://new-amigos.firebaseio.com/users/" + finalUserId1 + "/");
+                    thisUserRef.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            String name = null, status = null, imageUrl = null;
+                            for (DataSnapshot snap : dataSnapshot.getChildren()) {
+                                if ("name".equalsIgnoreCase(snap.getKey())) {
+                                    name = snap.getValue().toString();
+                                }
+                                if ("status".equalsIgnoreCase(snap.getKey())) {
+                                    status = snap.getValue().toString();
+                                }
+                                if ("imageUrl".equalsIgnoreCase(snap.getKey())) {
+                                    for (DataSnapshot children : snap.getChildren()) {
+                                        if (finalUserId1.equalsIgnoreCase(children.getKey())) {
+                                            imageUrl = children.getValue().toString();
+                                        }
                                     }
                                 }
                             }
+                            peopleILikedDAO.addUserToPeopleILikedList(finalUserId1, name, status, imageUrl);
+                            PeopleILikedFragment.reloadPeopleILikedList();
                         }
-                        peopleILikedDAO.addUserToPeopleILikedList(finalUserId1,name,status,imageUrl);
-                        PeopleILikedFragment.reloadPeopleILikedList();
-                    }
 
-                    @Override
-                    public void onCancelled(FirebaseError firebaseError) {
+                        @Override
+                        public void onCancelled(FirebaseError firebaseError) {
 
-                    }
-                });
-
-                /*DatabaseReference thisRef = FirebaseDatabase.getInstance().getReference();
-
-                thisRef.child("users").child(finalUserId1).addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        String name = null, status = null, imageUrl = null;
-                        for (DataSnapshot snap : dataSnapshot.getChildren()){
-                            if ("name".equalsIgnoreCase(snap.getKey())) {
-                                name = snap.getValue().toString();
-                            }
-                            if ("status".equalsIgnoreCase(snap.getKey())) {
-                                status = snap.getValue().toString();
-                            }
-                            if ("imageUrl".equalsIgnoreCase(snap.getKey())){
-                                for(DataSnapshot children : snap.getChildren()){
-                                    if(finalUserId1.equalsIgnoreCase(children.getKey())){
-                                        imageUrl = children.getValue().toString();
-                                    }
-                                }
-                            }
                         }
-                        peopleILikedDAO.addUserToPeopleILikedList(finalUserId1,name,status,imageUrl);
-                        //PeopleILikedFragment.reloadLikedPeopleList();
-                    }
+                    });
+                }
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });*/
             }
         });
 
-        /*crossIcon.setOnClickListener(new View.OnClickListener() {
+        crossIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent (context, PeopleWhoLikedMeActivity.class);
-                startActivity(intent);
+                SwipeAllUsersAdapter.userVOArrayList.remove(position);
+                UsersFragment.updateSwipeUsersAdapter(position);
+                Firebase peopleIRemovedRef = new Firebase("https://new-amigos.firebaseio.com/users/"+myId+"/peopleIremoved/");
+                peopleIRemovedRef.child(finalUserId ).setValue("1");
+                ApplicationCache.myUserVO.getPeopleIRemoved().add(finalUserId);
+
             }
-        });*/
+        });
 
 
         return view;
+    }
+
+    public boolean isNumeric(String s) {
+        return s != null && s.matches("[-+]?\\d*\\.?\\d+");
     }
 
 }

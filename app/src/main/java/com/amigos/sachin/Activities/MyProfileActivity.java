@@ -119,7 +119,11 @@ public class MyProfileActivity extends AppCompatActivity {
                     et_name.setText(dataSnapshot.getValue().toString());
                 }
                 if ("age".equalsIgnoreCase(dataSnapshot.getKey())) {
-                    et_age.setText(dataSnapshot.getValue().toString());
+                    if(isNumeric(dataSnapshot.getValue().toString().trim())) {
+                        et_age.setText(dataSnapshot.getValue().toString().trim());
+                    }else{
+                        et_age.setText("");
+                    }
                 }
                 if ("place".equalsIgnoreCase(dataSnapshot.getKey())) {
                     et_place.setText(dataSnapshot.getValue().toString());
@@ -430,6 +434,10 @@ public class MyProfileActivity extends AppCompatActivity {
             }
 
         }
+    }
+
+    public boolean isNumeric(String s) {
+        return s != null && s.matches("[-+]?\\d*\\.?\\d+");
     }
 
     public static Bitmap getCircularCroppedBitmap(Bitmap bitmap) {

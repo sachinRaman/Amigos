@@ -4,45 +4,36 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.Signature;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Base64;
 import android.util.Log;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.view.View;
 
 import com.amigos.sachin.R;
 import com.amigos.sachin.Services.ChatService;
+import com.amigos.sachin.Services.MyFirebaseInstanceIDService;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
+import com.facebook.GraphRequestBatch;
 import com.facebook.GraphResponse;
-import com.facebook.HttpMethod;
 import com.facebook.Profile;
 import com.facebook.ProfileTracker;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.firebase.client.Firebase;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.InputStream;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -66,15 +57,21 @@ public class MainActivity extends AppCompatActivity {
         Firebase.setAndroidContext(this);
 
         loginButton = (LoginButton)findViewById(R.id.button_fb_login);
+
         callbackManager = CallbackManager.Factory.create();
 
         loginButton.setReadPermissions(Arrays.asList(
                 "public_profile", "email", "user_birthday", "user_friends"));
+
+        loginButton.setVisibility(View.VISIBLE);
+
         if (isLoggedIn()){
             if(isMyServiceRunning(ChatService.class) == false) {
                 Intent startChatService = new Intent(this, ChatService.class);
                 startService(startChatService);
             }
+
+
             //startService(new Intent(ChatService.class.getName()));
             Intent intent = new Intent(MainActivity.this,SplashScreen2.class);
             intent.putExtra("tab",tab);
@@ -90,6 +87,9 @@ public class MainActivity extends AppCompatActivity {
             public void onSuccess(LoginResult loginResult) {
 //                textView.setText("Login Success \n" + loginResult.getAccessToken().getUserId() + "\n" +
 //                loginResult.getAccessToken().getToken());
+                loginButton.setVisibility(View.GONE);
+
+
                 Profile profile = Profile.getCurrentProfile();
 
                 if (profile == null) {
@@ -136,9 +136,10 @@ public class MainActivity extends AppCompatActivity {
                                 }
                             }
                         }).executeAsync();*/
+                GraphRequestBatch batch = new GraphRequestBatch(
 
 
-                GraphRequest request = GraphRequest.newMeRequest(
+                /*GraphRequest request = */GraphRequest.newMeRequest(
                         loginResult.getAccessToken(),
                         new GraphRequest.GraphJSONObjectCallback() {
                             @Override
@@ -150,6 +151,10 @@ public class MainActivity extends AppCompatActivity {
 
 
                                 // Application code
+
+
+
+
 
                                 try {
                                     if (object.has("email")){
@@ -191,13 +196,25 @@ public class MainActivity extends AppCompatActivity {
                                     }
                                     if(birthday != null){
                                         userRef.child("birthday").setValue(birthday);
+                                        try {
+                                            String[] ages = birthday.trim().split("/");
+                                            String myAge = getAge(Integer.parseInt(ages[2]), Integer.parseInt(ages[0]), Integer.parseInt(ages[1]));
+                                            userRef.child("age").setValue(myAge);
+                                        }catch (Exception e){
+                                            e.printStackTrace();
+                                        }
+
                                     }
                                     //Creating fake profiles
-                                    for (int i = 0; i<25 ; i++){
-                                        Firebase ref = new Firebase("https://new-amigos.firebaseio.com/users/test"+i+ "/interests_list/arts/Painting");
-                                        ref.setValue("1");
-                                        /*ref.setValue(null);*/
-                                        /*if(profile_name != null) {
+                                    /*if("1436936606392043-Sachin Raman".equalsIgnoreCase(myId)) {
+                                        for (int i = 0; i < 25; i++) {
+
+                                            *//*put condition for your id so changes can only be made
+                                            from your phone*//*
+                                            Firebase ref = new Firebase("https://new-amigos.firebaseio.com/users/test" + i + "/");
+                                        *//*ref.setValue("0");*//*
+                                            ref.setValue(null);
+                                        *//*if(profile_name != null) {
                                             ref.child("name").setValue(profile_name);
                                         }
                                         if (gender != null){
@@ -211,11 +228,13 @@ public class MainActivity extends AppCompatActivity {
                                         }
                                         if(birthday != null){
                                             ref.child("birthday").setValue(birthday);
-                                        }*/
-                                    }
+                                        }*//*
+                                        }
+                                    }*/
                                     SharedPreferences sp=getApplicationContext().getSharedPreferences("com.amigos.sachin", Context.MODE_PRIVATE);
                                     sp.edit().putString("myId",""+ myId).apply();
                                     startService(new Intent(ChatService.class.getName()));
+
 
 
                                 } catch (JSONException e) {
@@ -223,18 +242,51 @@ public class MainActivity extends AppCompatActivity {
                                 } catch (MalformedURLException e) {
                                     e.printStackTrace();
                                 }
-                                Intent intent = new Intent(MainActivity.this,SplashScreen.class);
-                                startActivity(intent);
+                                /*Intent intent = new Intent(MainActivity.this,SplashScreen.class);
+                                startActivity(intent);*/
 
                             }
-                        });
+                        }),
+
+                GraphRequest.newMyFriendsRequest(
+                        loginResult.getAccessToken(),
+                        new GraphRequest.GraphJSONArrayCallback() {
+                            @Override
+                            public void onCompleted(
+                                    JSONArray jsonArray,
+                                    GraphResponse response) {
+
+                                String d = "123";
+                                // Application code for users friends
+                            }
+                        })
+                );
 
 
 
-                Bundle parameters = new Bundle();
+                batch.addCallback(new GraphRequestBatch.Callback() {
+                    @Override
+                    public void onBatchCompleted(GraphRequestBatch graphRequests) {
+                        // Application code for when the batch finishes
+                    }
+                });
+
+                batch.addCallback(new GraphRequestBatch.Callback() {
+                    @Override
+                    public void onBatchCompleted(GraphRequestBatch graphRequests) {
+                        Intent intent = new Intent(MainActivity.this,SplashScreen.class);
+                        startActivity(intent);
+                        // Application code for when the batch finishes
+                    }
+                });
+                batch.executeAsync();
+
+
+
+                /*Bundle parameters = new Bundle();
                 parameters.putString("fields", "id,name,email,gender,birthday");
                 request.setParameters(parameters);
-                request.executeAsync();
+                request.executeAsync();*/
             }
 
             @Override
@@ -250,12 +302,47 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onBackPressed() {
+
+        Intent a = new Intent(Intent.ACTION_MAIN);
+        a.addCategory(Intent.CATEGORY_HOME);
+        a.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(a);
+
+    }
+
+
+    private String getAge(int year, int month, int day){
+        Calendar dob = Calendar.getInstance();
+        Calendar today = Calendar.getInstance();
+
+        dob.set(year, month, day);
+
+        int age = today.get(Calendar.YEAR) - dob.get(Calendar.YEAR);
+
+        if (today.get(Calendar.DAY_OF_YEAR) < dob.get(Calendar.DAY_OF_YEAR)){
+            age--;
+        }
+
+        Integer ageInt = new Integer(age);
+        String ageS = ageInt.toString();
+
+        return ageS;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        /*loginButton.setVisibility(View.VISIBLE);*/
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         callbackManager.onActivityResult(requestCode,resultCode,data);
     }
 
 
-    public class ImageLoadTask extends AsyncTask<Void, Void, Bitmap> {
+    /*public class ImageLoadTask extends AsyncTask<Void, Void, Bitmap> {
 
         private String url;
         private ImageView imageView;
@@ -288,7 +375,7 @@ public class MainActivity extends AppCompatActivity {
             imageView.setImageBitmap(result);
         }
 
-    }
+    }*/
 
     public boolean isLoggedIn() {
         AccessToken accessToken = AccessToken.getCurrentAccessToken();

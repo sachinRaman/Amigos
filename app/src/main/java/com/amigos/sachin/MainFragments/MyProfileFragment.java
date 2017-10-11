@@ -36,6 +36,7 @@ public class MyProfileFragment extends Fragment {
     CustomViewPager myProfileViewPager;
     private FragmentActivity myContext;
     Context context;
+    MenuItem prevMenuItem;
 
     public MyProfileFragment(){
 
@@ -53,7 +54,7 @@ public class MyProfileFragment extends Fragment {
         context = getActivity();
         View view =  inflater.inflate(R.layout.fragment_main_my_profile,container,false);
         myProfileViewPager = (CustomViewPager) view.findViewById(R.id.my_profile_viewpager);
-        myProfileViewPager.setPagingEnabled(false);
+        /*myProfileViewPager.setPagingEnabled(false);*/
         myProfileViewPager.setAdapter(new MyPagerAdapter(getChildFragmentManager()));
         myProfileBottomNavigationView = (BottomNavigationView) view.findViewById(R.id.bottom_navigation_my_profile);
         myProfileBottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -75,6 +76,33 @@ public class MyProfileFragment extends Fragment {
                 }
             }
         });
+        prevMenuItem = myProfileBottomNavigationView.getMenu().getItem(0);
+        myProfileViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                if (prevMenuItem != null) {
+                    prevMenuItem.setChecked(false);
+                }
+                else
+                {
+                    myProfileBottomNavigationView.getMenu().getItem(0).setChecked(false);
+                }
+
+                myProfileBottomNavigationView.getMenu().getItem(position).setChecked(true);
+                prevMenuItem = myProfileBottomNavigationView.getMenu().getItem(position);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+
         return view;
     }
 

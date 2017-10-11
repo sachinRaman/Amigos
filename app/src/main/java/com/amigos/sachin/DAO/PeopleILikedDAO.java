@@ -105,6 +105,27 @@ public class PeopleILikedDAO extends SQLiteOpenHelper {
         return true;
     }
 
+    public ArrayList<String> getAllPeopleIlikedId() {
+        ArrayList<String> peopleIlikedList = new ArrayList<String>();
+
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res =  db.rawQuery( "select * from people_i_liked", null );
+        res.moveToFirst();
+
+        try {
+            while (res.isAfterLast() == false) {
+                String userId = res.getString(res.getColumnIndex("id"));
+                peopleIlikedList.add(userId);
+                res.moveToNext();
+            }
+        }finally {
+            res.close();
+            db.close();
+        }
+        return peopleIlikedList;
+    }
+
     public String getTime(String userId) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res = db.rawQuery("select time from people_i_liked where id in('" + userId + "')", null);

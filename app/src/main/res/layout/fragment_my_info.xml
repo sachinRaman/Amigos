@@ -31,6 +31,13 @@
                     android:layout_alignParentTop="false"
                     android:layout_centerHorizontal="true"
                     android:src="@drawable/ic_user" />
+                <ProgressBar
+                    android:id="@+id/progressBar_image"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:visibility="gone"/>
 
                 <ImageView
                     android:id="@+id/profilePhotoEdit"
@@ -79,10 +86,10 @@
                 android:id="@+id/age"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:inputType="number"
                 android:background="@color/backgroundColor"
                 android:ems="10"
                 android:hint="Write your age..."
-                android:inputType="textPersonName"
                 android:padding="10dp"
                 android:textColor="@color/gray3"
                 android:textColorLink="@color/textColor"

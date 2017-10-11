@@ -8,9 +8,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.DataSetObserver;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.v7.app.ActionBar;
 //import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,6 +30,7 @@ import com.amigos.sachin.ApplicationCache.ApplicationCache;
 import com.amigos.sachin.DAO.ChatUsersDAO;
 import com.amigos.sachin.MyProfileFragments.MyMoods;
 import com.amigos.sachin.R;
+import com.amigos.sachin.Services.ChatService;
 import com.amigos.sachin.VO.ChatMessageVO;
 import com.amigos.sachin.VO.LikedUserVO;
 import com.bumptech.glide.Glide;
@@ -35,6 +39,7 @@ import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
+
 /*import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -49,24 +54,27 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import hani.momanii.supernova_emoji_library.Actions.EmojIconActions;
+import hani.momanii.supernova_emoji_library.Helper.EmojiconEditText;
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
 import jp.wasabeef.glide.transformations.CropSquareTransformation;
 
 //import com.firebase.client.DataSnapshot;
 //import com.firebase.client.ValueEventListener;
 
-public class ChatActivity extends AppCompatActivity {
+public class ChatActivity extends AppCompatActivity  {
 
     String myId, userId, userName, imageUrl;
     Context context;
     ValueEventListener valueEventListener;
     Firebase userChatRef, myChatRef;
-    ImageView sendIcon;
+    ImageView sendIcon,emojiIcon;
     private ListView listView;
     ChatArrayAdapter chatArrayAdapter;
-    TextView chatText;
+    EmojiconEditText chatText;
     String myName;
-    public static int chatFlag = 0;
+    Firebase thisChatRef;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,14 +99,41 @@ public class ChatActivity extends AppCompatActivity {
         SharedPreferences sp = getSharedPreferences("com.amigos.sachin", Context.MODE_PRIVATE);
         myId = sp.getString("myId","");
 
-        Firebase myChatRef = new Firebase("https://new-amigos.firebaseio.com/message_notification/"+myId+"/");
-        myChatRef.setValue(null);
 
         Intent intent = getIntent();
         userId = intent.getStringExtra("userId");
         userName = intent.getStringExtra("userName");
         imageUrl = intent.getStringExtra("imageUrl");
         tv_UserName.setText(userName);
+
+        ChatService.thisUserId = userId;
+
+        final Firebase myChatRef = new Firebase("https://new-amigos.firebaseio.com/message_notification/"+myId+"/"+userId+"/");
+        thisChatRef = new Firebase("https://new-amigos.firebaseio.com/users/"+userId+"/chats/"+myId+"/"+myId+"/");
+        myChatRef.setValue(null);
+
+
+
+        Firebase typingChatRef = new Firebase("https://new-amigos.firebaseio.com/users/"+myId+"/chats/"+userId+"/"+userId+"/");
+
+        typingChatRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.getValue() != null) {
+                    if ("0".equalsIgnoreCase(dataSnapshot.getValue().toString())) {
+                        tv_UserName.setText(userName);
+                    }
+                    if ("1".equalsIgnoreCase(dataSnapshot.getValue().toString())) {
+                        tv_UserName.setText("...typing...");
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });
         if(imageUrl != null && !imageUrl.isEmpty()){
             Glide.with(context).load(imageUrl)
                     .bitmapTransform(new CropSquareTransformation(context), new CropCircleTransformation(context))
@@ -106,6 +141,8 @@ public class ChatActivity extends AppCompatActivity {
         }
         ChatUsersDAO chatUsersDAO = new ChatUsersDAO(context);
         chatUsersDAO.changeSeen(userId,0);
+
+
 
         photoIcon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -213,20 +250,47 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
+
+
         onInitializeFunctionality();
+    }
+
+
+    private void markMessageAsSeen() {
+        Firebase userMsgRef= new Firebase("https://new-amigos.firebaseio.com/users/"+userId+"/chats/"+myId+"/");
+        userMsgRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot data: dataSnapshot.getChildren()){
+                    if(!userId.equalsIgnoreCase(data.getKey()) && !myId.equalsIgnoreCase(data.getKey())) {
+                        data.child("-seen").getRef().setValue("3");
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });
     }
 
     public void onInitializeFunctionality(){
         ChatUsersDAO chatUsersDAO = new ChatUsersDAO(context);
         chatUsersDAO.changeSeen(userId,0);
 
-        chatText = (EditText) findViewById(R.id.msg);
+        chatText = (EmojiconEditText) findViewById(R.id.msg);
+        chatText.setEmojiconSize(75);
 
         sendIcon = (ImageView) findViewById(R.id.send);
         listView = (ListView) findViewById(R.id.msgview);
         listView.setTranscriptMode(AbsListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
 
+        emojiIcon = (ImageView) findViewById(R.id.emojiIcon);
 
+        EmojIconActions emojIconActions = new EmojIconActions(context,(View)findViewById(R.id.chatView), chatText, emojiIcon);
+        emojIconActions.ShowEmojIcon();
+        emojIconActions.setIconsIds(R.drawable.ic_keyboard_white_24dp, R.drawable.ic_sentiment_very_satisfied_white_24dp);
         chatText.setOnKeyListener(new View.OnKeyListener() {
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
@@ -282,6 +346,29 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
+        thisChatRef = new Firebase("https://new-amigos.firebaseio.com/users/"+userId+"/chats/"+myId+"/"+myId+"/");
+
+        chatText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(!s.toString().isEmpty()) {
+                    thisChatRef.setValue("1");
+                }else{
+                    thisChatRef.setValue("0");
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
 
         chatArrayAdapter = new ChatArrayAdapter(context, R.layout.chat_right);
         chatArrayAdapter.registerDataSetObserver(new DataSetObserver() {
@@ -304,6 +391,8 @@ public class ChatActivity extends AppCompatActivity {
                     String key = "";
                     String receiverMsg = "";
                     String time = "Not available";
+                    String seen = "1";
+
                     for(DataSnapshot data: cursorShot.getChildren()){
                         key = "";
                         receiverMsg = "";
@@ -316,14 +405,19 @@ public class ChatActivity extends AppCompatActivity {
                         if(data.getKey().equalsIgnoreCase("-time")){
                             time = data.getValue(String.class);
                         }
+                        if(data.getKey().equalsIgnoreCase("-seen")){
+                            seen = data.getValue(String.class);
+                        }
                         if (key.equalsIgnoreCase(userId)) {
-                            chatArrayAdapter1.add(new ChatMessageVO(false, receiverMsg, time));
+                            chatArrayAdapter1.add(new ChatMessageVO(false, receiverMsg, time, seen,userId));
                         } else if (key.equalsIgnoreCase(myId)) {
-                            chatArrayAdapter1.add(new ChatMessageVO(true, receiverMsg, time));
+                            chatArrayAdapter1.add(new ChatMessageVO(true, receiverMsg, time, seen, userId));
                         }
                     }
                 }
                 listView.setAdapter(chatArrayAdapter1);
+                markMessageAsSeen();
+
             }
 
             @Override
@@ -332,43 +426,6 @@ public class ChatActivity extends AppCompatActivity {
             }
         };
 
-        /*valueEventListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                ChatArrayAdapter chatArrayAdapter1 = new ChatArrayAdapter(getApplicationContext(), R.layout.chat_right);
-                for (DataSnapshot cursorShot : dataSnapshot.getChildren()) {
-
-                    ArrayList<ChatMessageVO> existMsgs= new ArrayList<ChatMessageVO>();
-                    String key = "";
-                    String receiverMsg = "";
-                    String time = "Not available";
-                    for(DataSnapshot data: cursorShot.getChildren()){
-                        key = "";
-                        receiverMsg = "";
-
-                        if (myId.equalsIgnoreCase(data.getKey().toString()) || userId.equalsIgnoreCase(data.getKey().toString())) {
-                            key = data.getKey().toString();
-                            receiverMsg = data.getValue(String.class);
-//
-                        }
-                        if(data.getKey().equalsIgnoreCase("-time")){
-                            time = data.getValue(String.class);
-                        }
-                        if (key.equalsIgnoreCase(userId)) {
-                            chatArrayAdapter1.add(new ChatMessageVO(false, receiverMsg, time));
-                        } else if (key.equalsIgnoreCase(myId)) {
-                            chatArrayAdapter1.add(new ChatMessageVO(true, receiverMsg, time));
-                        }
-                    }
-                }
-                listView.setAdapter(chatArrayAdapter1);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        };*/
 
     }
 
@@ -388,12 +445,17 @@ public class ChatActivity extends AppCompatActivity {
         Date date = new Date();
         String time = dateFormat.format(date);
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
+        Firebase myChatRef= new Firebase("https://new-amigos.firebaseio.com/users/"+myId+"/chats/"+userId+"/"+timeStamp+"/");
+        Firebase userChatRef= new Firebase("https://new-amigos.firebaseio.com/users/"+userId+"/chats/"+myId+"/"+timeStamp+"/");
         messageNotificationRef.child(timeStamp).setValue(msg);
         Map<String,Object> message = new HashMap<String,Object>();
         message.put(myId,msg);
         message.put("-time",time);
+        message.put("-seen", "1");
         newMyMessageRef.updateChildren(message);
         newUserMessageRef.updateChildren(message);
+        /*myChatRef.updateChildren(message);
+        userChatRef.updateChildren(message);*/
         chatText.setText("");
 
         ChatUsersDAO chatUsersDAO = new ChatUsersDAO(getApplicationContext());
@@ -404,6 +466,7 @@ public class ChatActivity extends AppCompatActivity {
     @Override
     public void onResume(){
         super.onResume();
+        ChatService.thisUserId = userId;
         myChatRef.addValueEventListener(valueEventListener);
     }
     @Override
@@ -412,9 +475,11 @@ public class ChatActivity extends AppCompatActivity {
         /*DatabaseReference userRef = FirebaseDatabase.getInstance().getReference();
         myChatRef = userRef.child("users").child(myId).child("chats").child(userId);
         userChatRef = userRef.child("users").child(userId).child("chats").child(myId);*/
-        chatFlag = 0;
+        thisChatRef = new Firebase("https://new-amigos.firebaseio.com/users/"+userId+"/chats/"+myId+"/"+myId+"/");
+        thisChatRef.setValue("0");
         myChatRef= new Firebase("https://new-amigos.firebaseio.com/users/"+myId+"/chats/"+userId+"/" );
         userChatRef= new Firebase("https://new-amigos.firebaseio.com/users/"+userId+"/chats/"+myId+"/" );
+        ChatService.thisUserId = null;
         myChatRef.removeEventListener(valueEventListener);
         finish();
         return;
@@ -426,7 +491,9 @@ public class ChatActivity extends AppCompatActivity {
         /*DatabaseReference userRef = FirebaseDatabase.getInstance().getReference();
         myChatRef = userRef.child("users").child(myId).child("chats").child(userId);
         userChatRef = userRef.child("users").child(userId).child("chats").child(myId);*/
-        chatFlag = 0;
+        thisChatRef = new Firebase("https://new-amigos.firebaseio.com/users/"+userId+"/chats/"+myId+"/"+myId+"/");
+        thisChatRef.setValue("0");
+        ChatService.thisUserId = null;
         myChatRef= new Firebase("https://new-amigos.firebaseio.com/users/"+myId+"/chats/"+userId+"/" );
         userChatRef= new Firebase("https://new-amigos.firebaseio.com/users/"+userId+"/chats/"+myId+"/" );
         myChatRef.removeEventListener(valueEventListener);

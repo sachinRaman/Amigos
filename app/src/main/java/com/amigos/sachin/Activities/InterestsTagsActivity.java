@@ -95,8 +95,8 @@ public class InterestsTagsActivity extends AppCompatActivity {
                     usersInterestsRef.child(tag.getText()).setValue("1");
                     interestsDAO.changeInterest(text,1);
                     tag.setTagBackgroundColor(Color.WHITE);
-                    tag.setTagTextColor(Color.parseColor("#F4514E"));
-                    tag.setTagBorderColor(Color.parseColor("#F4514E"));
+                    tag.setTagTextColor(context.getResources().getColor(R.color.colorPrimary));
+                    tag.setTagBorderColor(context.getResources().getColor(R.color.colorPrimary));
 
                 }else if(interestsDAO.getInterestPref(text) == 1){
 
@@ -134,8 +134,8 @@ public class InterestsTagsActivity extends AppCompatActivity {
                 tag.setTagBorderColor(Color.GRAY);
             }else if(interestsDAO.getInterestPref(tag.getText()) == 1){
                 tag.setTagBackgroundColor(Color.WHITE);
-                tag.setTagTextColor(Color.parseColor("#F4514E"));
-                tag.setTagBorderColor(Color.parseColor("#F4514E"));
+                tag.setTagTextColor(context.getResources().getColor(R.color.colorPrimary));
+                tag.setTagBorderColor(context.getResources().getColor(R.color.colorPrimary));
             }
             tag.setHorizontalPadding(18);
             tag.setVerticalPadding(14);

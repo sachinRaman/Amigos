@@ -2,9 +2,9 @@
 <resources>
     <!--<color name="colorPrimary">#f4514e</color>-->
 
-    <!--1a9b81-->
-    <color name="colorPrimary">#f4514e</color>
-    <color name="colorPrimaryDark">#b8100c</color>
+    <!--1a9b81   #b8100c-->
+    <color name="colorPrimary">	#20B2AA</color>
+    <color name="colorPrimaryDark">	#008B8B</color>
     <color name="colorAccent">#f3f3f3</color>
     <color name="backgroundColor">#ffffff</color>
     <color name="actionBarTextColor">#ffffff</color>
