@@ -1,7 +1,6 @@
 package com.amigos.sachin.ApplicationCache;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 
 import com.amigos.sachin.VO.LikedUserVO;
 import com.amigos.sachin.VO.UserVO;
@@ -9,15 +8,16 @@ import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
 /*import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;*/
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by Sachin on 8/27/2017.
@@ -38,6 +38,7 @@ public class ApplicationCache {
     public static ArrayList<String> peopleWhoBlockedMeList = new ArrayList<String>();
     public static ArrayList<LikedUserVO> peopleIBlockedVOList = new ArrayList<LikedUserVO>();
     public static ArrayList<LikedUserVO> peopleWhoBlockedMeVOList = new ArrayList<LikedUserVO>();
+    public static ArrayList<LikedUserVO> pendingChatRequestsVO = new ArrayList<LikedUserVO>();
 
     public ApplicationCache(){
         populateUserVOArrayList();
@@ -49,6 +50,8 @@ public class ApplicationCache {
         Firebase userRef = new Firebase("https://new-amigos.firebaseio.com/users/");
         //DatabaseReference userRef = FirebaseDatabase.getInstance().getReference();
         //userRef.keepSynced(true);
+        /*FirebaseDatabase.getInstance().setLogLevel(Logger.Level.DEBUG);*/
+
         userRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -118,6 +121,35 @@ public class ApplicationCache {
                                 }
                             }
                             userVO.setInterests(interests);
+
+                        }
+                        if("interests".equalsIgnoreCase(userData.getKey())){
+                            for (DataSnapshot interest_list : userData.getChildren()){
+                                String key = interest_list.getKey();
+
+                                ArrayList<String> interests1 = new ArrayList<String>();
+                                ArrayList<String> interests2 = new ArrayList<String>();
+                                ArrayList<String> interests3 = new ArrayList<String>();
+
+                                if("interests1".equalsIgnoreCase(key)){
+                                    for(DataSnapshot snap1 : interest_list.getChildren()){
+                                        interests1.add(snap1.getKey());
+                                    }
+                                    userVO.setInterests1(interests1);
+                                }
+                                if("interests2".equalsIgnoreCase(key)){
+                                    for(DataSnapshot snap1 : interest_list.getChildren()){
+                                        interests2.add(snap1.getKey());
+                                    }
+                                    userVO.setInterests2(interests2);
+                                }
+                                if("interests3".equalsIgnoreCase(key)){
+                                    for(DataSnapshot snap1 : interest_list.getChildren()){
+                                        interests3.add(snap1.getKey());
+                                    }
+                                    userVO.setInterests3(interests3);
+                                }
+                            }
 
                         }
                         if("moods".equalsIgnoreCase(userData.getKey())){
@@ -371,6 +403,35 @@ public class ApplicationCache {
                         }
                         myUserVO.setInterests(interests);
                     }
+                    if("interests".equalsIgnoreCase(userData.getKey())){
+                        for (DataSnapshot interest_list : userData.getChildren()){
+                            String key = interest_list.getKey();
+
+                            ArrayList<String> interests1 = new ArrayList<String>();
+                            ArrayList<String> interests2 = new ArrayList<String>();
+                            ArrayList<String> interests3 = new ArrayList<String>();
+
+                            if("interests1".equalsIgnoreCase(key)){
+                                for(DataSnapshot snap1 : interest_list.getChildren()){
+                                    interests1.add(snap1.getKey());
+                                }
+                                myUserVO.setInterests1(interests1);
+                            }
+                            if("interests2".equalsIgnoreCase(key)){
+                                for(DataSnapshot snap1 : interest_list.getChildren()){
+                                    interests2.add(snap1.getKey());
+                                }
+                                myUserVO.setInterests2(interests2);
+                            }
+                            if("interests3".equalsIgnoreCase(key)){
+                                for(DataSnapshot snap1 : interest_list.getChildren()){
+                                    interests3.add(snap1.getKey());
+                                }
+                                myUserVO.setInterests3(interests3);
+                            }
+                        }
+
+                    }
                     if("moods".equalsIgnoreCase(userData.getKey())){
                         for (DataSnapshot children : userData.getChildren()){
                             if("interests".equalsIgnoreCase(children.getKey())){
@@ -389,6 +450,48 @@ public class ApplicationCache {
                                 myUserVO.setMood(children.getValue().toString());
                             }
                         }
+                    }
+                    if("chat_requests".equalsIgnoreCase(userData.getKey())){
+                        pendingChatRequestsVO.clear();
+                        ArrayList<String> sentRequests = new ArrayList<String>();
+                        ArrayList<String> pendingRequests = new ArrayList<String>();
+                        ArrayList<String> approvedRequests = new ArrayList<String>();
+                        String timeStamp = "";
+
+                        for (DataSnapshot children : userData.getChildren()){
+
+                            String userId = children.getKey();
+                            for(DataSnapshot snapshot : children.getChildren()){
+                                if("status".equalsIgnoreCase(snapshot.getKey())){
+
+                                    if("0".equalsIgnoreCase(snapshot.getValue().toString())){
+                                        sentRequests.add(userId);
+                                    }
+                                    if("1".equalsIgnoreCase(snapshot.getValue().toString())){
+                                        pendingRequests.add(userId);
+                                    }
+                                    if("2".equalsIgnoreCase(snapshot.getValue().toString())){
+                                        approvedRequests.add(userId);
+                                    }
+                                }
+                                if("time".equalsIgnoreCase(snapshot.getKey())){
+                                    timeStamp = snapshot.getValue().toString();
+                                }
+                            }
+                            if(pendingRequests.contains(userId)) {
+                                LikedUserVO likedUserVO = new LikedUserVO();
+                                likedUserVO.setTime(timeStamp);
+                                likedUserVO.setId(userId);
+                                likedUserVO.setName("");
+                                likedUserVO.setImageUrl("");
+                                likedUserVO.setStatus("");
+                                pendingChatRequestsVO.add(likedUserVO);
+                            }
+
+                        }
+                        myUserVO.setSentChatRequests(sentRequests);
+                        myUserVO.setPendingChatRequests(pendingRequests);
+                        myUserVO.setApprovedChatRequests(approvedRequests);
                     }
                 }
 

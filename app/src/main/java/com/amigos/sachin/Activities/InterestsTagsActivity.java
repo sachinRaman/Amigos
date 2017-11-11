@@ -38,6 +38,7 @@ public class InterestsTagsActivity extends AppCompatActivity {
         TagContainerLayout mTagContainerLayoutLifestyle = (TagContainerLayout) findViewById(R.id.tagPrefContainerLifeStyle1);
         TagContainerLayout mTagContainerLayoutArts = (TagContainerLayout) findViewById(R.id.tagPrefContainerArts1);
         TagContainerLayout mTagContainerLayoutEntertainment = (TagContainerLayout) findViewById(R.id.tagPrefContainerEntertainment1);
+        TagContainerLayout mTagContainerLayoutLiterature = (TagContainerLayout) findViewById(R.id.tagPrefContainerLiterature1);
         TagContainerLayout mTagContainerLayoutBusiness = (TagContainerLayout) findViewById(R.id.tagPrefContainerBusiness1);
         TagContainerLayout mTagContainerLayoutSports = (TagContainerLayout) findViewById(R.id.tagPrefContainerSports1);
         TagContainerLayout mTagContainerLayoutMusic = (TagContainerLayout) findViewById(R.id.tagPrefContainerMusic1);
@@ -47,6 +48,7 @@ public class InterestsTagsActivity extends AppCompatActivity {
         ArrayList<String> lifestyle = PeevesList.getAllLifestyleInterests();
         ArrayList<String> arts = PeevesList.getAllArtsInterests();
         ArrayList<String> entertainment = PeevesList.getAllEntertainmentInterests();
+        ArrayList<String> literature = PeevesList.getAllLiteratureInterests();
         ArrayList<String> business = PeevesList.getAllBusinessInterests();
         ArrayList<String> sports = PeevesList.getAllSportsInterests();
         ArrayList<String> music = PeevesList.getAllMusicInterests();
@@ -55,6 +57,7 @@ public class InterestsTagsActivity extends AppCompatActivity {
         createInterestTags(mTagContainerLayoutLifestyle,lifestyle, "lifestyle");
         createInterestTags(mTagContainerLayoutArts,arts, "arts");
         createInterestTags(mTagContainerLayoutEntertainment,entertainment, "entertainment");
+        createInterestTags(mTagContainerLayoutLiterature,literature, "literature");
         createInterestTags(mTagContainerLayoutBusiness,business, "business");
         createInterestTags(mTagContainerLayoutSports,sports, "sports");
         createInterestTags(mTagContainerLayoutMusic,music, "music");
@@ -106,6 +109,12 @@ public class InterestsTagsActivity extends AppCompatActivity {
                     tag.setTagTextColor(Color.GRAY);
                     tag.setTagBorderColor(Color.GRAY);
 
+                }else{
+                    usersInterestsRef.child(tag.getText()).setValue("0");
+                    interestsDAO.changeInterest(text,0);
+                    tag.setTagBackgroundColor(Color.WHITE);
+                    tag.setTagTextColor(Color.GRAY);
+                    tag.setTagBorderColor(Color.GRAY);
                 }
 
             }
@@ -136,6 +145,10 @@ public class InterestsTagsActivity extends AppCompatActivity {
                 tag.setTagBackgroundColor(Color.WHITE);
                 tag.setTagTextColor(context.getResources().getColor(R.color.colorPrimary));
                 tag.setTagBorderColor(context.getResources().getColor(R.color.colorPrimary));
+            }else{
+                tag.setTagBackgroundColor(Color.WHITE);
+                tag.setTagTextColor(Color.GRAY);
+                tag.setTagBorderColor(Color.GRAY);
             }
             tag.setHorizontalPadding(18);
             tag.setVerticalPadding(14);

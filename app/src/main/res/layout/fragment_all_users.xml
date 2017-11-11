@@ -4,6 +4,8 @@
     android:layout_height="match_parent"
     tools:context="com.amigos.sachin.AllUsersFragments.AllUsersFragment">
 
+
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -11,13 +13,15 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingTop="3dp">
+
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:padding="10dp">
+                android:padding="5dp">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -30,6 +34,7 @@
                         android:layout_height="120dp"
                         android:layout_centerInParent="false"
                         android:background="@color/backgroundColor"
+                        android:transitionName="@string/zoom_transition_string"
                         android:src="@drawable/ic_user" />
 
 
@@ -46,7 +51,7 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
 
-                        <TextView
+                        <hani.momanii.supernova_emoji_library.Helper.EmojiconTextView
                             android:id="@+id/tv_display_name"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -57,16 +62,74 @@
                             android:textStyle="bold"
                             android:textColor="@color/textColor"/>
 
-                        <TextView
+                        <hani.momanii.supernova_emoji_library.Helper.EmojiconTextView
                             android:id="@+id/tv_extra_info"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
+                            android:layout_marginTop="5dp"
                             android:clickable="false"
                             android:gravity="center"
                             android:paddingLeft="10dp"
                             android:singleLine="true"
                             android:textSize="18sp" />
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="5dp"
+                            android:layout_gravity="center">
+
+                            <TextView
+                                android:id="@+id/tv_click"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:clickable="false"
+                                android:gravity="center"
+                                android:layout_gravity="center_horizontal"
+                                android:paddingLeft="2dp"
+                                android:paddingRight="2dp"
+                                android:singleLine="true"
+                                android:textColor="@color/colorPrimary"
+                                android:text="Clicks 80%"
+                                android:textSize="14sp"
+                                android:layout_marginRight="2dp"/>
+
+                            <TextView
+                                android:id="@+id/tv_bullet"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:clickable="false"
+                                android:gravity="center"
+                                android:visibility="gone"
+                                android:layout_gravity="center_horizontal"
+                                android:singleLine="true"
+                                android:textColor="@color/colorPrimary"
+                                android:text="\u2022"
+                                android:textSize="14sp"
+                                android:layout_marginRight="2dp"/>
+
+                            <TextView
+                                android:id="@+id/tv_admired_you"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:clickable="false"
+                                android:gravity="center"
+                                android:layout_gravity="center_horizontal"
+                                android:paddingLeft="2dp"
+                                android:paddingRight="2dp"
+                                android:singleLine="true"
+                                android:visibility="gone"
+                                android:textColor="@color/colorPrimary"
+                                android:text="Admires You"
+                                android:textSize="14sp"/>
+
+                        </LinearLayout>
+
+
 
 
                     </LinearLayout>
@@ -74,73 +137,7 @@
 
             </LinearLayout>
 
-            <!--<LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-
-                <RelativeLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center">
-
-                    <ImageView
-                        android:id="@+id/imageView_profileImage"
-                        android:layout_width="350dp"
-                        android:layout_height="350dp"
-                        android:layout_centerInParent="false"
-                        android:background="@color/backgroundColor"
-                        android:src="@drawable/ic_user" />
-
-                    <TextView
-                        android:id="@+id/tv_matchCount"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignEnd="@+id/imageView_profileImage"
-                        android:layout_alignParentBottom="true"
-                        android:background="@drawable/textboxsharpborder"
-                        android:gravity="right"
-                        android:textColor="@color/colorPrimary"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
-
-                </RelativeLayout>-->
-
-
-            <!--<LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/gray1"
-                android:paddingBottom="15dp"
-                android:paddingLeft="10dp"
-                android:paddingTop="15dp">
-
-                <TextView
-                    android:id="@+id/tv_display_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:clickable="false"
-                    android:text="User name"
-                    android:textSize="22sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/tv_extra_info"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:clickable="false"
-                    android:paddingLeft="10dp"
-                    android:singleLine="true"
-                    android:textSize="18sp" />
-
-            </LinearLayout>-->
-
-            <!--<View
-                android:layout_width="match_parent"
-                android:layout_height="5dp"
-                android:background="#EEEEEE" />-->
-
-            <TextView
+            <hani.momanii.supernova_emoji_library.Helper.EmojiconTextView
                 android:id="@+id/textView_info"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -154,11 +151,6 @@
                 android:textColor="@color/gray3"
                 android:textSize="18sp" />
 
-            <!--<View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#EEEEEE" />-->
-
             <TextView
                 android:id="@+id/tv_professionalProfile"
                 android:layout_width="match_parent"
@@ -171,7 +163,7 @@
                 android:textColor="@color/gray3"
                 android:textSize="15sp" />
 
-            <TextView
+            <hani.momanii.supernova_emoji_library.Helper.EmojiconTextView
                 android:id="@+id/tv_activity2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -180,50 +172,6 @@
                 android:padding="10dp"
                 android:textColor="@color/gray3"
                 android:textSize="18sp" />
-
-            <!--<TextView
-                android:id="@+id/tv_moodTopicTextView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/gray1"
-                android:paddingBottom="5dp"
-                android:paddingLeft="10dp"
-                android:paddingTop="15dp"
-                android:text="Topic of the hour"
-                android:textColor="@color/gray3"
-                android:textSize="15sp" />
-
-            <TextView
-                android:id="@+id/tv_moodTopic"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/backgroundColor"
-                android:inputType="textMultiLine"
-                android:padding="10dp"
-                android:textColor="@color/gray3"
-                android:textSize="18sp" />-->
-
-            <!--<TextView
-                android:id="@+id/tv_professionalProfile"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/gray1"
-                android:paddingBottom="5dp"
-                android:paddingLeft="10dp"
-                android:paddingTop="15dp"
-                android:text="Profession"
-                android:textColor="@color/gray3"
-                android:textSize="15sp" />
-
-            <TextView
-                android:id="@+id/tv_activity2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/backgroundColor"
-                android:inputType="textMultiLine"
-                android:padding="10dp"
-                android:textColor="@color/gray3"
-                android:textSize="18sp" />-->
 
             <TextView
                 android:id="@+id/tv_interestedActivities"
@@ -237,7 +185,7 @@
                 android:textColor="@color/gray3"
                 android:textSize="15sp" />
 
-            <TextView
+            <hani.momanii.supernova_emoji_library.Helper.EmojiconTextView
                 android:id="@+id/tv_activity1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -247,32 +195,27 @@
                 android:textColor="@color/gray3"
                 android:textSize="18sp" />
 
-            <!--<TextView
-                android:id="@+id/tv_activity3"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/backgroundColor"
-                android:inputType="textMultiLine"
-                android:padding="10dp"
-                android:textColor="@color/gray3"
-                android:textSize="18sp" />-->
-
-            <View
+            <!--<View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#EEEEEE" />
+                android:background="#EEEEEE" />-->
 
             <TextView
-                android:id="@+id/textView2"
+                android:id="@+id/tv_interests1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/gray1"
                 android:paddingBottom="5dp"
                 android:paddingLeft="10dp"
                 android:paddingTop="10dp"
-                android:text="Common interests"
+                android:text="Passionate about"
                 android:textColor="@color/gray3"
                 android:textSize="15sp" />
+
+            <!--<View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#EEEEEE" />-->
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -280,7 +223,81 @@
                 android:background="@color/backgroundColor">
 
                 <com.cunoraz.tagview.TagView xmlns:tagview="http://schemas.android.com/apk/res-auto"
-                    android:id="@+id/user_tag_group"
+                    android:id="@+id/tags_interests1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:clickable="false"
+                    tagview:lineMargin="5dp"
+                    tagview:tagMargin="5dp"
+                    tagview:textPaddingBottom="5dp"
+                    tagview:textPaddingLeft="8dp"
+                    tagview:textPaddingRight="8dp"
+                    tagview:textPaddingTop="5dp" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_interests2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/gray1"
+                android:paddingBottom="5dp"
+                android:paddingLeft="10dp"
+                android:paddingTop="10dp"
+                android:text="Hobbies"
+                android:textColor="@color/gray3"
+                android:textSize="15sp" />
+
+            <!--<View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#EEEEEE" />-->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/backgroundColor">
+
+                <com.cunoraz.tagview.TagView xmlns:tagview="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/tags_interests2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:clickable="false"
+                    tagview:lineMargin="5dp"
+                    tagview:tagMargin="5dp"
+                    tagview:textPaddingBottom="5dp"
+                    tagview:textPaddingLeft="8dp"
+                    tagview:textPaddingRight="8dp"
+                    tagview:textPaddingTop="5dp" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_interests3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/gray1"
+                android:paddingBottom="5dp"
+                android:paddingLeft="10dp"
+                android:paddingTop="10dp"
+                android:text="Appreciates"
+                android:textColor="@color/gray3"
+                android:textSize="15sp" />
+
+            <!--<View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#EEEEEE" />-->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/backgroundColor">
+
+                <com.cunoraz.tagview.TagView xmlns:tagview="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/tags_interests3"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
@@ -339,40 +356,37 @@
                 android:src="@drawable/cross_icon2" />
 
 
-            <ImageView
-                android:id="@+id/likeIcon"
-                android:layout_width="45dp"
-                android:layout_height="45dp"
+            <RelativeLayout
+                android:id="@+id/likeIcon_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"
                 android:layout_gravity="right"
                 android:layout_marginRight="20dp"
-                android:src="@drawable/cross_icon" />
+                android:padding="5dp">
 
+                <ImageView
+                    android:id="@+id/likeIcon"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:src="@drawable/cross_icon" />
+
+            </RelativeLayout>
+
+
+            <ImageView
+                android:id="@+id/check_icon"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:visibility="gone"
+                android:layout_alignEnd="@+id/likeIcon_layout"
+                android:src="@drawable/check_icon" />
 
         </RelativeLayout>
 
-        <!--<View
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:background="@color/textColor5" />-->
 
     </LinearLayout>
-    <!--<LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true">
-
-        &lt;!&ndash;<TextView
-            android:id="@+id/tv_matchCount"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:gravity="right"
-            android:textColor="@color/backgroundColor"
-            android:textStyle="bold"/>&ndash;&gt;
-
-    </LinearLayout>-->
 
 </RelativeLayout>

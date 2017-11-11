@@ -15,9 +15,7 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:gravity="center"
-        android:text="You have not admired anyone yet. Go ahead and admire the people you like."
+        android:text="You have no chat requests yet. Keep exploring and you will find people who wants to talk to you"
         android:textSize="20sp" />
-        android:visibility="gone"
-        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

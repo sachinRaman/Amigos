@@ -10,6 +10,24 @@ public class ChatUsersVO {
     String lastMessage;
     String time;
     int seen;
+    String messageId = "";
+    int userSide = 0;
+
+    public int getUserSide() {
+        return userSide;
+    }
+
+    public void setUserSide(int userSide) {
+        this.userSide = userSide;
+    }
+
+    public String getMessageId() {
+        return messageId;
+    }
+
+    public void setMessageId(String messageId) {
+        this.messageId = messageId;
+    }
 
     public String getMyId() {
         return myId;

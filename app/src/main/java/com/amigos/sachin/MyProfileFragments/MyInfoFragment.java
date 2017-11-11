@@ -34,6 +34,7 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.amigos.sachin.Activities.SettingsActivity;
+import com.amigos.sachin.Activities.UserProfileActivity;
 import com.amigos.sachin.R;
 import com.amigos.sachin.Services.UploadService;
 import com.bumptech.glide.Glide;
@@ -59,6 +60,7 @@ import java.io.ByteArrayOutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import hani.momanii.supernova_emoji_library.Helper.EmojiconEditText;
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
 import jp.wasabeef.glide.transformations.CropSquareTransformation;
 
@@ -75,7 +77,7 @@ public class MyInfoFragment extends Fragment {
     Context context;
     ImageView imageView,profilePhotoEdit;
     RelativeLayout settingsIcon;
-    EditText et_name, et_age, et_place, et_status, et_activity1, et_activity2, et_activity3;
+    EmojiconEditText et_name, et_age, et_place, et_status, et_activity1, et_activity2, et_activity3;
     Button okButton;
     public RadioGroup radioSexGroup;
     public RadioButton radioSexButton;
@@ -121,12 +123,12 @@ public class MyInfoFragment extends Fragment {
         context = getActivity();
         Firebase.setAndroidContext(context);
 
-        et_name = (EditText) view.findViewById(R.id.et_display_name);
-        et_age = (EditText) view.findViewById(R.id.age);
-        et_place = (EditText) view.findViewById(R.id.place);
-        et_status = (EditText) view.findViewById(R.id.editText_status);
-        et_activity1 = (EditText) view.findViewById(R.id.editText_act1);
-        et_activity2 = (EditText) view.findViewById(R.id.editText_act2);
+        et_name = (EmojiconEditText) view.findViewById(R.id.et_display_name);
+        et_age = (EmojiconEditText) view.findViewById(R.id.age);
+        et_place = (EmojiconEditText) view.findViewById(R.id.place);
+        et_status = (EmojiconEditText) view.findViewById(R.id.editText_status);
+        et_activity1 = (EmojiconEditText) view.findViewById(R.id.editText_act1);
+        et_activity2 = (EmojiconEditText) view.findViewById(R.id.editText_act2);
         /*et_activity3 = (EditText) view.findViewById(R.id.editText_act3);*/
         radioSexGroup = (RadioGroup) view.findViewById(R.id.radioSex);
         okButton = (Button) view.findViewById(R.id.button);
@@ -140,7 +142,10 @@ public class MyInfoFragment extends Fragment {
         settingsIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, SettingsActivity.class);
+                /*Intent intent = new Intent(context, SettingsActivity.class);
+                startActivity(intent);*/
+                Intent intent = new Intent(context,UserProfileActivity.class);
+                intent.putExtra("userId", myId);
                 startActivity(intent);
             }
         });

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <item
+        android:id="@+id/refresh_icon"
+        android:title="Refresh"
+        android:icon="@drawable/ic_replay_white_24dp"/>
+
+    <item
+        android:id="@+id/search_icon"
+        android:title="Search"
+        android:icon="@drawable/ic_search_white_24dp" />
+
+    <item
+        android:id="@+id/people_i_liked"
+        android:title="People I Admired" />
+
+    <item
+        android:id="@+id/settings"
+        android:title="Settings" />
+
+</menu>

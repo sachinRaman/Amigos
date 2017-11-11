@@ -20,12 +20,12 @@
         android:title="My Interests"
         app:showAsAction="ifRoom" />-->
 
-    <item
+    <!--<item
         android:id="@+id/my_mood"
         android:enabled="true"
         android:icon="@drawable/ic_mood_black_24dp"
-        android:title="My Mood"
-        app:showAsAction="ifRoom" />
+        android:title="Preferences"
+        app:showAsAction="ifRoom" />-->
     <item
         android:id="@+id/my_profile"
         android:enabled="true"

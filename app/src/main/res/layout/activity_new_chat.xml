@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/chatView1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="10dp"
+    android:background="@color/md_grey_100"
+    tools:context="com.amigos.sachin.Activities.NewChatActivity">
+
+    <LinearLayout
+        android:id="@+id/chatRequestLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <Button
+            android:id="@+id/chatRequestAcceptButton1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Accept"
+            android:paddingRight="20dp"/>
+
+        <Button
+            android:id="@+id/chatRequestBlockButton1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Block"
+            android:paddingLeft="20dp"/>
+
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/msgview1"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:divider="@null"
+        android:stackFromBottom="true"
+        android:transcriptMode="alwaysScroll"></ListView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="1">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".86"
+            android:layout_gravity="center_vertical"
+            android:layout_marginRight="9dp"
+            android:background="@drawable/chatboxborder">
+
+            <ImageView
+                android:id="@+id/smile_icon1"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/smile_icon"
+                android:layout_gravity="center_vertical"
+                android:tint="@color/gray2" />
+
+            <hani.momanii.supernova_emoji_library.Helper.EmojiconEditText
+                android:id="@+id/msg1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|center_horizontal"
+                android:hint="Type a message..."
+                android:inputType="textCapSentences|textMultiLine"
+                android:textColor="@color/textColor"
+                android:textCursorDrawable="@null" />
+
+        </LinearLayout>
+
+
+        <ImageView
+            android:id="@+id/send1"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight=".14"
+            android:src="@drawable/send_icon" />
+
+
+    </LinearLayout>
+
+</LinearLayout>

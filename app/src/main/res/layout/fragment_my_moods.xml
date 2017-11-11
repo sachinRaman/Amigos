@@ -10,7 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true">
+        android:layout_centerHorizontal="true">
 
         <RelativeLayout
             android:layout_width="wrap_content"
@@ -19,63 +19,49 @@
 
             <TextView
                 android:id="@+id/textView3"
-                android:layout_width="match_parent"
+                android:layout_width="300dp"
                 android:layout_height="match_parent"
-                android:layout_gravity="center"
+                android:layout_gravity="center_horizontal"
+                android:layout_centerHorizontal="true"
                 android:layout_marginTop="15dp"
                 android:gravity="center_horizontal"
-                android:text="Do you have something on your mind?"
+                android:text="Choose interests of people you would like to see"
                 android:textSize="18sp" />
 
-            <LinearLayout
-                android:id="@+id/linearLayout1"
-                android:layout_width="wrap_content"
+            <RadioGroup
+                android:id="@+id/radiogroup_people_interests"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="55dp">
+                android:background="@color/backgroundColor"
+                android:orientation="vertical"
+                android:layout_below="@+id/textView3">
 
-                <TextView
-                    android:id="@+id/textView4"
-                    android:layout_width="wrap_content"
+                <RadioButton
+                    android:id="@+id/radio_people_of_my_interests"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignBaseline="@+id/switch1"
-                    android:layout_marginRight="20dp"
-                    android:text="No"
-                    android:textSize="18sp" />
+                    android:buttonTint="@color/colorPrimary"
+                    android:checked="true"
+                    android:textColor="@color/gray3"
+                    android:text="Show people of my own interests"/>
 
-                <!--<Switch
-                    android:id="@+id/switch1"
-                    android:layout_width="wrap_content"
+                <RadioButton
+                    android:id="@+id/radio_people_of_particular_interests"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:scaleX="1.5"
-                    android:scaleY="1.5"
-                    android:minHeight="50dp"
-                    android:theme="@style/SCBSwitch" />-->
-                <ImageView
-                    android:id="@+id/switch1"
-                    android:layout_width="50dp"
-                    android:layout_height="25dp"
-                    android:layout_alignParentTop="true"
-                    android:src="@drawable/switch_off" />
+                    android:buttonTint="@color/colorPrimary"
+                    android:textColor="@color/gray3"
+                    android:text="I have other interests in mind"/>
 
-                <TextView
-                    android:id="@+id/textView5"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignBaseline="@+id/switch1"
-                    android:layout_marginLeft="20dp"
-                    android:text="Yes"
-                    android:textSize="18sp" />
+            </RadioGroup>
 
-            </LinearLayout>
 
             <TextView
                 android:id="@+id/tv_moodOffText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/gray1"
-                android:layout_below="@+id/linearLayout1"
+                android:layout_below="@+id/radiogroup_people_interests"
                 android:paddingBottom="5dp"
                 android:paddingLeft="10dp"
                 android:paddingTop="10dp"
@@ -83,41 +69,15 @@
                 android:textColor="@color/gray3"
                 android:visibility="gone"
                 android:layout_marginTop="20dp"
-                android:text="You have not selected any topic for discussion. You will be matched with users on the basis of your interests. Update your topic for discussion for better experience."/>
+                android:text="You will be matched with users on the basis of your own interests. If you want to find people with some specific interests, choose the other preferences button and specify the interests."/>
 
-            <TextView
-                android:id="@+id/tv_moodTextBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/linearLayout1"
-                android:layout_marginTop="20dp"
-                android:background="@color/gray1"
-                android:paddingBottom="5dp"
-                android:paddingLeft="10dp"
-                android:paddingTop="10dp"
-                android:text="What are you wondering?"
-                android:textSize="15sp" />
 
-            <EditText
-                android:id="@+id/et_myMood"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_below="@+id/tv_moodTextBox"
-                android:background="@color/backgroundColor"
-                android:hint="A thought? A question? An activity..."
-                android:padding="10dp"
-                android:textColor="@color/textColor" />
-
-            <TextView
+            <View
                 android:id="@+id/tv_addedTags"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_below="@+id/et_myMood"
-                android:background="@color/gray1"
-                android:paddingLeft="10dp"
-                android:textSize="4dp" />
+                android:layout_height="1dp"
+                android:layout_below="@+id/radiogroup_people_interests"
+                android:background="#EEEEEE" />
 
             <co.lujun.androidtagview.TagContainerLayout
                 android:id="@+id/chosenTags"
@@ -134,17 +94,13 @@
                 app:tag_theme="pure_teal"
                 app:vertical_interval="10dp" />
 
-            <TextView
+
+            <View
                 android:id="@+id/tv_allTags"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
+                android:layout_height="1dp"
                 android:layout_below="@+id/chosenTags"
-                android:background="@color/gray1"
-                android:paddingBottom="5dp"
-                android:paddingLeft="10dp"
-                android:paddingTop="10dp"
-                android:text="Add relevant tags for the activity(upto 7)" />
+                android:background="#EEEEEE" />
 
             <EditText
                 android:id="@+id/et_search"
@@ -152,14 +108,14 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/tv_allTags"
                 android:background="@color/backgroundColor"
-                android:hint="Search for tags here.."
+                android:hint="Search for interests here.."
                 android:padding="10dp"
                 android:textColor="@color/textColor" />
 
             <View
                 android:id="@+id/viewBlankLine"
                 android:layout_width="match_parent"
-                android:layout_height="5dp"
+                android:layout_height="1dp"
                 android:layout_below="@+id/et_search"
                 android:background="#EEEEEE" />
 
@@ -203,7 +159,8 @@
         android:id="@+id/linearLayout_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true">
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true">
 
         <RelativeLayout
             android:layout_width="match_parent"

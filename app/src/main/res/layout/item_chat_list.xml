@@ -43,7 +43,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <TextView
+            <hani.momanii.supernova_emoji_library.Helper.EmojiconTextView
                 android:id="@+id/tv_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -82,7 +82,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <TextView
+            <hani.momanii.supernova_emoji_library.Helper.EmojiconTextView
                 android:id="@+id/tv_status"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"

@@ -9,11 +9,17 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
 
+import com.amigos.sachin.DAO.ChatUsersDAO;
+import com.amigos.sachin.DAO.ChatsDAO;
 import com.amigos.sachin.DAO.InterestsDAO;
 import com.amigos.sachin.R;
 import com.amigos.sachin.Services.ChatService;
+//import com.amigos.sachin.Services.EnablingService;
 import com.amigos.sachin.Values.PeevesList;
+import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -23,14 +29,25 @@ public class SplashScreen extends AppCompatActivity {
     String myId = "";
     SharedPreferences sp;
     ProgressBar progressBar;
+    Context context;
+    Firebase myChatsRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
+        context = getApplicationContext();
+
+        Firebase.setAndroidContext(context);
+
         Intent startChatService = new Intent(this, ChatService.class);
         startService(startChatService);
         getSupportActionBar().hide();
+
+        sp = getSharedPreferences("com.amigos.sachin", Context.MODE_PRIVATE);
+        myId = sp.getString("myId", "");
+
+        myChatsRef = new Firebase("https://new-amigos.firebaseio.com/users/"+myId+"/chats/");
 
         progressBar = (ProgressBar) findViewById(R.id.progressBarSplashScreen);
         progressBar.setVisibility(View.VISIBLE);
@@ -48,39 +65,58 @@ public class SplashScreen extends AppCompatActivity {
         protected String doInBackground(String... params) {
             //some heavy processing resulting in a Data String
 
-            sp = getSharedPreferences("com.amigos.sachin", Context.MODE_PRIVATE);
-            myId = sp.getString("myId", "");
+            /*myChatsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for(DataSnapshot snapshot: dataSnapshot.getChildren()){
+                        String userId = snapshot.getKey();
 
-            ArrayList<String> lifestyle = PeevesList.getAllLifestyleInterests();
-            ArrayList<String> arts = PeevesList.getAllArtsInterests();
-            ArrayList<String> entertainment = PeevesList.getAllEntertainmentInterests();
-            ArrayList<String> business = PeevesList.getAllBusinessInterests();
-            ArrayList<String> sports = PeevesList.getAllSportsInterests();
-            ArrayList<String> music = PeevesList.getAllMusicInterests();
-            ArrayList<String> technology = PeevesList.getAllTechnologyInterests();
+                        ChatsDAO chatsDAO = new ChatsDAO(context);
+                        chatsDAO.deleteUserChat(userId);
 
-            addInterestsToCloud(myId,"lifestyle",lifestyle);
-            addInterestsToCloud(myId,"arts",arts);
-            addInterestsToCloud(myId,"entertainment",entertainment);
-            addInterestsToCloud(myId,"business",business);
-            addInterestsToCloud(myId,"sports",sports);
-            addInterestsToCloud(myId,"music",music);
-            addInterestsToCloud(myId,"technology",technology);
+                        ChatUsersDAO chatUsersDAO = new ChatUsersDAO(context);
 
-            addInterestsToDB("lifestyle",lifestyle);
-            addInterestsToDB("arts",arts);
-            addInterestsToDB("entertainment",entertainment);
-            addInterestsToDB("business",business);
-            addInterestsToDB("sports",sports);
-            addInterestsToDB("music",music);
-            addInterestsToDB("technology",technology);
-            for (int i = 0; i < 3; i++) {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    Thread.interrupted();
+                        String messageId = "";
+                        String message = "";
+                        String time = "";
+                        int seen = 1;
+                        int userSide = 0;
+
+                        for(DataSnapshot userData: snapshot.getChildren()) {
+                            messageId = userData.getKey();
+                            if(!messageId.equalsIgnoreCase(myId) && !messageId.equalsIgnoreCase(userId)){
+                                for(DataSnapshot data: userData.getChildren()){
+                                    if("-seen".equalsIgnoreCase(data.getKey())){
+                                        seen = Integer.valueOf(data.getValue().toString());
+                                    }
+                                    if("-time".equalsIgnoreCase(data.getKey())){
+                                        time = data.getValue().toString();
+                                    }
+                                    if(myId.equalsIgnoreCase(data.getKey())){
+                                        message = data.getValue().toString();
+                                        userSide = 0;
+                                    }else if(userId.equalsIgnoreCase(data.getKey())){
+                                        message = data.getValue().toString();
+                                        userSide = 1;
+                                    }
+                                }
+                            }
+                            chatsDAO.addToChatList(userId,messageId,message,time,seen,userSide);
+                        }
+                        //chatUsersDAO.removeFromChatUsersDAO(userId);
+                        chatUsersDAO.addToChatList(userId,myId,message,0);
+
+                    }
                 }
-            }
+
+                @Override
+                public void onCancelled(FirebaseError firebaseError) {
+
+                }
+            });*/
+
+
+
             return "whatever result you have";
         }
 
@@ -100,27 +136,4 @@ public class SplashScreen extends AppCompatActivity {
         protected void onProgressUpdate(Void... values) {}
     }
 
-    public void addInterestsToCloud(String myId, String topic, ArrayList<String> list){
-        Firebase interestsRef = new Firebase("https://new-amigos.firebaseio.com/users/"+myId+"/interests_list/" + topic + "/");
-        for (String s : list){
-            interestsRef.child(s).setValue("0");
-        }
-
-        //For fake profiles
-        /*for(int i = 0;i<25; i++) {
-            Firebase ref = new Firebase("https://new-amigos.firebaseio.com/users/test" + i + "/interests_list/" + topic + "/");
-            for (String s : list){
-                int n = 0 + (int)(Math.random() * ((1 - 0) + 1));
-                ref.child(s).setValue(Integer.toString(n));
-            }
-        }*/
-    }
-
-    public void addInterestsToDB(String tag,ArrayList<String> list){
-        InterestsDAO interestsDAO = new InterestsDAO(getApplicationContext());
-        //interestsDAO.clearTableData();
-        for (String s : list){
-            interestsDAO.addInterestsToDB(tag,s,0);
-        }
-    }
 }

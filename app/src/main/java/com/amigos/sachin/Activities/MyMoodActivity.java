@@ -1,38 +1,34 @@
 package com.amigos.sachin.Activities;
 
+import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
+import android.support.annotation.IdRes;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Editable;
-import android.text.TextWatcher;
+import android.view.DragEvent;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.Switch;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.amigos.sachin.MainFragments.UsersFragment;
 import com.amigos.sachin.R;
 import com.amigos.sachin.Values.PeevesList;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
-/*import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;*/
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import co.lujun.androidtagview.TagContainerLayout;
 import co.lujun.androidtagview.TagView;
@@ -42,19 +38,18 @@ public class MyMoodActivity extends AppCompatActivity {
 
     TagContainerLayout mTagContainerLayoutMyMoodTags;
     TagContainerLayout mTagContainerLayoutAllTags;
-    Switch myMoodsSwitch;
     int myMoodsTagCount = 0;
     Context context;
-    EditText et_myMood, et_search;
-    TextView tv_addedTags,tv_allTags, tv_moodTextBox, tv_moodOffText, tv_loadMore;
-    LinearLayout linearLayoutButton;
+    LinearLayout linearLayoutButton, layoutMoodOff, layoutMoodTags, myTagsContainerLayout, allTagsContainerLayout;
     Button saveButton;
     String myId;
     ArrayList<String> initialTags = new ArrayList<String>();
     ArrayList<String> allInterests = new ArrayList<String>();
-    ArrayList<String> shortList = new ArrayList<String>();
-    View viewBlankLine;
+    String mood = "0";
     int interestsFlag = 0;
+    public RadioGroup radiogroup_people_interests;
+    View singleLineSeperator1;
+    TextView tv_moodOffText1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,88 +64,108 @@ public class MyMoodActivity extends AppCompatActivity {
 
         mTagContainerLayoutAllTags = (TagContainerLayout) findViewById(R.id.allTags1);
         mTagContainerLayoutMyMoodTags = (TagContainerLayout) findViewById(R.id.chosenTags1);
-        myMoodsSwitch = (Switch) findViewById(R.id.switch11);
-        et_myMood = (EditText) findViewById(R.id.et_myMood1);
-        tv_addedTags = (TextView) findViewById(R.id.tv_addedTags1);
-        tv_allTags = (TextView) findViewById(R.id.tv_allTags1);
+        radiogroup_people_interests = (RadioGroup) findViewById(R.id.radiogroup_people_interests1);
+        layoutMoodOff = (LinearLayout) findViewById(R.id.layoutMoodOff);
+        layoutMoodTags = (LinearLayout) findViewById(R.id.layoutMoodOff);
+        myTagsContainerLayout = (LinearLayout) findViewById(R.id.myTagsContainerLayout);
+        allTagsContainerLayout = (LinearLayout) findViewById(R.id.allTagsContainerLayout);
         linearLayoutButton = (LinearLayout) findViewById(R.id.linearLayout_button1);
         saveButton = (Button) findViewById(R.id.myMoodsButton1);
-        et_search = (EditText) findViewById(R.id.et_search1);
-        tv_moodTextBox = (TextView) findViewById(R.id.tv_moodTextBox1);
-        tv_moodOffText = (TextView) findViewById(R.id.tv_moodOffText1);
-        viewBlankLine = (View) findViewById(R.id.viewBlankLine1);
-        tv_loadMore = (TextView) findViewById(R.id.tv_loadMore1);
+        singleLineSeperator1 = (View) findViewById(R.id.singleLineSeperator1);
+        tv_moodOffText1 = (TextView) findViewById(R.id.tv_moodOffText1);
 
-        tv_moodOffText.setVisibility(View.VISIBLE);
+        mTagContainerLayoutMyMoodTags.removeAllTags();
 
-        if(!myMoodsSwitch.isChecked()){
-            et_myMood.setVisibility(View.GONE);
-            tv_addedTags.setVisibility(View.GONE);
-            tv_allTags.setVisibility(View.GONE);
-            mTagContainerLayoutAllTags.setVisibility(View.GONE);
-            mTagContainerLayoutMyMoodTags.setVisibility(View.GONE);
-            et_search.setVisibility(View.GONE);
-            tv_moodTextBox.setVisibility(View.GONE);
-            tv_loadMore.setVisibility(View.GONE);
-            tv_moodOffText.setVisibility(View.VISIBLE);
-            viewBlankLine.setVisibility(View.GONE);
-        }
+        mTagContainerLayoutAllTags.removeAllTags();
+
+        layoutMoodOff.setVisibility(View.VISIBLE);
+        layoutMoodTags.setVisibility(View.GONE);
+        myTagsContainerLayout.setVisibility(View.GONE);
+        allTagsContainerLayout.setVisibility(View.GONE);
+
+        mTagContainerLayoutAllTags.setOnDragListener(new MyMoodActivity.MyDragListener());
+        mTagContainerLayoutMyMoodTags.setOnDragListener(new MyMoodActivity.MyDragListener());
+        myTagsContainerLayout.setOnDragListener(new MyMoodActivity.MyDragListener());
+        allTagsContainerLayout.setOnDragListener(new MyMoodActivity.MyDragListener());
+
+
+        updateContainer(mTagContainerLayoutAllTags);
+        mTagContainerLayoutAllTags.setBackgroundColor(Color.parseColor("#fbf2fc"));
+
+        updateContainer(mTagContainerLayoutMyMoodTags);
+        mTagContainerLayoutMyMoodTags.setBackgroundColor(Color.parseColor("#fffbef"));
+
+        setListenerToTags(mTagContainerLayoutAllTags, 1);
+        setListenerToTags(mTagContainerLayoutMyMoodTags, 2);
+
         initialize();
-        updateAllInterests();
         setListeners();
+
+        String myMoodUsageDirections = sp.getString("myMoodUsageDirections","0");
+        if("0".equalsIgnoreCase(myMoodUsageDirections)){
+            Intent intent = new Intent(context, MyMoodUsageDirections.class);
+            startActivity(intent);
+        }
+
+
     }
 
     public void initialize(){
 
-        Firebase myMoodsRef = new Firebase("https://new-amigos.firebaseio.com/users/" + myId + "/moods/");
-        myMoodsRef.addValueEventListener(new ValueEventListener() {
+        Firebase myMoodsRef = new Firebase("https://new-amigos.firebaseio.com/users/"+myId+"/moods/");
+        myMoodsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
-                    if("mood".equalsIgnoreCase(snapshot.getKey())){
+                for(DataSnapshot snapshot: dataSnapshot.getChildren()){
+                    if ("mood".equalsIgnoreCase(snapshot.getKey())){
                         if("1".equalsIgnoreCase(snapshot.getValue().toString())){
-                            myMoodsSwitch.setChecked(true);
-                            et_myMood.setVisibility(View.VISIBLE);
-                            tv_addedTags.setVisibility(View.VISIBLE);
-                            tv_allTags.setVisibility(View.VISIBLE);
-                            mTagContainerLayoutAllTags.setVisibility(View.VISIBLE);
+                            mood = "1";
+                            radiogroup_people_interests.check(R.id.radio_people_of_particular_interests1);
+
+                            layoutMoodTags.setVisibility(View.VISIBLE);
                             mTagContainerLayoutMyMoodTags.setVisibility(View.VISIBLE);
-                            et_search.setVisibility(View.VISIBLE);
-                            tv_moodTextBox.setVisibility(View.VISIBLE);
-                            tv_loadMore.setVisibility(View.VISIBLE);
-                            tv_moodOffText.setVisibility(View.GONE);
-                            viewBlankLine.setVisibility(View.VISIBLE);
+                            mTagContainerLayoutAllTags.setVisibility(View.VISIBLE);
+                            singleLineSeperator1.setVisibility(View.VISIBLE);
+                            myTagsContainerLayout.setVisibility(View.VISIBLE);
+                            allTagsContainerLayout.setVisibility(View.VISIBLE);
+                            layoutMoodOff.setVisibility(View.GONE);
+                            tv_moodOffText1.setVisibility(View.GONE);
+
                         }else{
-                            myMoodsSwitch.setChecked(false);
-                            et_myMood.setVisibility(View.GONE);
-                            tv_addedTags.setVisibility(View.GONE);
-                            tv_allTags.setVisibility(View.GONE);
-                            mTagContainerLayoutAllTags.setVisibility(View.GONE);
+                            mood = "0";
+                            radiogroup_people_interests.check(R.id.radio_people_of_my_interests1);
+
+                            layoutMoodTags.setVisibility(View.GONE);
                             mTagContainerLayoutMyMoodTags.setVisibility(View.GONE);
-                            et_search.setVisibility(View.GONE);
-                            viewBlankLine.setVisibility(View.GONE);
-                            tv_moodTextBox.setVisibility(View.GONE);
-                            tv_loadMore.setVisibility(View.GONE);
-                            tv_moodOffText.setVisibility(View.VISIBLE);
+                            mTagContainerLayoutAllTags.setVisibility(View.GONE);
+                            singleLineSeperator1.setVisibility(View.GONE);
+                            myTagsContainerLayout.setVisibility(View.GONE);
+                            allTagsContainerLayout.setVisibility(View.GONE);
+                            layoutMoodOff.setVisibility(View.VISIBLE);
+                            tv_moodOffText1.setVisibility(View.VISIBLE);
                         }
-                    }
-                    if("topic".equalsIgnoreCase(snapshot.getKey())){
-                        et_myMood.setText(snapshot.getValue().toString());
                     }
                     if("interests".equalsIgnoreCase(snapshot.getKey())){
                         initialTags.clear();
-                        for (DataSnapshot data : snapshot.getChildren()){
-                            initialTags.add(data.getKey().toString());
+                        for(DataSnapshot snap : snapshot.getChildren()){
+                            initialTags.add(snap.getKey());
                         }
                         mTagContainerLayoutMyMoodTags.removeAllTags();
                         mTagContainerLayoutMyMoodTags.setTags(initialTags);
-                        myMoodsTagCount = initialTags.size();
-                        for (int i = 0; i<initialTags.size(); i++){
-                            TagView tag = mTagContainerLayoutMyMoodTags.getTagView(i);
-                            tag.setTagBackgroundColor(Color.WHITE);
-                            tag.setTagTextColor(context.getResources().getColor(R.color.colorPrimary));
-                            tag.setTagBorderColor(context.getResources().getColor(R.color.colorPrimary));
+
+                        ArrayList<String> allTopics = PeevesList.getNewInterestsTopics();
+                        for(String s: initialTags){
+                            allTopics.remove(s);
                         }
+                        allInterests.clear();
+                        allInterests.addAll(allTopics);
+                        mTagContainerLayoutAllTags.setTags(allInterests);
+
+                        updateContainer(mTagContainerLayoutAllTags);
+                        updateContainer(mTagContainerLayoutMyMoodTags);
+
+                        setListenerToTags(mTagContainerLayoutMyMoodTags, 1);
+                        setListenerToTags(mTagContainerLayoutAllTags, 2);
                     }
                 }
             }
@@ -160,98 +175,43 @@ public class MyMoodActivity extends AppCompatActivity {
 
             }
         });
-
     }
 
     private void setListeners() {
-        myMoodsSwitch.setOnClickListener(new View.OnClickListener() {
+
+        radiogroup_people_interests.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
-            public void onClick(View v) {
-                Firebase moodsRef = new Firebase("https://new-amigos.firebaseio.com/moods/");
-                Firebase myMoodsRef = new Firebase("https://new-amigos.firebaseio.com/users/"+myId+"/moods/");
-                if(!myMoodsSwitch.isChecked()){
+            public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
+                if (checkedId == R.id.radio_people_of_my_interests1){
+                    mood = "0";
+                    Firebase moodsRef = new Firebase("https://new-amigos.firebaseio.com/moods/");
+                    Firebase myMoodsRef = new Firebase("https://new-amigos.firebaseio.com/users/"+myId+"/moods/");
                     myMoodsRef.child("mood").setValue("0");
-                    et_myMood.setVisibility(View.GONE);
-                    tv_addedTags.setVisibility(View.GONE);
-                    tv_allTags.setVisibility(View.GONE);
-                    mTagContainerLayoutAllTags.setVisibility(View.GONE);
+
+                    layoutMoodTags.setVisibility(View.GONE);
                     mTagContainerLayoutMyMoodTags.setVisibility(View.GONE);
-                    et_search.setVisibility(View.GONE);
-                    viewBlankLine.setVisibility(View.GONE);
-                    tv_moodTextBox.setVisibility(View.GONE);
-                    tv_moodOffText.setVisibility(View.VISIBLE);
-                }else{
+                    mTagContainerLayoutAllTags.setVisibility(View.GONE);
+                    singleLineSeperator1.setVisibility(View.GONE);
+                    myTagsContainerLayout.setVisibility(View.GONE);
+                    allTagsContainerLayout.setVisibility(View.GONE);
+                    layoutMoodOff.setVisibility(View.VISIBLE);
+                    tv_moodOffText1.setVisibility(View.VISIBLE);
+
+                }else if (checkedId == R.id.radio_people_of_particular_interests1) {
+                    mood = "1";
+                    Firebase moodsRef = new Firebase("https://new-amigos.firebaseio.com/moods/");
+                    Firebase myMoodsRef = new Firebase("https://new-amigos.firebaseio.com/users/" + myId + "/moods/");
                     myMoodsRef.child("mood").setValue("1");
-                    et_myMood.setVisibility(View.VISIBLE);
-                    tv_addedTags.setVisibility(View.VISIBLE);
-                    tv_allTags.setVisibility(View.VISIBLE);
-                    mTagContainerLayoutAllTags.setVisibility(View.VISIBLE);
+
+                    layoutMoodTags.setVisibility(View.VISIBLE);
                     mTagContainerLayoutMyMoodTags.setVisibility(View.VISIBLE);
-                    et_search.setVisibility(View.VISIBLE);
-                    viewBlankLine.setVisibility(View.VISIBLE);
-                    tv_moodTextBox.setVisibility(View.VISIBLE);
-                    tv_moodOffText.setVisibility(View.GONE);
+                    mTagContainerLayoutAllTags.setVisibility(View.VISIBLE);
+                    singleLineSeperator1.setVisibility(View.VISIBLE);
+                    myTagsContainerLayout.setVisibility(View.VISIBLE);
+                    allTagsContainerLayout.setVisibility(View.VISIBLE);
+                    layoutMoodOff.setVisibility(View.GONE);
+                    tv_moodOffText1.setVisibility(View.GONE);
                 }
-            }
-        });
-
-
-        mTagContainerLayoutAllTags.setOnTagClickListener(new TagView.OnTagClickListener() {
-            @Override
-            public void onTagClick(int position, String text) {
-                if (myMoodsTagCount < 7){
-                    List<String> myTags = new ArrayList<String>();
-                    myTags = mTagContainerLayoutMyMoodTags.getTags();
-                    if(myTags.contains(text)){
-                        Toast.makeText(context,"Tag already added.",Toast.LENGTH_LONG).show();
-                    }else {
-                        mTagContainerLayoutMyMoodTags.addTag(text);
-                        TagView tag = mTagContainerLayoutMyMoodTags.getTagView(myMoodsTagCount);
-                        tag.setTagBackgroundColor(Color.WHITE);
-                        tag.setTagTextColor(context.getResources().getColor(R.color.colorPrimary));
-                        tag.setTagBorderColor(context.getResources().getColor(R.color.colorPrimary));
-                        myMoodsTagCount++;
-                        et_search.setText("");
-                        final Toast toast = Toast.makeText(context,text + " added.",Toast.LENGTH_SHORT);
-                        toast.show();
-                        Handler handler = new Handler();
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                toast.cancel();
-                            }
-                        }, 1000);
-                    }
-                }else{
-                    Toast.makeText(context,"You can choose upto 5 tags only",Toast.LENGTH_LONG).show();
-                }
-            }
-
-            @Override
-            public void onTagLongClick(int position, String text) {
-
-            }
-
-            @Override
-            public void onTagCrossClick(int position) {
-            }
-        });
-
-        mTagContainerLayoutMyMoodTags.setOnTagClickListener(new TagView.OnTagClickListener() {
-            @Override
-            public void onTagClick(int position, String text) {
-
-            }
-
-            @Override
-            public void onTagLongClick(int position, String text) {
-
-            }
-
-            @Override
-            public void onTagCrossClick(int position) {
-                myMoodsTagCount--;
-                mTagContainerLayoutMyMoodTags.removeTag(position);
             }
         });
 
@@ -259,222 +219,202 @@ public class MyMoodActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if (myMoodsSwitch.isChecked()) {
-                    if (et_myMood.getText() == null || et_myMood.getText().toString().trim().isEmpty()) {
-                        Toast.makeText(context, "Mention what's on your mind.", Toast.LENGTH_SHORT).show();
-                    } else {
-                        List<String> myTags = new ArrayList<String>();
-                        myTags = mTagContainerLayoutMyMoodTags.getTags();
-                        if (myTags.isEmpty()) {
-                            Toast.makeText(context, "Choose atleast one tag.", Toast.LENGTH_SHORT).show();
-                        } else {
-                            Firebase moodsRef = new Firebase("https://new-amigos.firebaseio.com/moods/");
-                            Firebase myMoodsRef = new Firebase("https://new-amigos.firebaseio.com/users/" + myId + "/moods/");
-                            for (String s1 : initialTags) {
-                                moodsRef.child(s1).child(myId).setValue(null);
-                                myMoodsRef.child("interests").child(s1).setValue(null);
-                            }
-                            for (String s : myTags) {
-                                moodsRef.child(s).child(myId).setValue("1");
-                                myMoodsRef.child("topic").setValue(et_myMood.getText().toString().trim());
-                                myMoodsRef.child("interests").child(s).setValue("1");
-                            }
-                            Toast.makeText(context, "Data saved.", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                }
-                Intent intent = new Intent(MyMoodActivity.this,SplashScreen2.class);
-                intent.putExtra("tab",1);
-                intent.putExtra("bottomTab",0);
-                startActivity(intent);
-            }
-        });
+                if(radiogroup_people_interests.getCheckedRadioButtonId() == R.id.radio_people_of_my_interests1){
 
-        et_search.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                    Toast.makeText(context, "Now, you will see people on the basis of your interests", Toast.LENGTH_SHORT).show();
+                    reloadData();
+                    onBackPressed();
 
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                /*if(s.toString().isEmpty()){
-                    mTagContainerLayoutAllTags.removeAllTags();
-                    mTagContainerLayoutAllTags.setTags(allInterests);
-                    for (int i = 0; i<allInterests.size(); i++){
-                        TagView tag = mTagContainerLayoutAllTags.getTagView(i);
-                        tag.setTagBackgroundColor(Color.WHITE);
-                        tag.setTagTextColor(Color.parseColor("#F4514E"));
-                        tag.setTagBorderColor(Color.parseColor("#F4514E"));
-                    }
                 }else {
-                    ArrayList<String> searchArrayList = new ArrayList<String>();
-                    Set<String> set = new HashSet<String>();
-                    for (String s1 : allInterests) {
-                        if (s1.toLowerCase().startsWith(s.toString().toLowerCase())) {
-                            set.add(s1);
+
+                    ArrayList<String> myTags = new ArrayList<String>();
+                    myTags = (ArrayList<String>) mTagContainerLayoutMyMoodTags.getTags();
+                    if (myTags.isEmpty()) {
+                        Toast.makeText(context, "Choose atleast one tag.", Toast.LENGTH_SHORT).show();
+                    } else if (myTags.size() > 5 ) {
+                        Toast.makeText(context, "Choose only upto 5 tags", Toast.LENGTH_SHORT).show();
+                    }else {
+
+                        Toast.makeText(context, "Data saved.", Toast.LENGTH_LONG).show();
+                        Firebase moodsRef = new Firebase("https://new-amigos.firebaseio.com/moods/");
+                        Firebase myMoodsRef = new Firebase("https://new-amigos.firebaseio.com/users/" + myId + "/moods/");
+                        for (String s1 : initialTags) {
+                            moodsRef.child(s1).child(myId).setValue(null);
+                            myMoodsRef.child("interests").child(s1).setValue(null);
                         }
-                    }
-                    mTagContainerLayoutAllTags.removeAllTags();
-                    searchArrayList.clear();
-                    searchArrayList.addAll(set);
-                    mTagContainerLayoutAllTags.setTags(searchArrayList);
-                    for (int i = 0; i < searchArrayList.size(); i++) {
-                        TagView tag = mTagContainerLayoutAllTags.getTagView(i);
-                        tag.setTagBackgroundColor(Color.WHITE);
-                        tag.setTagTextColor(Color.parseColor("#F4514E"));
-                        tag.setTagBorderColor(Color.parseColor("#F4514E"));
-                    }
-                }*/
-                if(s.toString().isEmpty()){
-                    if(interestsFlag == 1) {
-                        mTagContainerLayoutAllTags.removeAllTags();
-                        mTagContainerLayoutAllTags.setTags(allInterests);
-                        for (int i = 0; i < allInterests.size(); i++) {
-                            TagView tag = mTagContainerLayoutAllTags.getTagView(i);
-                            tag.setTagBackgroundColor(Color.WHITE);
-                            tag.setTagTextColor(context.getResources().getColor(R.color.colorPrimary));
-                            tag.setTagBorderColor(context.getResources().getColor(R.color.colorPrimary));
+                        for (String s : myTags) {
+                            moodsRef.child(s).child(myId).setValue("1");
+                            myMoodsRef.child("interests").child(s).setValue("1");
                         }
-                    }else{
-                        mTagContainerLayoutAllTags.removeAllTags();
-                        mTagContainerLayoutAllTags.setTags(shortList);
-                        for (int i = 0; i < shortList.size(); i++) {
-                            TagView tag = mTagContainerLayoutAllTags.getTagView(i);
-                            tag.setTagBackgroundColor(Color.WHITE);
-                            tag.setTagTextColor(context.getResources().getColor(R.color.colorPrimary));
-                            tag.setTagBorderColor(context.getResources().getColor(R.color.colorPrimary));
-                        }
-                    }
-                }else {
-                    ArrayList<String> searchArrayList = new ArrayList<String>();
-                    Set<String> set = new HashSet<String>();
-                    for (String s1 : allInterests) {
-                        if (s1.toLowerCase().contains(s.toString().toLowerCase())) {
-                            set.add(s1);
-                        }
-                    }
-                    mTagContainerLayoutAllTags.removeAllTags();
-                    searchArrayList.clear();
-                    searchArrayList.addAll(set);
-                    mTagContainerLayoutAllTags.setTags(searchArrayList);
-                    for (int i = 0; i < searchArrayList.size(); i++) {
-                        TagView tag = mTagContainerLayoutAllTags.getTagView(i);
-                        tag.setTagBackgroundColor(Color.WHITE);
-                        tag.setTagTextColor(context.getResources().getColor(R.color.colorPrimary));
-                        tag.setTagBorderColor(context.getResources().getColor(R.color.colorPrimary));
+                        reloadData();
+                        onBackPressed();
                     }
                 }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
 
             }
         });
 
-        tv_loadMore.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(interestsFlag == 0){
-                    interestsFlag = 1;
-                    tv_loadMore.setText("Click to load less tags...");
-                    mTagContainerLayoutAllTags.removeAllTags();
-                    mTagContainerLayoutAllTags.setTags(allInterests);
-                    for (int i = 0; i < allInterests.size(); i++) {
-                        TagView tag = mTagContainerLayoutAllTags.getTagView(i);
-                        tag.setTagBackgroundColor(Color.WHITE);
-                        tag.setTagTextColor(context.getResources().getColor(R.color.colorPrimary));
-                        tag.setTagBorderColor(context.getResources().getColor(R.color.colorPrimary));
-                    }
-                }else{
-                    interestsFlag = 0;
-                    tv_loadMore.setText("Click to load more tags...");
-                    mTagContainerLayoutAllTags.removeAllTags();
-                    mTagContainerLayoutAllTags.setTags(shortList);
-                    for (int i = 0; i < shortList.size(); i++) {
-                        TagView tag = mTagContainerLayoutAllTags.getTagView(i);
-                        tag.setTagBackgroundColor(Color.WHITE);
-                        tag.setTagTextColor(context.getResources().getColor(R.color.colorPrimary));
-                        tag.setTagBorderColor(context.getResources().getColor(R.color.colorPrimary));
-                    }
-                }
-            }
-        });
     }
 
-    public void updateAllInterests(){
-        /*ArrayList<String> lifestyle = PeevesList.getAllLifestyleInterests();
-        ArrayList<String> arts = PeevesList.getAllArtsInterests();
-        ArrayList<String> entertainment = PeevesList.getAllEntertainmentInterests();
-        ArrayList<String> business = PeevesList.getAllBusinessInterests();
-        ArrayList<String> sports = PeevesList.getAllSportsInterests();
-        ArrayList<String> music = PeevesList.getAllMusicInterests();
-        ArrayList<String> technology = PeevesList.getAllTechnologyInterests();
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
 
-        allInterests.clear();
-        allInterests.addAll(lifestyle);
-        allInterests.addAll(arts);
-        allInterests.addAll(entertainment);
-        allInterests.addAll(business);
-        allInterests.addAll(sports);
-        allInterests.addAll(music);
-        allInterests.addAll(technology);
 
+    class MyDragListener implements View.OnDragListener {
+
+
+        @Override
+        public boolean onDrag(View v, DragEvent event) {
+            int action = event.getAction();
+            switch (event.getAction()) {
+                case DragEvent.ACTION_DRAG_STARTED:
+                    // do nothing
+                    break;
+                case DragEvent.ACTION_DRAG_ENTERED:
+                    //v.setBackgroundDrawable(enterShape);
+                    break;
+                case DragEvent.ACTION_DRAG_EXITED:
+                    //v.setBackgroundDrawable(normalShape);
+                    break;
+                case DragEvent.ACTION_DROP:
+                    // Dropped, reassign View to ViewGroup
+                    if (v instanceof TagContainerLayout) {
+                        View view = (View) event.getLocalState();
+                        ViewGroup owner = (ViewGroup) view.getParent();
+                        //owner.removeView(view);
+
+                        if((((TagContainerLayout)owner)).getId() == R.id.allTags1 && mTagContainerLayoutMyMoodTags.getTags().size() >=5 ){
+                            Toast.makeText(context, "You can add upto 5 tags only!!!",Toast.LENGTH_SHORT).show();
+                        }else {
+                            List<String> list = ((TagContainerLayout) owner).getTags();
+                            for (int j = 0; j < list.size(); j++) {
+                                if (list.get(j).equalsIgnoreCase(((TagView) view).getText())) {
+                                    ((TagContainerLayout) owner).removeTag(j);
+                                }
+                            }
+
+                            TagContainerLayout container = (TagContainerLayout) v;
+                            container.addTag(((TagView) view).getText(), 0);
+                            TagView tag = container.getTagView(0);
+                            if (container.getId() == R.id.chosenTags1) {
+                                setListenerToTags(container, 1);
+                            } else if (container.getId() == R.id.allTags1) {
+                                setListenerToTags(container, 2);
+                            }
+                        }
+                    }else if(v instanceof LinearLayout){
+                        int childCount = ((LinearLayout) v).getChildCount();
+                        for(int i = 0 ; i<childCount; i++){
+                            View v1 = ((LinearLayout) v).getChildAt(i);
+                            if(v1 instanceof TagContainerLayout){
+                                View view = (View) event.getLocalState();
+                                ViewGroup owner = (ViewGroup) view.getParent();
+                                //owner.removeView(view);
+                                if((((TagContainerLayout)owner)).getId() == R.id.allTags1 && mTagContainerLayoutMyMoodTags.getTags().size() >= 5 ){
+                                    Toast.makeText(context, "You can add upto 5 tags only!!!",Toast.LENGTH_SHORT).show();
+                                }else {
+
+                                    List<String> list = ((TagContainerLayout) owner).getTags();
+                                    for (int j = 0; j < list.size(); j++) {
+                                        if (list.get(j).equalsIgnoreCase(((TagView) view).getText())) {
+                                            ((TagContainerLayout) owner).removeTag(j);
+                                        }
+                                    }
+                                    TagContainerLayout container = (TagContainerLayout) v1;
+                                    container.addTag(((TagView) view).getText(), 0);
+                                /*view.setVisibility(View.VISIBLE);*/
+                                    TagView tag = container.getTagView(0);
+                                    if (container.getId() == R.id.chosenTags1) {
+                                        setListenerToTags(container, 1);
+                                    } else if (container.getId() == R.id.allTags1) {
+                                        setListenerToTags(container, 2);
+                                    }
+                                }
+
+                                //updateContainer(container);
+                            }
+                        }
+                    }
+                    break;
+                case DragEvent.ACTION_DRAG_ENDED:
+                    //v.setBackgroundDrawable(normalShape);
+                default:
+                    break;
+            }
+            return true;
+        }
+    }
+
+    private final class MyTouchListener implements View.OnTouchListener {
+        public boolean onTouch(View view, MotionEvent motionEvent) {
+            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                ClipData data = ClipData.newPlainText("", "");
+                View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(
+                        view);
+                view.startDrag(data, shadowBuilder, view, 0);
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+
+    private void setListenerToTags(TagContainerLayout tags, int position ) {
+        for (int i = 0; i<tags.getTags().size(); i++){
+            TagView tag = tags.getTagView(i);
+            tag.setBorderRadius(25.0f);
+            tag.setOnTouchListener(new MyMoodActivity.MyTouchListener());
+            if(position == 1){
+                tag.setTagBackgroundColor(Color.parseColor("#7986CB"));
+                tag.setTagTextColor(Color.WHITE);//Blue
+                tag.setTagBorderColor(Color.WHITE);
+            }else if(position == 2){
+                tag.setTagBackgroundColor(Color.parseColor("#FFD54F"));
+                tag.setTagTextColor(Color.WHITE);//Blue
+                tag.setTagBorderColor(Color.WHITE);
+            }
+        }
+    }
+
+    private void updateContainer(TagContainerLayout mTagContainerLayoutAllTags) {
         mTagContainerLayoutAllTags.setRippleDuration(100);
-        mTagContainerLayoutAllTags.removeAllTags();
-        mTagContainerLayoutAllTags.setTags(allInterests);
-        mTagContainerLayoutAllTags.setBackgroundColor(Color.WHITE);
-        mTagContainerLayoutAllTags.setVerticalInterval(5.0f);
-        mTagContainerLayoutAllTags.setHorizontalInterval(5.0f);
-        mTagContainerLayoutAllTags.setBorderColor(Color.WHITE);
+        mTagContainerLayoutAllTags.setVerticalInterval(3.0f);
+        mTagContainerLayoutAllTags.setHorizontalInterval(3.0f);
+        mTagContainerLayoutAllTags.setBorderColor(Color.TRANSPARENT);
+    }
 
-        mTagContainerLayoutMyMoodTags.setRippleDuration(100);
-        mTagContainerLayoutMyMoodTags.setBackgroundColor(Color.WHITE);
-        mTagContainerLayoutMyMoodTags.setVerticalInterval(5.0f);
-        mTagContainerLayoutMyMoodTags.setHorizontalInterval(5.0f);
-        mTagContainerLayoutMyMoodTags.setBorderColor(Color.WHITE);
+    public static void reloadData(){
+        new LongOperation().execute("");
+    }
 
-        for (int i = 0; i<allInterests.size(); i++){
-            TagView tag = mTagContainerLayoutAllTags.getTagView(i);
-            tag.setTagBackgroundColor(Color.WHITE);
-            tag.setTagTextColor(Color.parseColor("#F4514E"));
-            tag.setTagBorderColor(Color.parseColor("#F4514E"));
-        }*/
-        ArrayList<String> allTopics = PeevesList.getAllNewInterestsTopics();
-        shortList.clear();
-        for(int i = 0; i<40; i++){
-            shortList.add(allTopics.get(i));
+    private static class LongOperation extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... params) {
+            //some heavy processing resulting in a Data String
+
+            return "whatever result you have";
         }
 
-        allInterests.clear();
-        allInterests.addAll(allTopics);
-        /*allInterests.addAll(lifestyle);
-        allInterests.addAll(arts);
-        allInterests.addAll(entertainment);
-        allInterests.addAll(business);
-        allInterests.addAll(sports);
-        allInterests.addAll(music);
-        allInterests.addAll(technology);*/
-
-        mTagContainerLayoutAllTags.setRippleDuration(100);
-        mTagContainerLayoutAllTags.setTags(shortList);
-        mTagContainerLayoutAllTags.setBackgroundColor(Color.WHITE);
-        mTagContainerLayoutAllTags.setVerticalInterval(5.0f);
-        mTagContainerLayoutAllTags.setHorizontalInterval(5.0f);
-        mTagContainerLayoutAllTags.setBorderColor(Color.WHITE);
-
-        mTagContainerLayoutMyMoodTags.setRippleDuration(100);
-        mTagContainerLayoutMyMoodTags.setBackgroundColor(Color.WHITE);
-        mTagContainerLayoutMyMoodTags.setVerticalInterval(5.0f);
-        mTagContainerLayoutMyMoodTags.setHorizontalInterval(5.0f);
-        mTagContainerLayoutMyMoodTags.setBorderColor(Color.WHITE);
-
-        for (int i = 0; i<shortList.size(); i++){
-            TagView tag = mTagContainerLayoutAllTags.getTagView(i);
-            tag.setTagBackgroundColor(Color.WHITE);
-            tag.setTagTextColor(context.getResources().getColor(R.color.colorPrimary));
-            tag.setTagBorderColor(context.getResources().getColor(R.color.colorPrimary));
+        @Override
+        protected void onPostExecute(String result) {
+            UsersFragment usersFragment = new UsersFragment();
+            usersFragment.reloadAllUsers();
+            /*if (flag == 1) {
+                TabLayout tabLayout;
+                tabLayout = (TabLayout) fragmentContext.findViewById(R.id.tabs);
+                TabLayout.Tab tab = tabLayout.getTabAt(1);
+                tab.select();
+                flag = 0;
+            }*/
         }
+
+        @Override
+        protected void onPreExecute() {}
+
+        @Override
+        protected void onProgressUpdate(Void... values) {}
     }
 }

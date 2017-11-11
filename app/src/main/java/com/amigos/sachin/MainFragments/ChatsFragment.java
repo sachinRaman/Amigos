@@ -70,9 +70,9 @@ public class ChatsFragment extends Fragment {
                     case R.id.my_chats:
                         myChatsViewPager.setCurrentItem(0);
                         return true;
-                    case R.id.my_likes:
+                    /*case R.id.my_likes:
                         myChatsViewPager.setCurrentItem(1);
-                        return true;
+                        return true;*/
                     case R.id.my_liked:
                         myChatsViewPager.setCurrentItem(2);
                         return true;
@@ -82,10 +82,10 @@ public class ChatsFragment extends Fragment {
                 }
             }
         });
-        if (bottomTab == 2){
+        /*if (bottomTab == 2){
             myChatsBottomNavigationView.setSelectedItemId(R.id.my_liked);
             prevMenuItem = myChatsBottomNavigationView.getMenu().getItem(2);
-        }
+        }*/
 
         prevMenuItem = myChatsBottomNavigationView.getMenu().getItem(0);
 
@@ -135,15 +135,15 @@ public class ChatsFragment extends Fragment {
         public Fragment getItem(int pos) {
             switch(pos) {
                 case 0: return MyChatFragment.newInstance("My Chats");
-                case 1: return PeopleILikedFragment.newInstance("People I liked");
-                case 2: return PeopleWhoLikedMeFragment.newInstance("People who liked me");
+                /*case 1: return PeopleILikedFragment.newInstance("People I liked");*/
+                case 1: return PeopleWhoLikedMeFragment.newInstance("People who liked me");
                 default: return MyChatFragment.newInstance("My Chats, Default");
             }
         }
 
         @Override
         public int getCount() {
-            return 3;
+            return 2;
         }
     }
 }

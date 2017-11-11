@@ -1,5 +1,6 @@
 package com.amigos.sachin.Services;
 
+import android.app.ActivityManager;
 import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -9,26 +10,22 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
-import android.os.Handler;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
-import android.widget.RemoteViews;
 
-import com.amigos.sachin.Activities.ChatActivity;
 import com.amigos.sachin.Activities.ChatListActivity;
 import com.amigos.sachin.Activities.MainActivity;
-import com.amigos.sachin.Activities.MainTabsActivity;
 import com.amigos.sachin.Activities.PeopleWhoLikedMeActivity;
 import com.amigos.sachin.Activities.SplashScreen2;
 import com.amigos.sachin.Activities.UserProfileActivity;
 import com.amigos.sachin.ApplicationCache.ApplicationCache;
 import com.amigos.sachin.ChatsFragments.MyChatFragment;
 import com.amigos.sachin.DAO.ChatUsersDAO;
+import com.amigos.sachin.MainFragments.ChatsFragment;
 import com.amigos.sachin.R;
 import com.amigos.sachin.VO.NotificationVO;
-import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -49,6 +46,8 @@ public class ChatService extends Service {
     Context context;
     DataSnapshot prevDataSnapshot;
     public static String thisUserId = null;
+    //private static int FOREGROUND_ID=1000;
+    String TAG = "ChatService";
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -69,6 +68,21 @@ public class ChatService extends Service {
         context = getApplicationContext();
 
         Firebase.setAndroidContext(context);
+
+        /*startForeground(FOREGROUND_ID,
+                buildForegroundNotification());
+
+        if(isMyServiceRunning(EnablingService.class) == false) {
+            Intent startChatService = new Intent(this, EnablingService.class);
+            startService(startChatService);
+        }else{
+            Intent i = new Intent(context, EnablingService.class);
+            stopService(i);
+        }*/
+
+
+
+
 
         final Firebase myChatRef = new Firebase("https://new-amigos.firebaseio.com/message_notification/"+myId+"/");
 
@@ -102,6 +116,7 @@ public class ChatService extends Service {
                             ChatUsersDAO chatUsersDAO = new ChatUsersDAO(context);
                             chatUsersDAO.addToChatList(id,myId,data.getValue().toString(),1);
                         }
+                        MyChatFragment.reloadChat();
                         NotificationVO notificationVO = new NotificationVO();
                         notificationVO.id = id;
                         notificationVO.name = userName;
@@ -177,10 +192,28 @@ public class ChatService extends Service {
                 SystemClock.elapsedRealtime() + 1000,
                 restartServicePendingIntent);
 
-        Intent startChatService = new Intent(this, ChatService.class);
-        startService(startChatService);
+        /*Intent startChatService = new Intent(this, EnablingService.class);
+        startService(startChatService);*/
 
     }
+
+    /*public static void cancelNotification(Context ctx, int notifyId) {
+        String ns = Context.NOTIFICATION_SERVICE;
+        NotificationManager nMgr = (NotificationManager) ctx.getSystemService(ns);
+        nMgr.cancel(notifyId);
+    }
+
+    private Notification buildForegroundNotification() {
+        NotificationCompat.Builder b=new NotificationCompat.Builder(this);
+
+
+        b.setOngoing(true)
+                .setContentTitle("Amigos")
+                .setContentText("")
+                .setSmallIcon(R.drawable.logo);
+
+        return(b.build());
+    }*/
 
     @Override
     public void onDestroy() {
@@ -223,25 +256,9 @@ public class ChatService extends Service {
             message += notificationVO.name +" :\n";
             message += notificationVO.message;
             final String userId = notificationVO.id;
-            Firebase userMsgRef= new Firebase("https://new-amigos.firebaseio.com/users/"+notificationVO.id+"/chats/"+myId+"/");
-            userMsgRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    for(DataSnapshot data: dataSnapshot.getChildren()){
-                        if(data.child("-seen").getValue() != null) {
-                            String seen = data.child("-seen").getValue().toString();
-                            if (!"3".equalsIgnoreCase(seen) && !userId.equalsIgnoreCase(data.getKey()) && !myId.equalsIgnoreCase(data.getKey())) {
-                                data.child("-seen").getRef().setValue("2");
-                            }
-                        }
-                    }
-                }
-
-                @Override
-                public void onCancelled(FirebaseError firebaseError) {
-
-                }
-            });
+            String key = notificationVO.time;
+            Firebase reachedMessageIdRef = new Firebase("https://new-amigos.firebaseio.com/users_chats/"+userId+"/"+myId+ "/chat_status/reached_message_id/");
+            reachedMessageIdRef.setValue(key);
         }
 
         PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), id, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -294,7 +311,7 @@ public class ChatService extends Service {
 
         ApplicationCache.loadThisUserVO(userId);*/
 
-        int id = 0;
+        int id = (int) System.currentTimeMillis();
 
         time = time.replace("_","");
         if(time.length() >= 8) {
@@ -316,7 +333,7 @@ public class ChatService extends Service {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
 
             String title = null;
-            String message = name + " admired your profile.";
+            String message = name + " admires you";
 
             NotificationCompat.Builder alarmNotificationBuilder = new NotificationCompat.Builder(context)
                     .setSmallIcon(R.drawable.logo)
@@ -396,4 +413,6 @@ public class ChatService extends Service {
         });
 
     }
+
+
 }

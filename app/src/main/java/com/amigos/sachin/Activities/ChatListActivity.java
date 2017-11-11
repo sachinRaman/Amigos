@@ -51,7 +51,6 @@ public class ChatListActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         context = getApplicationContext();
         Firebase.setAndroidContext(context);
-        ApplicationCache.loadMyUserVO();
 
         chatListView = (ListView) findViewById(R.id.chatListView1);
         SharedPreferences sp = context.getSharedPreferences("com.amigos.sachin",Context.MODE_PRIVATE);
@@ -61,66 +60,7 @@ public class ChatListActivity extends AppCompatActivity {
         Firebase activeRef = new Firebase("https://new-amigos.firebaseio.com/users/"+myId+"/active/");
         activeRef.setValue("1");
 
-        Firebase.setAndroidContext(context);
-        Firebase interestsRef = new Firebase("https://new-amigos.firebaseio.com/users/"+myId+"/interests_list/");
-        interestsRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                ArrayList<String> interests = new ArrayList<String>();
-                for (DataSnapshot interest_list : dataSnapshot.getChildren()){
-                    String key = interest_list.getKey();
-                    for(DataSnapshot thisTopicOfInterest : interest_list.getChildren()){
-                        if("1".equalsIgnoreCase(thisTopicOfInterest.getValue().toString())){
-                            interests.add(thisTopicOfInterest.getKey());
-                        }
-                    }
-                    /*Map<String, String> topicInterests = interest_list.getValue(Map.class);
-                    for (String s: topicInterests.keySet()){
-                        if("1".equalsIgnoreCase(topicInterests.get(s))){
-                            interests.add(s);
-                        }
-                    }*/
-                }
-                ApplicationCache.myUserVO.setInterests(interests);
-                loadChatData();
-            }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-
-            }
-        });
-
-        /*DatabaseReference userRef = FirebaseDatabase.getInstance().getReference();
-        userRef.child("users").child(myId).child("interests_list").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                ArrayList<String> interests = new ArrayList<String>();
-                for (DataSnapshot interest_list : dataSnapshot.getChildren()){
-                    String key = interest_list.getKey();
-                    for(DataSnapshot thisTopicOfInterest : interest_list.getChildren()){
-                        if("1".equalsIgnoreCase(thisTopicOfInterest.getValue().toString())){
-                            interests.add(thisTopicOfInterest.getKey());
-                        }
-                    }
-                    *//*Map<String, String> topicInterests = interest_list.getValue(Map.class);
-                    for (String s: topicInterests.keySet()){
-                        if("1".equalsIgnoreCase(topicInterests.get(s))){
-                            interests.add(s);
-                        }
-                    }*//*
-                }
-                ApplicationCache.myUserVO.setInterests(interests);
-                loadChatData();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });*/
-
-
+        loadChatData();
     }
 
     private static void loadChatData() {
@@ -134,7 +74,7 @@ public class ChatListActivity extends AppCompatActivity {
 
         for( int i = chatUsersVOArrayList.size() - 1; i >= 0 ; i--){
             String userId = chatUsersVOArrayList.get(i).getUserId();
-            if( blockedUsers.contains(userId) || myId.equalsIgnoreCase(userId) ){
+            if( blockedUsers.contains(userId)){
                 chatUsersVOArrayList.remove(i);
             }
         }
@@ -171,6 +111,7 @@ public class ChatListActivity extends AppCompatActivity {
         Firebase activeRef = new Firebase("https://new-amigos.firebaseio.com/users/"+myId+"/active/");
         activeRef.setValue("1");
         super.onResume();
+        loadChatData();
     }
     /*@Override
     public void onBackPressed() {

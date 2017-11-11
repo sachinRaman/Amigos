@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.amigos.sachin.AllUsersFragments.AllUsersFragment;
 import com.amigos.sachin.ApplicationCache.ApplicationCache;
+import com.amigos.sachin.Utils.Algorithms;
 import com.amigos.sachin.VO.UserVO;
 import com.bumptech.glide.Glide;
 import com.firebase.client.DataSnapshot;
@@ -17,6 +18,7 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -54,32 +56,51 @@ public class SwipeAllUsersAdapter extends FragmentStatePagerAdapter {
         }
 
 
+
         for(UserVO userVO : userVOArrayList){
-            if(myUserVO.getInterests() != null && !myUserVO.getInterests().isEmpty()){
-                int matchCount = 0;
-                if(userVO != null) {
-                    if(userVO.getInterests() != null) {
-                        for (String s : userVO.getInterests()) {
-                            if (myUserVO.getInterests().contains(s)) {
-                                matchCount++;
-                            }
-                        }
-                    }
-                }
-                userVO.setMatch(Math.round(((float)matchCount/(myUserVO.getInterests().size()))*100));
-            }
+            int match = 0;
+            ArrayList<ArrayList<String>> myInterests = new ArrayList<ArrayList<String>>(Arrays.asList(myUserVO.getInterests1(),
+                    myUserVO.getInterests2(), myUserVO.getInterests3()));
+            ArrayList<ArrayList<String>> userInterests = new ArrayList<ArrayList<String>>(Arrays.asList(userVO.getInterests1(),
+                    userVO.getInterests2(), userVO.getInterests3()));
+            match = Algorithms.calculateMatch(myInterests, userInterests);
+            userVO.setMatch(match);
         }
+
+
         if("1".equalsIgnoreCase(myUserVO.getMood())){
             if(myUserVO.getMyMoodTags() != null && !myUserVO.getMyMoodTags().isEmpty()){
                 for(UserVO userVO : userVOArrayList){
-                    if("1".equalsIgnoreCase(userVO.getMood())){
-                        int matchCount = 0;
-                        for(String s : userVO.getMyMoodTags()){
-                            if(myUserVO.getMyMoodTags().contains(s)){
-                                matchCount++;
-                            }
+                    int matchCount = 0;
+                    for(String s : myUserVO.getMyMoodTags()){
+                        if(userVO.getInterests1().contains(s)){
+                            matchCount += 300;
                         }
-                        userVO.setMatch(userVO.getMatch() + matchCount*100);
+                        if(userVO.getInterests2().contains(s)){
+                            matchCount += 200;
+                        }
+                        if(userVO.getInterests3().contains(s)){
+                            matchCount += 100;
+                        }
+                    }
+                    int numMoodTags = 3*myUserVO.getMyMoodTags().size();
+
+                    int myRequirementMatch = matchCount/numMoodTags;
+                    int personalityMatch = userVO.getMatch();
+
+                    int finalMatch = 0;
+                    if(myRequirementMatch > personalityMatch){
+                        finalMatch = myRequirementMatch + (personalityMatch/2);
+                    }else if(myRequirementMatch < personalityMatch){
+                        finalMatch = (myRequirementMatch + personalityMatch)/2;
+                    }else{
+                        finalMatch = myRequirementMatch;
+                    }
+
+                    if(finalMatch > 100){
+                        userVO.setMatch(100);
+                    }else {
+                        userVO.setMatch(finalMatch);
                     }
                 }
             }

@@ -32,7 +32,7 @@ import java.util.List;
 
 public class MyProfileFragment extends Fragment {
 
-    BottomNavigationView myProfileBottomNavigationView;
+    public static BottomNavigationView myProfileBottomNavigationView;
     CustomViewPager myProfileViewPager;
     private FragmentActivity myContext;
     Context context;
@@ -61,14 +61,14 @@ public class MyProfileFragment extends Fragment {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch(item.getItemId()){
-                    case R.id.my_mood:
+                    /*case R.id.my_mood:
+                        myProfileViewPager.setCurrentItem(0);
+                        return true;*/
+                    case R.id.my_profile:
                         myProfileViewPager.setCurrentItem(0);
                         return true;
-                    case R.id.my_profile:
-                        myProfileViewPager.setCurrentItem(1);
-                        return true;
                     case R.id.my_interests:
-                        myProfileViewPager.setCurrentItem(2);
+                        myProfileViewPager.setCurrentItem(1);
                         return true;
                     default:
                         myProfileViewPager.setCurrentItem(0);
@@ -122,16 +122,16 @@ public class MyProfileFragment extends Fragment {
         @Override
         public Fragment getItem(int pos) {
             switch(pos) {
-                case 0: return MyMoods.newInstance("My Moods");
-                case 1: return MyInfoFragment.newInstance("My Info");
-                case 2: return MyInterestsFragment.newInstance("My Interests");
-                default: return MyMoods.newInstance("My Moods, Default");
+                //case 0: return MyMoods.newInstance("Preferences");
+                case 0: return MyInfoFragment.newInstance("My Info");
+                case 1: return MyInterestsFragment.newInstance("My Interests");
+                default: return MyMoods.newInstance("My Info, Default");
             }
         }
 
         @Override
         public int getCount() {
-            return 3;
+            return 2;
         }
     }
 

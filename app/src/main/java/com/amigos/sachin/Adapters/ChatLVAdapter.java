@@ -44,6 +44,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import hani.momanii.supernova_emoji_library.Helper.EmojiconTextView;
 import jp.wasabeef.glide.transformations.CropSquareTransformation;
 
 /**
@@ -77,10 +78,10 @@ public class ChatLVAdapter extends ArrayAdapter<ChatUsersVO> implements View.OnC
             LayoutInflater inflater = LayoutInflater.from(getContext());
             convertView = inflater.inflate(R.layout.item_chat_list, parent, false);
 
-            holder.tvName = (TextView) convertView.findViewById(R.id.tv_name);
+            holder.tvName = (EmojiconTextView) convertView.findViewById(R.id.tv_name);
             holder.tvMatch = (TextView) convertView.findViewById(R.id.tv_match_info);
             holder.profilePicImageView = (ImageView) convertView.findViewById(R.id.iv_profile);
-            holder.tvStatus = (TextView) convertView.findViewById(R.id.tv_status);
+            holder.tvStatus = (EmojiconTextView) convertView.findViewById(R.id.tv_status);
             holder.tvTime = (TextView) convertView.findViewById(R.id.tv_time_last_message);
             holder.tv_greenDot = (TextView) convertView.findViewById(R.id.green_dot);
             holder.view = (LinearLayout)convertView.findViewById(R.id.holder_LinearLayout);
@@ -116,12 +117,8 @@ public class ChatLVAdapter extends ArrayAdapter<ChatUsersVO> implements View.OnC
                 if(dataSnapshot.getValue() != null) {
                     if ("0".equalsIgnoreCase(dataSnapshot.getValue().toString()) && chatUsersVO.getUserId().equalsIgnoreCase(userId)) {
                         holder.tv_greenDot.setVisibility(View.GONE);
-                        /*holder.tv_greenDot.getBackground().setColorFilter(Color.TRANSPARENT, PorterDuff.Mode.SRC);
-                        holder.tv_greenDot.setBackgroundTintList(ColorStateList.valueOf(Color.TRANSPARENT));*/
                     } else if ("1".equalsIgnoreCase(dataSnapshot.getValue().toString()) && chatUsersVO.getUserId().equalsIgnoreCase(userId)) {
                         holder.tv_greenDot.setVisibility(View.VISIBLE);
-                        /*holder.tv_greenDot.getBackground().setColorFilter(Color.GREEN, PorterDuff.Mode.SRC);
-                        holder.tv_greenDot.setBackgroundTintList(ColorStateList.valueOf(Color.GREEN));*/
                     }
                 }else{
                     holder.tv_greenDot.setVisibility(View.GONE);
@@ -189,40 +186,6 @@ public class ChatLVAdapter extends ArrayAdapter<ChatUsersVO> implements View.OnC
             }
         });
 
-        /*DatabaseReference firebaseRef = FirebaseDatabase.getInstance().getReference();
-
-        firebaseRef.child("users").child(userId).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for(DataSnapshot child : dataSnapshot.getChildren()){
-                    if("name".equalsIgnoreCase(child.getKey())){
-                        if(child.getValue().toString() != null && !child.getValue().toString().isEmpty()) {
-                            holder.tvName.setText(child.getValue().toString());
-                            //holder.tvName.setTextColor(Color.parseColor("#757575"));
-                            userName[0] = child.getValue().toString();
-                        }else{
-                            holder.tvName.setText("User");
-                            userName[0] = "User";
-                        }
-                    }
-                    if("imageUrl".equalsIgnoreCase(child.getKey())){
-                        for(DataSnapshot children : child.getChildren()){
-                            if(userId.equalsIgnoreCase(children.getKey())){
-                                imageUrl[0] = children.getValue().toString();
-                                Glide.with(context).load(imageUrl[0])
-                                        .bitmapTransform(new CropSquareTransformation(context)).thumbnail(0.5f).crossFade()
-                                        .diskCacheStrategy(DiskCacheStrategy.ALL).into(holder.profilePicImageView);
-                            }
-                        }
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });*/
 
         holder.profilePicImageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -255,9 +218,9 @@ public class ChatLVAdapter extends ArrayAdapter<ChatUsersVO> implements View.OnC
     }
 
     public static class ChatListViewHolder {
-        TextView tvName;
+        EmojiconTextView tvName;
         TextView tvMatch;
-        TextView tvStatus;
+        EmojiconTextView tvStatus;
         TextView tvTime;
         TextView tv_greenDot;
         ImageView profilePicImageView;

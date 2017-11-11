@@ -11,11 +11,9 @@ import android.util.Log;
 
 import com.amigos.sachin.VO.ChatUsersVO;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -76,7 +74,7 @@ public class ChatUsersDAO extends SQLiteOpenHelper {
             /*ContentValues contentValues1 = new ContentValues();
             contentValues1.put("to_id", fromId);
             contentValues1.put("from_id", toId);
-            contentValues1.put("time",timeStamp);
+            contentValues1.put("time",time);
             contentValues1.put("last_message", lastMessage);
             contentValues1.put("seen",seen);*/
 
@@ -140,6 +138,30 @@ public class ChatUsersDAO extends SQLiteOpenHelper {
         }
 
         return chatUsersVOArrayList;
+    }
+
+    public boolean removeFromChatUsersDAO(String userId){
+        Log.i(TAG, "removeFromChatUsersDAO():: Entered");
+        SQLiteDatabase db = this.getWritableDatabase();
+        try {
+            String sql="delete from chat_users where to_id in (?)";
+            SQLiteStatement statement=db.compileStatement(sql);
+            statement.bindString(1,userId);
+
+            String sql1="delete from chat_users where from_id in (?)";
+            SQLiteStatement statement1=db.compileStatement(sql1);
+            statement1.bindString(1,userId);
+
+            statement.execute();
+            statement1.execute();
+        }
+        catch(Exception ex){
+            ex.printStackTrace();
+            return false;
+        }finally {
+            db.close();
+        }
+        return true;
     }
 
     public Set<String> getMyChatUsersList(String myId){

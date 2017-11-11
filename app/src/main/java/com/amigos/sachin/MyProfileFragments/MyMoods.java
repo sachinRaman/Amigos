@@ -3,11 +3,13 @@ package com.amigos.sachin.MyProfileFragments;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.IdRes;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -15,9 +17,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Switch;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,14 +27,7 @@ import com.amigos.sachin.MainFragments.UsersFragment;
 import com.amigos.sachin.R;
 import com.amigos.sachin.VO.UserVO;
 import com.amigos.sachin.Values.PeevesList;
-import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
-/*import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;*/
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -43,6 +37,11 @@ import java.util.Set;
 import co.lujun.androidtagview.TagContainerLayout;
 import co.lujun.androidtagview.TagView;
 
+/*import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;*/
+
 //import com.firebase.client.DataSnapshot;
 
 
@@ -50,23 +49,25 @@ public class MyMoods extends Fragment {
 
     TagContainerLayout mTagContainerLayoutMyMoodTags;
     TagContainerLayout mTagContainerLayoutAllTags;
-    /*Switch myMoodsSwitch;*/
-    ImageView myMoodsSwitch;
     int myMoodsTagCount = 0;
     Context context;
-    EditText et_myMood, et_search;
-    TextView tv_addedTags,tv_allTags,tv_moodTextBox, tv_moodOffText, tv_loadMore;
+    EditText  et_search;
+    TextView tv_moodOffText, tv_loadMore;
+
+    View tv_allTags;
     LinearLayout linearLayoutButton;
     Button saveButton;
-    View viewBlankLine;
+    View viewBlankLine, tv_addedTags;
     String myId;
     ArrayList<String> initialTags = new ArrayList<String>();
     ArrayList<String> allInterests = new ArrayList<String>();
     ArrayList<String> shortList = new ArrayList<String>();
-    Drawable res1,res2;
     String mood = "0";
     int interestsFlag = 0;
     UserVO myVO;
+    public RadioGroup radiogroup_people_interests;
+    public static FragmentActivity fragmentContext;
+    static int flag = 0;
 
     public MyMoods() {
 
@@ -95,19 +96,15 @@ public class MyMoods extends Fragment {
         SharedPreferences sp = context.getSharedPreferences("com.amigos.sachin",Context.MODE_PRIVATE);
         myId = sp.getString("myId","");
 
-        int imageResource2 = getResources().getIdentifier("@drawable/switch_on", null, context.getPackageName());
-        int imageResource1 = getResources().getIdentifier("@drawable/switch_off", null, context.getPackageName());
+        fragmentContext = getActivity();
 
-        res1 = getResources().getDrawable(imageResource1);
-        res2 = getResources().getDrawable(imageResource2);
+
 
         mTagContainerLayoutAllTags = (TagContainerLayout) view.findViewById(R.id.allTags);
         mTagContainerLayoutMyMoodTags = (TagContainerLayout) view.findViewById(R.id.chosenTags);
-        myMoodsSwitch = (ImageView) view.findViewById(R.id.switch1);
-        et_myMood = (EditText) view.findViewById(R.id.et_myMood);
-        tv_addedTags = (TextView) view.findViewById(R.id.tv_addedTags);
-        tv_allTags = (TextView) view.findViewById(R.id.tv_allTags);
-        tv_moodTextBox = (TextView) view.findViewById(R.id.tv_moodTextBox);
+        tv_addedTags = (View) view.findViewById(R.id.tv_addedTags);
+        tv_allTags = (View) view.findViewById(R.id.tv_allTags);
+        radiogroup_people_interests = (RadioGroup) view.findViewById(R.id.radiogroup_people_interests);
         linearLayoutButton = (LinearLayout) view.findViewById(R.id.linearLayout_button);
         saveButton = (Button) view.findViewById(R.id.myMoodsButton);
         et_search = (EditText) view.findViewById(R.id.et_search);
@@ -120,30 +117,14 @@ public class MyMoods extends Fragment {
 
         tv_moodOffText.setVisibility(View.VISIBLE);
 
-        et_myMood.setVisibility(View.GONE);
         tv_addedTags.setVisibility(View.GONE);
         tv_allTags.setVisibility(View.GONE);
         mTagContainerLayoutAllTags.setVisibility(View.GONE);
         mTagContainerLayoutMyMoodTags.setVisibility(View.GONE);
-        linearLayoutButton.setVisibility(View.GONE);
         et_search.setVisibility(View.GONE);
         viewBlankLine.setVisibility(View.GONE);
-        tv_moodTextBox.setVisibility(View.GONE);
         tv_loadMore.setVisibility(View.GONE);
-        tv_moodOffText.setVisibility(View.VISIBLE);
 
-        /*if(!myMoodsSwitch.isChecked()){
-            et_myMood.setVisibility(View.GONE);
-            tv_addedTags.setVisibility(View.GONE);
-            tv_allTags.setVisibility(View.GONE);
-            mTagContainerLayoutAllTags.setVisibility(View.GONE);
-            mTagContainerLayoutMyMoodTags.setVisibility(View.GONE);
-            linearLayoutButton.setVisibility(View.GONE);
-            et_search.setVisibility(View.GONE);
-            viewBlankLine.setVisibility(View.GONE);
-            tv_moodTextBox.setVisibility(View.GONE);
-            tv_moodOffText.setVisibility(View.VISIBLE);
-        }*/
         initialize();
         updateAllInterests();
         setListeners();
@@ -156,35 +137,32 @@ public class MyMoods extends Fragment {
         myVO =  ApplicationCache.myUserVO;
         if("1".equalsIgnoreCase(myVO.getMood())){
             mood = "1";
-            myMoodsSwitch.setImageDrawable(res2);
-            et_myMood.setVisibility(View.VISIBLE);
+            radiogroup_people_interests.check(R.id.radio_people_of_particular_interests);
             tv_addedTags.setVisibility(View.VISIBLE);
             tv_allTags.setVisibility(View.VISIBLE);
             mTagContainerLayoutAllTags.setVisibility(View.VISIBLE);
             mTagContainerLayoutMyMoodTags.setVisibility(View.VISIBLE);
-            linearLayoutButton.setVisibility(View.VISIBLE);
             et_search.setVisibility(View.VISIBLE);
-            tv_moodTextBox.setVisibility(View.VISIBLE);
             viewBlankLine.setVisibility(View.VISIBLE);
             tv_loadMore.setVisibility(View.VISIBLE);
             tv_moodOffText.setVisibility(View.GONE);
         }else{
             mood = "0";
-            myMoodsSwitch.setImageDrawable(res1);
-            et_myMood.setVisibility(View.GONE);
+            radiogroup_people_interests.check(R.id.radio_people_of_my_interests);
+            //myMoodsSwitch.setImageDrawable(res1);
+            //et_myMood.setVisibility(View.GONE);
             tv_addedTags.setVisibility(View.GONE);
             tv_allTags.setVisibility(View.GONE);
             mTagContainerLayoutAllTags.setVisibility(View.GONE);
             mTagContainerLayoutMyMoodTags.setVisibility(View.GONE);
-            linearLayoutButton.setVisibility(View.GONE);
             et_search.setVisibility(View.GONE);
-            tv_moodTextBox.setVisibility(View.GONE);
+            //tv_moodTextBox.setVisibility(View.GONE);
             viewBlankLine.setVisibility(View.GONE);
             tv_loadMore.setVisibility(View.GONE);
             tv_moodOffText.setVisibility(View.VISIBLE);
         }
         if(myVO.getMoodTopic() != null){
-            et_myMood.setText(myVO.getMoodTopic());
+            //et_myMood.setText(myVO.getMoodTopic());
         }
         if(myVO.getMyMoodTags() != null){
             initialTags = ApplicationCache.myUserVO.getMyMoodTags();
@@ -201,47 +179,35 @@ public class MyMoods extends Fragment {
     }
 
     private void setListeners() {
-        myMoodsSwitch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-                if ("0".equalsIgnoreCase(mood)) {
-                    mood = "1";
-                    ApplicationCache.myUserVO.setMood("1");
-                }else{
+        radiogroup_people_interests.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
+                if (checkedId == R.id.radio_people_of_my_interests){
                     mood = "0";
                     ApplicationCache.myUserVO.setMood("0");
-                }
-
-                reloadData();
-
-                Firebase moodsRef = new Firebase("https://new-amigos.firebaseio.com/moods/");
-                Firebase myMoodsRef = new Firebase("https://new-amigos.firebaseio.com/users/"+myId+"/moods/");
-                if("0".equalsIgnoreCase(mood)){
-                    myMoodsSwitch.setImageDrawable(res1);
+                    Firebase moodsRef = new Firebase("https://new-amigos.firebaseio.com/moods/");
+                    Firebase myMoodsRef = new Firebase("https://new-amigos.firebaseio.com/users/"+myId+"/moods/");
                     myMoodsRef.child("mood").setValue("0");
-                    et_myMood.setVisibility(View.GONE);
                     tv_addedTags.setVisibility(View.GONE);
                     tv_allTags.setVisibility(View.GONE);
                     mTagContainerLayoutAllTags.setVisibility(View.GONE);
                     mTagContainerLayoutMyMoodTags.setVisibility(View.GONE);
-                    linearLayoutButton.setVisibility(View.GONE);
                     et_search.setVisibility(View.GONE);
-                    tv_moodTextBox.setVisibility(View.GONE);
                     viewBlankLine.setVisibility(View.GONE);
                     tv_loadMore.setVisibility(View.GONE);
                     tv_moodOffText.setVisibility(View.VISIBLE);
-                }else{
-                    myMoodsSwitch.setImageDrawable(res2);
+                }else if (checkedId == R.id.radio_people_of_particular_interests) {
+                    mood = "1";
+                    ApplicationCache.myUserVO.setMood("1");
+                    Firebase moodsRef = new Firebase("https://new-amigos.firebaseio.com/moods/");
+                    Firebase myMoodsRef = new Firebase("https://new-amigos.firebaseio.com/users/" + myId + "/moods/");
                     myMoodsRef.child("mood").setValue("1");
-                    et_myMood.setVisibility(View.VISIBLE);
                     tv_addedTags.setVisibility(View.VISIBLE);
                     tv_allTags.setVisibility(View.VISIBLE);
                     mTagContainerLayoutAllTags.setVisibility(View.VISIBLE);
                     mTagContainerLayoutMyMoodTags.setVisibility(View.VISIBLE);
-                    linearLayoutButton.setVisibility(View.VISIBLE);
                     et_search.setVisibility(View.VISIBLE);
-                    tv_moodTextBox.setVisibility(View.VISIBLE);
                     viewBlankLine.setVisibility(View.VISIBLE);
                     tv_loadMore.setVisibility(View.VISIBLE);
                     tv_moodOffText.setVisibility(View.GONE);
@@ -253,39 +219,36 @@ public class MyMoods extends Fragment {
         mTagContainerLayoutAllTags.setOnTagClickListener(new TagView.OnTagClickListener() {
             @Override
             public void onTagClick(int position, String text) {
-                if (myMoodsTagCount < 7){
-                    List<String> myTags = new ArrayList<String>();
-                    myTags = mTagContainerLayoutMyMoodTags.getTags();
-                    if(myTags.contains(text)){
-                        final Toast toast1 =  Toast.makeText(context,"Tag already added.",Toast.LENGTH_SHORT);
-                        toast1.show();
-                        Handler handler = new Handler();
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                toast1.cancel();
-                            }
-                        }, 1000);
-                    }else {
-                        mTagContainerLayoutMyMoodTags.addTag(text);
-                        TagView tag = mTagContainerLayoutMyMoodTags.getTagView(myMoodsTagCount);
-                        tag.setTagBackgroundColor(Color.WHITE);
-                        tag.setTagTextColor(context.getResources().getColor(R.color.colorPrimary));
-                        tag.setTagBorderColor(context.getResources().getColor(R.color.colorPrimary));
-                        myMoodsTagCount++;
-                        et_search.setText("");
-                        final Toast toast = Toast.makeText(context,text + " added.",Toast.LENGTH_SHORT);
-                        toast.show();
-                        Handler handler = new Handler();
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                toast.cancel();
-                            }
-                        }, 1000);
-                    }
-                }else{
-                    Toast.makeText(context,"You can choose upto 5 tags only",Toast.LENGTH_SHORT).show();
+
+                List<String> myTags = new ArrayList<String>();
+                myTags = mTagContainerLayoutMyMoodTags.getTags();
+                if(myTags.contains(text)){
+                    final Toast toast1 =  Toast.makeText(context,"Tag already added.",Toast.LENGTH_SHORT);
+                    toast1.show();
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            toast1.cancel();
+                        }
+                    }, 1000);
+                }else {
+                    mTagContainerLayoutMyMoodTags.addTag(text);
+                    TagView tag = mTagContainerLayoutMyMoodTags.getTagView(myMoodsTagCount);
+                    tag.setTagBackgroundColor(Color.WHITE);
+                    tag.setTagTextColor(context.getResources().getColor(R.color.colorPrimary));
+                    tag.setTagBorderColor(context.getResources().getColor(R.color.colorPrimary));
+                    myMoodsTagCount++;
+                    et_search.setText("");
+                    final Toast toast = Toast.makeText(context,text + " added.",Toast.LENGTH_SHORT);
+                    toast.show();
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            toast.cancel();
+                        }
+                    }, 1000);
                 }
             }
 
@@ -321,33 +284,39 @@ public class MyMoods extends Fragment {
             @Override
             public void onClick(View v) {
 
-                if (et_myMood.getText() == null || et_myMood.getText().toString().trim().isEmpty()){
-                    Toast.makeText(context,"Mention what's on your mind.",Toast.LENGTH_SHORT).show();
+                flag = 1;
+
+                if(radiogroup_people_interests.getCheckedRadioButtonId() == R.id.radio_people_of_my_interests){
+
+                    Toast.makeText(context, "Now, you will see people on the basis of your interests", Toast.LENGTH_SHORT).show();
+                    reloadData();
+
                 }else {
+
                     ArrayList<String> myTags = new ArrayList<String>();
-                    myTags = (ArrayList<String>)mTagContainerLayoutMyMoodTags.getTags();
+                    myTags = (ArrayList<String>) mTagContainerLayoutMyMoodTags.getTags();
                     if (myTags.isEmpty()) {
-                        Toast.makeText(context, "Choose atleast one tag.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "Choose atleast one tag", Toast.LENGTH_SHORT).show();
                     } else {
 
-                        ApplicationCache.myUserVO.setMoodTopic(et_myMood.getText().toString().trim());
+                        Toast.makeText(context, "Now, you will see people on the basis of the topics you have chosen", Toast.LENGTH_SHORT).show();
                         ApplicationCache.myUserVO.setMyMoodTags(myTags);
                         reloadData();
-
                         Firebase moodsRef = new Firebase("https://new-amigos.firebaseio.com/moods/");
                         Firebase myMoodsRef = new Firebase("https://new-amigos.firebaseio.com/users/" + myId + "/moods/");
-                        for (String s1: initialTags){
+                        for (String s1 : initialTags) {
                             moodsRef.child(s1).child(myId).setValue(null);
                             myMoodsRef.child("interests").child(s1).setValue(null);
                         }
                         for (String s : myTags) {
                             moodsRef.child(s).child(myId).setValue("1");
-                            myMoodsRef.child("topic").setValue(et_myMood.getText().toString().trim());
                             myMoodsRef.child("interests").child(s).setValue("1");
                         }
-                        Toast.makeText(context,"Data saved.",Toast.LENGTH_SHORT).show();
+
                     }
                 }
+
+
             }
         });
 
@@ -448,9 +417,9 @@ public class MyMoods extends Fragment {
         ArrayList<String> sports = PeevesList.getAllSportsInterests();
         ArrayList<String> music = PeevesList.getAllMusicInterests();
         ArrayList<String> technology = PeevesList.getAllTechnologyInterests();*/
-        ArrayList<String> allTopics = PeevesList.getAllNewInterestsTopics();
+        ArrayList<String> allTopics = PeevesList.getNewInterestsTopics();
         shortList.clear();
-        for(int i = 0; i<40; i++){
+        for(int i = 0; i<20; i++){
             shortList.add(allTopics.get(i));
         }
 
@@ -499,7 +468,13 @@ public class MyMoods extends Fragment {
         protected void onPostExecute(String result) {
             UsersFragment usersFragment = new UsersFragment();
             usersFragment.reloadAllUsers();
-
+            if (flag == 1) {
+                TabLayout tabLayout;
+                tabLayout = (TabLayout) fragmentContext.findViewById(R.id.tabs);
+                TabLayout.Tab tab = tabLayout.getTabAt(1);
+                tab.select();
+                flag = 0;
+            }
         }
 
         @Override

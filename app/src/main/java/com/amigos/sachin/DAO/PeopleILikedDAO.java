@@ -105,6 +105,25 @@ public class PeopleILikedDAO extends SQLiteOpenHelper {
         return true;
     }
 
+    public boolean removeFromPeopleILikedList(String userId){
+        Log.i(TAG," PeopleILikedDAO::addUserToPeopleILikedList");
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        try {
+            String sql="delete from people_i_liked where id in (?)";
+            SQLiteStatement statement=db.compileStatement(sql);
+            statement.bindString(1, userId);
+            statement.execute();
+        }
+        catch(Exception ex){
+            ex.printStackTrace();
+            return false;
+        }finally {
+            db.close();
+        }
+        return true;
+    }
+
     public ArrayList<String> getAllPeopleIlikedId() {
         ArrayList<String> peopleIlikedList = new ArrayList<String>();
 

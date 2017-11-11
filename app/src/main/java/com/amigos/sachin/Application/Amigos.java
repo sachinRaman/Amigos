@@ -37,8 +37,10 @@ public class Amigos extends Application {
 
     public void onTrimMemory(final int level) {
         if (level == ComponentCallbacks2.TRIM_MEMORY_UI_HIDDEN) {
-            Firebase activeRef = new Firebase("https://new-amigos.firebaseio.com/users/"+myId+"/active/");
-            activeRef.setValue("0");
+            if(myId != null) {
+                Firebase activeRef = new Firebase("https://new-amigos.firebaseio.com/users/" + myId + "/active/");
+                activeRef.setValue("0");
+            }
         }
     }
 }

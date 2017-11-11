@@ -1,177 +1,235 @@
+<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.amigos.sachin.MyProfileFragments.MyInterestsFragment">
 
-    <ScrollView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
+        android:orientation="vertical"
+        android:weightSum="2">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:padding="10dp">
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:weightSum="2"
+            android:orientation="horizontal">
 
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/tag_container1"
+                android:orientation="vertical"
+                android:layout_weight="1">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:paddingLeft="5dp"
-                android:text="General"
-                android:textColor="@color/gray3"
-                android:textSize="18sp"
-                android:textStyle="bold" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="NEUTRAL"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:textColor="#9FA8DA"
+                    android:textSize="12sp"
+                    android:background="@drawable/tags_textbox_border1"/>
 
-            <co.lujun.androidtagview.TagContainerLayout
-                android:id="@+id/tagPrefContainerLifeStyle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:layout_marginTop="8dp"
-                android:padding="5dp"
-                app:container_enable_drag="false"
-                app:horizontal_interval="10dp"
-                app:tag_clickable="true"
-                app:vertical_interval="10dp" />
+                <ScrollView
+                    android:id="@+id/scroll_tag1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="1dp"
+                    android:padding="2dp">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingLeft="5dp"
-                android:text="Arts"
-                android:textColor="@color/gray3"
-                android:textSize="18sp"
-                android:textStyle="bold" />
+                    <co.lujun.androidtagview.TagContainerLayout
+                        android:id="@+id/tags1"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:animateLayoutChanges="true"
+                        android:padding="0dp"
+                        app:container_enable_drag="false"
+                        app:horizontal_interval="10dp"
+                        app:tag_clickable="true"
+                        app:tag_theme="pure_teal"
+                        app:vertical_interval="10dp" />
 
-            <co.lujun.androidtagview.TagContainerLayout
-                android:id="@+id/tagPrefContainerArts"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:layout_marginTop="8dp"
-                android:padding="5dp"
-                app:container_enable_drag="false"
-                app:horizontal_interval="10dp"
-                app:tag_clickable="true"
-                app:vertical_interval="10dp" />
+                </ScrollView>
+            </LinearLayout>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingLeft="5dp"
-                android:text="Entertainment"
-                android:textColor="@color/gray3"
-                android:textSize="18sp"
-                android:textStyle="bold" />
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/tag_container3"
+                android:orientation="vertical"
+                android:layout_weight="1">
 
-            <co.lujun.androidtagview.TagContainerLayout
-                android:id="@+id/tagPrefContainerEntertainment"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:layout_marginTop="8dp"
-                android:padding="5dp"
-                app:container_enable_drag="false"
-                app:horizontal_interval="10dp"
-                app:tag_clickable="true"
-                app:vertical_interval="10dp" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="PASSION (Like it, live it)"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:textColor="#E57373"
+                    android:textSize="12sp"
+                    android:background="@drawable/tags_textbox_border3" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingLeft="5dp"
-                android:text="Business"
-                android:textColor="@color/gray3"
-                android:textSize="18sp"
-                android:textStyle="bold" />
+                <ScrollView
+                    android:id="@+id/scroll_tag3"
+                    android:layout_width="175dp"
+                    android:layout_height="225dp"
+                    android:layout_margin="1dp"
+                    android:padding="2dp">
 
-            <co.lujun.androidtagview.TagContainerLayout
-                android:id="@+id/tagPrefContainerBusiness"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:layout_marginTop="8dp"
-                android:padding="5dp"
-                app:container_enable_drag="false"
-                app:horizontal_interval="10dp"
-                app:tag_clickable="true"
-                app:vertical_interval="10dp" />
+                    <co.lujun.androidtagview.TagContainerLayout
+                        android:id="@+id/tags3"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="0dp"
+                        app:container_enable_drag="false"
+                        app:horizontal_interval="10dp"
+                        app:tag_clickable="true"
+                        app:tag_theme="pure_teal"
+                        app:vertical_interval="10dp"
+                        android:animateLayoutChanges="true"/>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingLeft="5dp"
-                android:text="Sports"
-                android:textColor="@color/gray3"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <co.lujun.androidtagview.TagContainerLayout
-                android:id="@+id/tagPrefContainerSports"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:layout_marginTop="8dp"
-                android:padding="5dp"
-                app:container_enable_drag="false"
-                app:horizontal_interval="10dp"
-                app:tag_clickable="true"
-                app:vertical_interval="10dp" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingLeft="5dp"
-                android:text="Music"
-                android:textColor="@color/gray3"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <co.lujun.androidtagview.TagContainerLayout
-                android:id="@+id/tagPrefContainerMusic"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:layout_marginTop="8dp"
-                android:padding="5dp"
-                app:container_enable_drag="false"
-                app:horizontal_interval="10dp"
-                app:tag_clickable="true"
-                app:vertical_interval="10dp" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingLeft="5dp"
-                android:text="Science and Tech"
-                android:textColor="@color/gray3"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <co.lujun.androidtagview.TagContainerLayout
-                android:id="@+id/tagPrefContainerTechnology"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:layout_marginTop="8dp"
-                android:padding="5dp"
-                app:container_enable_drag="false"
-                app:horizontal_interval="10dp"
-                app:tag_clickable="true"
-                app:vertical_interval="10dp" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="40dp"/>
+                </ScrollView>
+            </LinearLayout>
 
         </LinearLayout>
-    </ScrollView>
 
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:orientation="horizontal"
+            android:layout_weight="1"
+            android:weightSum="2">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/tag_container2"
+                android:orientation="vertical"
+                android:layout_weight="1"
+                android:textColor="#9FA8DA">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="HOBBY (Like it, somrtimes do it)"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:textColor="#FFD54F"
+                    android:textSize="12sp"
+                    android:background="@drawable/tags_textbox_border2" />
+
+                <ScrollView
+                    android:id="@+id/scroll_tag2"
+                    android:layout_width="175dp"
+                    android:layout_height="225dp"
+                    android:layout_margin="1dp"
+                    android:padding="2dp">
+
+                    <co.lujun.androidtagview.TagContainerLayout
+                        android:id="@+id/tags2"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="0dp"
+                        app:container_enable_drag="false"
+                        app:horizontal_interval="10dp"
+                        app:tag_clickable="true"
+                        app:tag_theme="pure_teal"
+                        app:vertical_interval="10dp"
+                        android:animateLayoutChanges="true"/>
+
+                </ScrollView>
+            </LinearLayout>
+
+
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/tag_container4"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="APPRECIATE (Like it, don't do it)"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:textColor="#81C784"
+                    android:textSize="12sp"
+                    android:background="@drawable/tags_textbox_border4" />
+
+                <ScrollView
+                    android:id="@+id/scroll_tag4"
+                    android:layout_width="175dp"
+                    android:layout_height="225dp"
+                    android:layout_margin="1dp"
+                    android:padding="2dp">
+
+                    <co.lujun.androidtagview.TagContainerLayout
+                        android:id="@+id/tags4"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="0dp"
+                        app:container_enable_drag="false"
+                        app:horizontal_interval="10dp"
+                        app:tag_clickable="true"
+                        app:tag_theme="pure_teal"
+                        app:vertical_interval="10dp"
+                        android:animateLayoutChanges="true"/>
+
+                </ScrollView>
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp">
+
+            <Button
+                android:id="@+id/saveInterests"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:background="@drawable/button_color"
+                android:minHeight="0dp"
+                android:minWidth="10dp"
+                android:paddingBottom="5dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingTop="5dp"
+                android:text="SAVE"
+                android:textColor="@color/actionBarTextColor"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+
+        </RelativeLayout>
+
+
+    </LinearLayout>
 </RelativeLayout>

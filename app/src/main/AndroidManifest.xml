@@ -61,9 +61,14 @@
             android:noHistory="true"
             android:screenOrientation="portrait" />
 
-        <service android:enabled="true"
-            android:name="com.amigos.sachin.Services.UploadService"/>
-
+        <service
+            android:name=".Services.UploadService"
+            android:enabled="true" />
+        <!--
+            <service
+            android:name=".Services.EnablingService"
+            android:enabled="true" />
+        -->
         <service
             android:name=".Services.ChatService"
             android:enabled="true">
@@ -76,17 +81,14 @@
             </intent-filter>
             -->
         </service>
-
-        <service
-            android:name=".Services.MyFirebaseMessagingService">
+        <service android:name=".Services.MyFirebaseMessagingService">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-        <service
-            android:name=".Services.MyFirebaseInstanceIDService">
+        <service android:name=".Services.MyFirebaseInstanceIDService">
             <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
 
@@ -106,12 +108,13 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".Activities.MyMoodActivity"
-            android:label="My Mood"
+            android:label="Preferences"
             android:screenOrientation="portrait" />
         <activity
             android:name=".Activities.UserProfileActivity"
             android:noHistory="true"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.amigos.sachin.Activities.MainTabsActivity" />
@@ -134,7 +137,30 @@
             android:label="My Admirers"
             android:parentActivityName=".Activities.SplashScreen2"
             android:screenOrientation="portrait" />
-        <activity android:name=".Activities.SearchActivity"></activity>
+        <activity
+            android:name=".Activities.SearchActivity"
+            android:label="Find people"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activities.DragActivity"
+            android:label="My Interests"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activities.ZoomedProfileImageActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/TransparentTheme" />
+        <activity
+            android:name=".Activities.PeopleILikedActivity"
+            android:label="People I Admired"
+            android:screenOrientation="portrait" />
+        <activity android:name=".Activities.NewChatActivity" />
+        <activity
+            android:name=".Activities.MyInterestsUsageDirections"
+            android:screenOrientation="portrait"
+            android:theme="@style/TransparentTheme" />
+        <activity android:name=".Activities.MyMoodUsageDirections"
+            android:screenOrientation="portrait"
+            android:theme="@style/TransparentTheme"></activity>
     </application>
 
 </manifest>

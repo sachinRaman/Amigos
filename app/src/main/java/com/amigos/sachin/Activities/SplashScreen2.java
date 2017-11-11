@@ -65,7 +65,7 @@ public class SplashScreen2 extends AppCompatActivity {
             ApplicationCache applicationCache = new ApplicationCache();
 
 
-            for (int i = 0; i < 5; i++) {
+            /*for (int i = 0; i < 3; i++) {
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {
@@ -82,14 +82,14 @@ public class SplashScreen2 extends AppCompatActivity {
                         }
                     }
                 });
-                /*ToastHandler mToastHandler = new ToastHandler(context);
-                mToastHandler.showToast("Internet connection is poor",1000);*/
+                *//*ToastHandler mToastHandler = new ToastHandler(context);
+                mToastHandler.showToast("Internet connection is poor",1000);*//*
                 try {
                     Thread.sleep(2000);
                 } catch (InterruptedException e) {
                     Thread.interrupted();
                 }
-            }
+            }*/
 
             return "whatever result you have";
         }

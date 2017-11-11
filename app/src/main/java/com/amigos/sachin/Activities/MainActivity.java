@@ -11,6 +11,7 @@ import android.view.View;
 
 import com.amigos.sachin.R;
 import com.amigos.sachin.Services.ChatService;
+//import com.amigos.sachin.Services.EnablingService;
 import com.amigos.sachin.Services.MyFirebaseInstanceIDService;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -66,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
         loginButton.setVisibility(View.VISIBLE);
 
         if (isLoggedIn()){
-            if(isMyServiceRunning(ChatService.class) == false) {
+            if(isMyServiceRunning(ChatService.class) == false ) {
                 Intent startChatService = new Intent(this, ChatService.class);
                 startService(startChatService);
             }
@@ -232,7 +233,8 @@ public class MainActivity extends AppCompatActivity {
                                         }
                                     }*/
                                     SharedPreferences sp=getApplicationContext().getSharedPreferences("com.amigos.sachin", Context.MODE_PRIVATE);
-                                    sp.edit().putString("myId",""+ myId).apply();
+                                    sp.edit().putString("myId",""+ myId)
+                                            .putString("interestsUsageDirections","0").apply();
                                     startService(new Intent(ChatService.class.getName()));
 
 

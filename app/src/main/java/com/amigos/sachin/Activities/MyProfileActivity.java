@@ -57,6 +57,7 @@ import java.io.ByteArrayOutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import hani.momanii.supernova_emoji_library.Helper.EmojiconEditText;
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
 import jp.wasabeef.glide.transformations.CropSquareTransformation;
 
@@ -69,7 +70,7 @@ public class MyProfileActivity extends AppCompatActivity {
     String myId = "";
     Context context;
     ImageView imageView,profilePhotoEdit;
-    EditText et_name, et_age,et_place,et_status,et_activity1,et_activity2,et_activity3;
+    EmojiconEditText et_name, et_age,et_place,et_status,et_activity1,et_activity2,et_activity3;
     Button okButton;
     public RadioGroup radioSexGroup;
     public RadioButton radioSexButton;
@@ -87,12 +88,12 @@ public class MyProfileActivity extends AppCompatActivity {
         storageReference = storage.getReference();
 
         context = getApplicationContext();
-        et_name = (EditText)findViewById(R.id.et_display_name1);
-        et_age = (EditText) findViewById(R.id.age1);
-        et_place = (EditText) findViewById(R.id.place1);
-        et_status = (EditText) findViewById(R.id.editText_status1);
-        et_activity1 = (EditText) findViewById(R.id.editText_act11);
-        et_activity2 = (EditText) findViewById(R.id.editText_act21);
+        et_name = (EmojiconEditText)findViewById(R.id.et_display_name1);
+        et_age = (EmojiconEditText) findViewById(R.id.age1);
+        et_place = (EmojiconEditText) findViewById(R.id.place1);
+        et_status = (EmojiconEditText) findViewById(R.id.editText_status1);
+        et_activity1 = (EmojiconEditText) findViewById(R.id.editText_act11);
+        et_activity2 = (EmojiconEditText) findViewById(R.id.editText_act21);
         /*et_activity3 = (EditText) findViewById(R.id.editText_act31);*/
         radioSexGroup = (RadioGroup) findViewById(R.id.radioSex1);
         okButton = (Button) findViewById(R.id.button1);
@@ -315,7 +316,7 @@ public class MyProfileActivity extends AppCompatActivity {
 
                 Toast.makeText(context,"Data updated successfully.",Toast.LENGTH_LONG).show();
 
-                Intent intent = new Intent(MyProfileActivity.this,InterestsTagsActivity.class);
+                Intent intent = new Intent(MyProfileActivity.this,DragActivity.class);
                 startActivity(intent);
             }
         });

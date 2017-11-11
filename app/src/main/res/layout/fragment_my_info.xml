@@ -6,7 +6,9 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true">
 
 
         <LinearLayout
@@ -59,7 +61,7 @@
                 android:text="Display Name"
                 android:textSize="15sp" />
 
-            <EditText
+            <hani.momanii.supernova_emoji_library.Helper.EmojiconEditText
                 android:id="@+id/et_display_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -82,7 +84,7 @@
                 android:text="Age"
                 android:textSize="15sp" />
 
-            <EditText
+            <hani.momanii.supernova_emoji_library.Helper.EmojiconEditText
                 android:id="@+id/age"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -143,7 +145,7 @@
                 android:text="Place"
                 android:textSize="15sp"/>
 
-            <EditText
+            <hani.momanii.supernova_emoji_library.Helper.EmojiconEditText
                 android:id="@+id/place"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -166,7 +168,7 @@
                 android:text="Profession"
                 android:textSize="15sp" />
 
-            <EditText
+            <hani.momanii.supernova_emoji_library.Helper.EmojiconEditText
                 android:id="@+id/editText_act2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -188,7 +190,7 @@
                 android:text="Status"
                 android:textSize="15sp"/>
 
-            <EditText
+            <hani.momanii.supernova_emoji_library.Helper.EmojiconEditText
                 android:id="@+id/editText_status"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -210,7 +212,7 @@
                 android:text="About me"
                 android:textSize="15sp" />
 
-            <EditText
+            <hani.momanii.supernova_emoji_library.Helper.EmojiconEditText
                 android:id="@+id/editText_act1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -235,14 +237,14 @@
                     android:layout_height="40dp"
                     android:paddingLeft="10dp"
                     android:paddingRight="10dp"
-                    android:src="@drawable/settings_icon"/>
+                    android:src="@drawable/preview_profile_icon"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_toRightOf="@id/settingsIcon1"
                     android:padding="10dp"
-                    android:text="Settings"
+                    android:text="Preview Profile"
                     android:textSize="16sp" />
 
             </RelativeLayout>

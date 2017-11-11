@@ -97,7 +97,7 @@ public class PeevesList {
     }
 
     public static ArrayList<String> getAllLifestyleInterests(){
-        ArrayList<String> lifestyle = new ArrayList<String>(Arrays.asList("Fashion",
+        /*ArrayList<String> lifestyle = new ArrayList<String>(Arrays.asList("Fashion",
                 "Food",
                 "Travel",
                 "Adventure",
@@ -108,17 +108,46 @@ public class PeevesList {
                 "Gaming",
                 "Poker",
                 "Psychology",
-                "Tattoo"));
+                "Tattoo"));*/
+        ArrayList<String> lifestyle = new ArrayList<String>(Arrays.asList("Adventure",
+                "TV series",
+                "Anime and cartoons",
+                "Astrology",
+                "Chess",
+                "Gaming",
+                "Poker",
+                "Tattoo",
+                "Health",
+                "Healthy Eating",
+                "Exercise",
+                "Healthy Living",
+                "Nutrition",
+                "Mental Health",
+                "Philosophy",
+                "Religion",
+                "Philosophy of Science",
+                "Cooking",
+                "Politics",
+                "Government"));
         return lifestyle;
     }
 
     public static ArrayList<String> getAllArtsInterests(){
+        /*ArrayList<String> arts = new ArrayList<String>(Arrays.asList("Painting",
+                "Sketching",
+                "Writing",
+                "Photography",
+                "Drawing",
+                "Poetry"));*/
         ArrayList<String> arts = new ArrayList<String>(Arrays.asList("Painting",
                 "Sketching",
                 "Writing",
                 "Photography",
                 "Drawing",
-                "Poetry"));
+                "Photography",
+                "Poetry",
+                "Reading"));
+
         return arts;
     }
 
@@ -132,11 +161,39 @@ public class PeevesList {
         return arts;
     }
 
+    public static ArrayList<String> getAllLiteratureInterests(){
+        ArrayList<String> arts = new ArrayList<String>(Arrays.asList("Books",
+                "Literature",
+                "Novels",
+                "Fiction",
+                "Literary Fiction"));
+        return arts;
+    }
+
     public static ArrayList<String> getAllBusinessInterests(){
-        ArrayList<String> arts = new ArrayList<String>(Arrays.asList("Entrepreneurship",
+        /*ArrayList<String> arts = new ArrayList<String>(Arrays.asList("Entrepreneurship",
                 "Management",
                 "Marketing",
-                "Strategy"));
+                "Strategy"));*/
+        ArrayList<String> arts = new ArrayList<String>(Arrays.asList("Management",
+                "Marketing",
+                "Strategy",
+                "Startups",
+                "Lean Startups",
+                "Startup Founders and Entrepreneurs",
+                "Startup Strategy",
+                "Venture Capital",
+                "Business",
+                "Entrepreneurship",
+                "Finance",
+                "Business Strategy",
+                "Marketing",
+                "Investing",
+                "Business Models",
+                "Stock Markets",
+                "Career Advice",
+                "Personal Finance",
+                "Money"));
         return arts;
     }
 
@@ -165,16 +222,201 @@ public class PeevesList {
     }
 
     public static ArrayList<String> getAllTechnologyInterests(){
-        ArrayList<String> arts = new ArrayList<String>(Arrays.asList("Artificial Intelligence",
+        /*ArrayList<String> arts = new ArrayList<String>(Arrays.asList("Artificial Intelligence",
                 "Cryptocurrency",
                 "Programming" ,
                 "Blockchain",
                 "Space travel",
-                "Astronomy"));
+                "Astronomy"));*/
+        ArrayList<String> arts = new ArrayList<String>(Arrays.asList("Artificial Intelligence",
+                "Crpytocurrency",
+                "Programming" ,
+                "Blockchain",
+                "Space travel",
+                "Astronomy",
+                "Computer Science",
+                "Physics",
+                "Psychology",
+                "Web Design",
+                "User Interfaces",
+                "Economics",
+                "Mathematics",
+                "Technology Trends",
+                "Computer Programming",
+                "Software Engineering",
+                "Machine Learning",
+                "Social Psychology",
+                "The Universe",
+                "Algorithms",
+                "Neuroscience",
+                "Programming Languages",
+                "Statistics (academic discipline)",
+                "Probability (statistics)"));
         return arts;
     }
 
     public static ArrayList<String> getAllNewInterestsTopics(){
+        ArrayList<String> topics = new ArrayList<String>(Arrays.asList(
+                "Adventure",
+                "TV series",
+                "Anime and cartoons",
+                "Astrology",
+                "Chess",
+                "Gaming",
+                "Poker",
+                "Tattoo",
+                "Health",
+                "Healthy Eating",
+                "Exercise",
+                "Healthy Living",
+                "Nutrition",
+                "Mental Health",
+                "Philosophy",
+                "Religion",
+                "Philosophy of Science",
+                "Cooking",
+                "Politics",
+                "Government",
+                "Fashion",
+                "Visiting and Travel",
+                "International Travel",
+                "Vacations",
+                "Tourism",
+                "Travel Hacks",
+                "Design",
+                "Photography",
+                "Fashion and Style",
+                "Fine Art",
+                "Digital Photography",
+                "Product Design of Physical Goods",
+                "Clothing and Apparel",
+                "Journalism",
+                "Television Series",
+                "Painting",
+                "Sketching",
+                "Writing",
+                "Photography",
+                "Drawing",
+                "Photography",
+                "Poetry",
+                "Reading",
+                "Music",
+                "Theatre",
+                "Dance",
+                "Storytelling",
+                "Movies",
+                "Comedy",
+                "Management",
+                "Marketing",
+                "Strategy",
+                "Startups",
+                "Lean Startups",
+                "Startup Founders and Entrepreneurs",
+                "Startup Strategy",
+                "Venture Capital",
+                "Business",
+                "Entrepreneurship",
+                "Finance",
+                "Business Strategy",
+                "Marketing",
+                "Investing",
+                "Business Models",
+                "Stock Markets",
+                "Career Advice",
+                "Personal Finance",
+                "Money",
+                "Cricket",
+                "Tennis",
+                "Football",
+                "badminton",
+                "Athletics",
+                "Basketball",
+                "Bowling",
+                "Golf",
+                "Skating" ,
+                "Vollyeball" ,
+                "EDM",
+                "Rock",
+                "Hip Hop",
+                "Pop",
+                "Rap",
+                "Instrumental",
+                "Artificial Intelligence",
+                "Crpytocurrency",
+                "Programming" ,
+                "Blockchain",
+                "Space travel",
+                "Astronomy",
+                "Computer Science",
+                "Physics",
+                "Psychology",
+                "Web Design",
+                "User Interfaces",
+                "Economics",
+                "Mathematics",
+                "Technology Trends",
+                "Computer Programming",
+                "Software Engineering",
+                "Machine Learning",
+                "Social Psychology",
+                "The Universe",
+                "Algorithms",
+                "Neuroscience",
+                "Programming Languages",
+                "Statistics (academic discipline)",
+                "Probability (statistics)",
+                "Books",
+                "Writing",
+                "Literature",
+                "Novels",
+                "Fiction",
+                "Literary Fiction"
+                ));
+        return topics;
+    }
+
+    public static ArrayList<String> getNewInterestsTopics(){
+        ArrayList<String> topics = new ArrayList<String>(Arrays.asList(
+                "TV series",
+                "Astrology",
+                "Beer",
+                "Poker",
+                "Food",
+                "Shopping",
+                "Gym",
+                "Philosophy",
+                "Religion",
+                "Cooking",
+                "Politics",
+                "Photography",
+                "Fashion",
+                "Acting",
+                "Dance",
+                "Movies",
+                "Writing",
+                "Reading",
+                "Painting",
+                "Sports",
+                "Economics",
+                "Business",
+                "Startups",
+                "Marketing",
+                "Investing",
+                "Stock Markets",
+                "Management",
+                "AI",
+                "Crpytocurrency",
+                "Astronomy",
+                "Maths",
+                "Physics",
+                "Psychology",
+                "Tech Savvy",
+                "Chess"
+        ));
+        return topics;
+    }
+
+    /*public static ArrayList<String> getAllNewInterestsTopics(){
         ArrayList<String> topics = new ArrayList<String>(Arrays.asList("Health and Medicine",
                 "Health",
                 "Healthy Eating",
@@ -350,5 +592,5 @@ public class PeevesList {
                 "Space travel",
                 "Astronomy"));
         return topics;
-    }
+    }*/
 }

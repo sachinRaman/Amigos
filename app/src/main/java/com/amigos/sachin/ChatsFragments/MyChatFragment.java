@@ -106,6 +106,42 @@ public class MyChatFragment extends Fragment {
     }
 
 
+    public static void reloadChat(){
+        ChatUsersDAO chatUsersDAO = new ChatUsersDAO(context);
+        ArrayList<ChatUsersVO> chatUsersVOArrayList = chatUsersDAO.getMyChatList(myId);
+
+        ArrayList<String> peopleIBolcked = ApplicationCache.peopleIBlockedList;
+        ArrayList<String> peopleWhoBlockedMe = ApplicationCache.peopleWhoBlockedMeList;
+
+        for( int i = chatUsersVOArrayList.size() - 1; i >= 0 ; i--){
+            String userId = chatUsersVOArrayList.get(i).getUserId();
+            if( peopleIBolcked.contains(userId) || peopleWhoBlockedMe.contains(userId) || myId.equalsIgnoreCase(userId) ){
+                chatUsersVOArrayList.remove(i);
+            }
+        }
+
+        Collections.sort(chatUsersVOArrayList, new Comparator<ChatUsersVO>() {
+            @Override
+            public int compare(ChatUsersVO lhs, ChatUsersVO rhs) {
+                if ( lhs.getTime().compareTo(rhs.getTime()) > 0 )
+                    return -1;
+                return 1;
+            }
+        });
+
+        if (chatUsersVOArrayList.isEmpty()){
+            chatListView.setVisibility(View.GONE);
+            tv_emptyChat.setVisibility(View.VISIBLE);
+        }else{
+            chatListView.setVisibility(View.VISIBLE);
+            tv_emptyChat.setVisibility(View.GONE);
+        }
+
+        chatLVAdapter = new ChatLVAdapter(context,chatUsersVOArrayList,chatListView);
+        chatListView.setAdapter(chatLVAdapter);
+    }
+
+
     @Override
     public void onResume() {
         super.onResume();

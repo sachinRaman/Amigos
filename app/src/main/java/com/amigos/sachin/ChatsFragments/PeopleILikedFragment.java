@@ -63,6 +63,9 @@ public class PeopleILikedFragment extends Fragment {
         tv_noLikesTextView = (TextView) view.findViewById(R.id.tv_noLikesTextView);
 
         reloadPeopleILikedList();
+
+
+
         return view;
     }
 
@@ -74,6 +77,40 @@ public class PeopleILikedFragment extends Fragment {
     }
 
     public static void reloadPeopleILikedList() {
+        ArrayList<LikedUserVO> peopleWhoLikedMeVOArrayList = ApplicationCache.pendingChatRequestsVO;
+
+        ArrayList<String> peopleIBolcked = ApplicationCache.peopleIBlockedList;
+        ArrayList<String> peopleWhoBlockedMe = ApplicationCache.peopleWhoBlockedMeList;
+
+        for( int i = peopleWhoLikedMeVOArrayList.size() - 1; i >= 0 ; i--){
+            String userId = peopleWhoLikedMeVOArrayList.get(i).getId();
+            if( peopleIBolcked.contains(userId) || peopleWhoBlockedMe.contains(userId) || myId.equalsIgnoreCase(userId) ){
+                peopleWhoLikedMeVOArrayList.remove(i);
+            }
+        }
+
+        Collections.sort(peopleWhoLikedMeVOArrayList, new Comparator<LikedUserVO>() {
+            @Override
+            public int compare(LikedUserVO lhs, LikedUserVO rhs) {
+                if ( lhs.getTime().compareTo(rhs.getTime()) > 0 )
+                    return -1;
+                return 1;
+            }
+        });
+
+        if (peopleWhoLikedMeVOArrayList == null || peopleWhoLikedMeVOArrayList.isEmpty()){
+            likedListView.setVisibility(View.GONE);
+            tv_noLikesTextView.setVisibility(View.VISIBLE);
+        }else{
+            likedListView.setVisibility(View.VISIBLE);
+            tv_noLikesTextView.setVisibility(View.GONE);
+        }
+
+        likedLVAdapter = new LikedUsersLVAdapter(context,peopleWhoLikedMeVOArrayList,likedListView);
+        likedListView.setAdapter(likedLVAdapter);
+    }
+
+    /*public static void reloadPeopleILikedList() {
         final PeopleILikedDAO peopleILikedDAO = new PeopleILikedDAO(context);
         ArrayList<LikedUserVO> peopleILikedVOArrayList = peopleILikedDAO.getAllPeopleIliked();
 
@@ -105,5 +142,5 @@ public class PeopleILikedFragment extends Fragment {
 
         likedLVAdapter = new LikedUsersLVAdapter(context,peopleILikedVOArrayList,likedListView);
         likedListView.setAdapter(likedLVAdapter);
-    }
+    }*/
 }
