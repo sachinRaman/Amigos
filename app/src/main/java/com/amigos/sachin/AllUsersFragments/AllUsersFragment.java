@@ -16,8 +16,8 @@ import android.widget.Toast;
 
 import com.amigos.sachin.Activities.ChatActivity;
 import com.amigos.sachin.Activities.ZoomedProfileImageActivity;
-import com.amigos.sachin.Adapters.SwipeAllUsersAdapter;
 import com.amigos.sachin.ApplicationCache.ApplicationCache;
+import com.amigos.sachin.DAO.ChatNotificationsDAO;
 import com.amigos.sachin.DAO.PeopleILikedDAO;
 import com.amigos.sachin.MainFragments.UsersFragment;
 import com.amigos.sachin.R;
@@ -41,14 +41,6 @@ import hani.momanii.supernova_emoji_library.Helper.EmojiconTextView;
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
 import jp.wasabeef.glide.transformations.CropSquareTransformation;
 
-//import com.firebase.client.DataSnapshot;
-/*import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;*/
-//import com.firebase.client.ValueEventListener;
-
 
 public class AllUsersFragment extends Fragment {
 
@@ -70,9 +62,10 @@ public class AllUsersFragment extends Fragment {
 
     ArrayList<Tag> tags = new ArrayList<Tag>();
     ImageView messageIcon, likeIcon, crossIcon, check_icon;
-    String myId;
-    /*LinearLayout linear_layout_search;
-    EditText et_search_all_users;*/
+    //ImageView swipeLeftIcon, swipeRightIcon;
+    String myId, userImageUrl;
+    String userFcmToken;
+    String userName = null, userId = null, imageUrl = null;
 
     public AllUsersFragment() {
 
@@ -93,25 +86,12 @@ public class AllUsersFragment extends Fragment {
 
         final String myName = ApplicationCache.myUserVO.getName();
 
-        final ArrayList<String> sentChatRequests = new ArrayList<String>();
-        final ArrayList<String> pendingChatRequests = new ArrayList<String>();
-        final ArrayList<String> approvedChatRequests = new ArrayList<String>();
-
-        final Set<String> sentRequestsSet = sp.getStringSet("sent_requests", new HashSet<String>());
-        sentChatRequests.addAll(sentRequestsSet);
-
-        final Set<String> pendingRequestsSet = sp.getStringSet("pending_requests", new HashSet<String>());
-        pendingChatRequests.addAll(pendingRequestsSet);
-
-        final Set<String> approvedRequestsSet = sp.getStringSet("approved_requests", new HashSet<String>());
-        approvedChatRequests.addAll(approvedRequestsSet);
-
         UserVO myVO = ApplicationCache.myUserVO;
         myInterests = myVO.getInterests();
         final UserVO userVO = (UserVO) bundle.getSerializable("userData");
         final int position = bundle.getInt("position");
         String age = null, sex = null, place = null;
-        String userName = null, userId = null, imageUrl = null;
+
 
         /*linear_layout_search = (LinearLayout) view.findViewById(R.id.linear_layout_search);
         et_search_all_users = (EditText) view.findViewById(R.id.et_search_all_users);*/
@@ -127,13 +107,13 @@ public class AllUsersFragment extends Fragment {
         tv_act1.setEmojiconSize(40);
         tv_act2.setEmojiconSize(40);
 
-        //tv_act3 = (TextView) view.findViewById(R.id.tv_activity3);
-        /*tv_matchCount = (TextView) view.findViewById(R.id.tv_matchCount);*/
         profilePicture = (ImageView) view.findViewById(R.id.imageView_profileImage);
         messageIcon = (ImageView) view.findViewById(R.id.messageIcon);
         likeIcon = (ImageView) view.findViewById(R.id.likeIcon);
         crossIcon = (ImageView) view.findViewById(R.id.crossIcon);
         check_icon = (ImageView) view.findViewById(R.id.check_icon);
+        //swipeLeftIcon = (ImageView) view.findViewById(R.id.swipeLeftIcon);
+        //swipeRightIcon = (ImageView) view.findViewById(R.id.swipeRightIcon);
         tv_InterestedInText = (TextView) view.findViewById(R.id.tv_interestedActivities);
         tv_professionalProfileText = (TextView) view.findViewById(R.id.tv_professionalProfile);
         tv_admired_you = (TextView) view.findViewById(R.id.tv_admired_you);
@@ -153,7 +133,7 @@ public class AllUsersFragment extends Fragment {
             String finalUserId = userId;
         }
 
-        final String finalUserId = userId;
+        userFcmToken = userVO.getFcmToken();
 
         Firebase myAdmirereRef = new Firebase("https://new-amigos.firebaseio.com/users/"+myId+"/people_who_liked_me/");
         myAdmirereRef.addValueEventListener(new ValueEventListener() {
@@ -166,7 +146,7 @@ public class AllUsersFragment extends Fragment {
                         myAdmirers.add(dataSnapshot1.getKey());
                     }
                 }
-                if(myAdmirers.contains(finalUserId)){
+                if(myAdmirers.contains(userId)){
                     tv_bullet.setVisibility(View.VISIBLE);
                     tv_admired_you.setVisibility(View.VISIBLE);
                     if (match == 0){
@@ -183,6 +163,7 @@ public class AllUsersFragment extends Fragment {
 
         if(userVO.getImageUrl() != null){
             imageUrl = userVO.getImageUrl();
+            userImageUrl = imageUrl;
             if(!imageUrl.isEmpty()) {
                 Glide.with(context).load(userVO.getImageUrl()).error(R.drawable.ic_user)
                         .bitmapTransform(new CropSquareTransformation(context), new CropCircleTransformation(context))
@@ -279,27 +260,25 @@ public class AllUsersFragment extends Fragment {
             }
         });
 
-        final String finalUserName = userName;
-        final String finalImageUrl = imageUrl;
+
         messageIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 Intent intent = new Intent(context, ChatActivity.class);
-                intent.putExtra("userId", finalUserId);
-                intent.putExtra("userName", finalUserName);
-                intent.putExtra("imageUrl", finalImageUrl);
+                intent.putExtra("userId", userId);
+                intent.putExtra("userName", userName);
+                intent.putExtra("imageUrl", imageUrl);
                 startActivity(intent);
 
             }
         });
 
-        final String finalUserId1 = userId;
 
 
         final PeopleILikedDAO peopleILikedDAO = new PeopleILikedDAO(context);
         ArrayList<String> peopleILikedArrayList = peopleILikedDAO.getAllPeopleIlikedId();
-        if(peopleILikedArrayList.contains(finalUserId)){
+        if(peopleILikedArrayList.contains(userId)){
             check_icon.setVisibility(View.VISIBLE);
         }
 
@@ -309,27 +288,33 @@ public class AllUsersFragment extends Fragment {
 
                 final PeopleILikedDAO peopleILikedDAO = new PeopleILikedDAO(context);
                 ArrayList<String> peopleILikedArrayList = peopleILikedDAO.getAllPeopleIlikedId();
-                if(peopleILikedArrayList.contains(finalUserId)){
+                if(peopleILikedArrayList.contains(userId)){
                     check_icon.setVisibility(View.GONE);
                     Firebase myRef = new Firebase("https://new-amigos.firebaseio.com/users/" + myId + "/people_i_liked/");
-                    Firebase userRef = new Firebase("https://new-amigos.firebaseio.com/users/" + finalUserId1 + "/people_who_liked_me/");
-                    myRef.child(finalUserId1).setValue(null);
+                    Firebase userRef = new Firebase("https://new-amigos.firebaseio.com/users/" + AllUsersFragment.this.userId + "/people_who_liked_me/");
+                    myRef.child(AllUsersFragment.this.userId).setValue(null);
                     userRef.child(myId).setValue(null);
-                    peopleILikedDAO.removeFromPeopleILikedList(finalUserId1);
-                    Toast.makeText(context,"You have unadmired "+ finalUserName,Toast.LENGTH_SHORT).show();
+                    peopleILikedDAO.removeFromPeopleILikedList(AllUsersFragment.this.userId);
+                    Toast.makeText(context,"You have unadmired "+ userName,Toast.LENGTH_SHORT).show();
                 }else {
                     check_icon.setVisibility(View.VISIBLE);
-                    Toast.makeText(context, "You admired " + finalUserName, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "You admired " + userName, Toast.LENGTH_SHORT).show();
                     String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
                     Firebase myRef = new Firebase("https://new-amigos.firebaseio.com/users/" + myId + "/people_i_liked/");
-                    Firebase userRef = new Firebase("https://new-amigos.firebaseio.com/users/" + finalUserId1 + "/people_who_liked_me/");
+                    Firebase userRef = new Firebase("https://new-amigos.firebaseio.com/users/" + AllUsersFragment.this.userId + "/people_who_liked_me/");
                     Firebase likedNotificationRef = new Firebase("https://new-amigos.firebaseio.com/liked_notifications/"
-                            + finalUserId1 + "/");
-                    myRef.child(finalUserId1).setValue(timeStamp);
+                            + AllUsersFragment.this.userId + "/");
+
+                    Firebase admiredNotificationRef = new Firebase("https://new-amigos.firebaseio.com/admired_notifications/"
+                            + AllUsersFragment.this.userId + "/"+myId+"/");
+                    myRef.child(AllUsersFragment.this.userId).setValue(timeStamp);
                     userRef.child(myId).setValue(timeStamp);
                     likedNotificationRef.child(myId).child(myName).setValue(timeStamp);
+                    admiredNotificationRef.child("name").setValue(myName);
+                    admiredNotificationRef.child("timeStamp").setValue(timeStamp);
+                    admiredNotificationRef.child("fcmToken").setValue(userFcmToken);
 
-                    Firebase thisUserRef = new Firebase("https://new-amigos.firebaseio.com/users/" + finalUserId1 + "/");
+                    Firebase thisUserRef = new Firebase("https://new-amigos.firebaseio.com/users/" + AllUsersFragment.this.userId + "/");
                     thisUserRef.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -343,13 +328,13 @@ public class AllUsersFragment extends Fragment {
                                 }
                                 if ("imageUrl".equalsIgnoreCase(snap.getKey())) {
                                     for (DataSnapshot children : snap.getChildren()) {
-                                        if (finalUserId1.equalsIgnoreCase(children.getKey())) {
+                                        if (AllUsersFragment.this.userId.equalsIgnoreCase(children.getKey())) {
                                             imageUrl = children.getValue().toString();
                                         }
                                     }
                                 }
                             }
-                            peopleILikedDAO.addUserToPeopleILikedList(finalUserId1, name, status, imageUrl);
+                            peopleILikedDAO.addUserToPeopleILikedList(AllUsersFragment.this.userId, name, status, imageUrl);
                             //PeopleILikedFragment.reloadPeopleILikedList();
                         }
 
@@ -366,12 +351,29 @@ public class AllUsersFragment extends Fragment {
         crossIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SwipeAllUsersAdapter.userVOArrayList.remove(position);
+                /*SwipeAllUsersAdapter.userVOArrayList.remove(position);
                 UsersFragment.updateSwipeUsersAdapter(position);
                 Firebase peopleIRemovedRef = new Firebase("https://new-amigos.firebaseio.com/users/"+myId+"/peopleIremoved/");
-                peopleIRemovedRef.child(finalUserId ).setValue("1");
-                ApplicationCache.myUserVO.getPeopleIRemoved().add(finalUserId);
+                peopleIRemovedRef.child(userId ).setValue("1");
+                ApplicationCache.myUserVO.getPeopleIRemoved().add(userId);
 
+                String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
+
+                LikedUserVO likedUserVO = new LikedUserVO();
+                likedUserVO.setTime(timeStamp);
+                likedUserVO.setId(userId);
+                likedUserVO.setName(userName);
+                likedUserVO.setImageUrl(userImageUrl);
+                likedUserVO.setStatus("");
+
+                ApplicationCache.peopleIRemovedVOArrayList.add(likedUserVO);*/
+
+                if(position < 39){
+                    UsersFragment.swipeRight();
+                }else{
+                    Toast.makeText(context, "There are no more users to show right now, to see more you can change"+
+                            " your preferences",Toast.LENGTH_SHORT).show();
+                }
 
                 /*final Firebase usersRef = new Firebase("https://new-amigos.firebaseio.com/users/");
                 //final Firebase chatsRef = new Firebase("https://new-amigos.firebaseio.com/previous_user_chats/");
@@ -395,7 +397,18 @@ public class AllUsersFragment extends Fragment {
             }
         });
 
-
+        /*swipeLeftIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                UsersFragment.swipeLeft();
+            }
+        });
+        swipeRightIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                UsersFragment.swipeRight();
+            }
+        });*/
 
         return view;
     }

@@ -17,6 +17,10 @@
         android:title="People I Admired" />
 
     <item
+        android:id="@+id/people_i_removed"
+        android:title="People I Removed" />
+
+    <item
         android:id="@+id/settings"
         android:title="Settings" />
 

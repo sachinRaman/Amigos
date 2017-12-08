@@ -93,10 +93,10 @@ public class MyMoodActivity extends AppCompatActivity {
         mTagContainerLayoutAllTags.setBackgroundColor(Color.parseColor("#fbf2fc"));
 
         updateContainer(mTagContainerLayoutMyMoodTags);
-        mTagContainerLayoutMyMoodTags.setBackgroundColor(Color.parseColor("#fffbef"));
+        mTagContainerLayoutMyMoodTags.setBackgroundColor(Color.parseColor("#fff4f6"));
 
-        setListenerToTags(mTagContainerLayoutAllTags, 1);
-        setListenerToTags(mTagContainerLayoutMyMoodTags, 2);
+        setListenerToTags(mTagContainerLayoutAllTags, 2);
+        setListenerToTags(mTagContainerLayoutMyMoodTags, 1);
 
         initialize();
         setListeners();
@@ -111,6 +111,11 @@ public class MyMoodActivity extends AppCompatActivity {
     }
 
     public void initialize(){
+
+        mTagContainerLayoutAllTags.setTags(PeevesList.getNewInterestsTopics());
+        updateContainer(mTagContainerLayoutAllTags);
+        setListenerToTags(mTagContainerLayoutMyMoodTags, 1);
+        setListenerToTags(mTagContainerLayoutAllTags, 2);
 
         Firebase myMoodsRef = new Firebase("https://new-amigos.firebaseio.com/users/"+myId+"/moods/");
         myMoodsRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -159,6 +164,7 @@ public class MyMoodActivity extends AppCompatActivity {
                         }
                         allInterests.clear();
                         allInterests.addAll(allTopics);
+                        mTagContainerLayoutAllTags.removeAllTags();
                         mTagContainerLayoutAllTags.setTags(allInterests);
 
                         updateContainer(mTagContainerLayoutAllTags);
@@ -231,11 +237,11 @@ public class MyMoodActivity extends AppCompatActivity {
                     myTags = (ArrayList<String>) mTagContainerLayoutMyMoodTags.getTags();
                     if (myTags.isEmpty()) {
                         Toast.makeText(context, "Choose atleast one tag.", Toast.LENGTH_SHORT).show();
-                    } else if (myTags.size() > 5 ) {
-                        Toast.makeText(context, "Choose only upto 5 tags", Toast.LENGTH_SHORT).show();
+                    } else if (myTags.size() > 9 ) {
+                        Toast.makeText(context, "Choose only upto 9 tags", Toast.LENGTH_SHORT).show();
                     }else {
 
-                        Toast.makeText(context, "Data saved.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(context, "Interests saved", Toast.LENGTH_LONG).show();
                         Firebase moodsRef = new Firebase("https://new-amigos.firebaseio.com/moods/");
                         Firebase myMoodsRef = new Firebase("https://new-amigos.firebaseio.com/users/" + myId + "/moods/");
                         for (String s1 : initialTags) {
@@ -285,8 +291,8 @@ public class MyMoodActivity extends AppCompatActivity {
                         ViewGroup owner = (ViewGroup) view.getParent();
                         //owner.removeView(view);
 
-                        if((((TagContainerLayout)owner)).getId() == R.id.allTags1 && mTagContainerLayoutMyMoodTags.getTags().size() >=5 ){
-                            Toast.makeText(context, "You can add upto 5 tags only!!!",Toast.LENGTH_SHORT).show();
+                        if((((TagContainerLayout)owner)).getId() == R.id.allTags1 && mTagContainerLayoutMyMoodTags.getTags().size() >=9 ){
+                            Toast.makeText(context, "You can add upto 9 tags only!!!",Toast.LENGTH_SHORT).show();
                         }else {
                             List<String> list = ((TagContainerLayout) owner).getTags();
                             for (int j = 0; j < list.size(); j++) {
@@ -312,8 +318,8 @@ public class MyMoodActivity extends AppCompatActivity {
                                 View view = (View) event.getLocalState();
                                 ViewGroup owner = (ViewGroup) view.getParent();
                                 //owner.removeView(view);
-                                if((((TagContainerLayout)owner)).getId() == R.id.allTags1 && mTagContainerLayoutMyMoodTags.getTags().size() >= 5 ){
-                                    Toast.makeText(context, "You can add upto 5 tags only!!!",Toast.LENGTH_SHORT).show();
+                                if((((TagContainerLayout)owner)).getId() == R.id.allTags1 && mTagContainerLayoutMyMoodTags.getTags().size() >= 9 ){
+                                    Toast.makeText(context, "You can add upto 9 tags only!!!",Toast.LENGTH_SHORT).show();
                                 }else {
 
                                     List<String> list = ((TagContainerLayout) owner).getTags();
@@ -367,11 +373,11 @@ public class MyMoodActivity extends AppCompatActivity {
             tag.setBorderRadius(25.0f);
             tag.setOnTouchListener(new MyMoodActivity.MyTouchListener());
             if(position == 1){
-                tag.setTagBackgroundColor(Color.parseColor("#7986CB"));
+                tag.setTagBackgroundColor(Color.parseColor("#E57373"));
                 tag.setTagTextColor(Color.WHITE);//Blue
                 tag.setTagBorderColor(Color.WHITE);
             }else if(position == 2){
-                tag.setTagBackgroundColor(Color.parseColor("#FFD54F"));
+                tag.setTagBackgroundColor(Color.parseColor("#7986CB"));
                 tag.setTagTextColor(Color.WHITE);//Blue
                 tag.setTagBorderColor(Color.WHITE);
             }

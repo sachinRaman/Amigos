@@ -6,10 +6,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
-//import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -27,6 +25,7 @@ import android.widget.Toast;
 
 import com.amigos.sachin.Adapters.ChatArrayAdapter;
 import com.amigos.sachin.ApplicationCache.ApplicationCache;
+import com.amigos.sachin.DAO.ChatNotificationsDAO;
 import com.amigos.sachin.DAO.ChatUsersDAO;
 import com.amigos.sachin.DAO.ChatsDAO;
 import com.amigos.sachin.MyProfileFragments.MyMoods;
@@ -37,17 +36,10 @@ import com.amigos.sachin.VO.ChatUsersVO;
 import com.amigos.sachin.VO.LikedUserVO;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
-
-/*import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;*/
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -62,27 +54,26 @@ import hani.momanii.supernova_emoji_library.Helper.EmojiconEditText;
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
 import jp.wasabeef.glide.transformations.CropSquareTransformation;
 
-//import com.firebase.client.DataSnapshot;
-//import com.firebase.client.ValueEventListener;
 
 public class ChatActivity extends AppCompatActivity  {
 
     String myId, userId, userName, imageUrl, myName;
     Context context;
-    ValueEventListener tempChatValueEventListener, chatStatusValueEventListener;
+    ValueEventListener tempChatValueEventListener, chatStatusValueEventListener, userChatStatusValueEventListener;
     ImageView sendIcon ,emojiIcon , photoIcon, overflowIcon;
     private ListView chatListView;
     EmojiconEditText chatText;
-    TextView tv_UserName;
+    TextView tv_UserName, chatActionBarTyping;
     Button chatRequestAcceptButton, chatRequestBlockButton;
     LinearLayout chatRequestLayout;
-    boolean chatRequestApproved = false;
+    boolean chatRequestApproved = false, userChatRequestApproved = true;
     ChatsDAO chatsDAO;
     ChatUsersDAO chatUsersDAO;
     SharedPreferences sp;
     Firebase myAllChatsRef, userAllChatsRef, myTempChatsRef, userTempChatsRef, myChatStatusRef, userChatStatusRef;
     boolean messageSentFlag = false;
-
+    String userFcmToken;
+    public static String currentUserId = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,11 +103,17 @@ public class ChatActivity extends AppCompatActivity  {
         setUpOnClickListeners();
 
         ChatService.thisUserId = userId;
+        currentUserId = userId;
+        ChatNotificationsDAO chatNotificationsDAO = new ChatNotificationsDAO(context);
+        chatNotificationsDAO.deleteUserNotifications(userId);
 
         final Firebase notifyChatRef = new Firebase("https://new-amigos.firebaseio.com/message_notification/"+myId+"/"+userId+"/");
         notifyChatRef.setValue(null);
 
-        //chatUsersDAO.changeSeen(userId,0);
+        Firebase messagePushNotificationRef = new Firebase("https://new-amigos.firebaseio.com/push_message_notification/"+myId+"/"+
+                userId+"/" );
+        messagePushNotificationRef.setValue(null);
+
         updateChatList();
 
     }
@@ -192,6 +189,15 @@ public class ChatActivity extends AppCompatActivity  {
                 startActivity(intent1);
             }
         });
+        chatActionBarTyping.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent1 = new Intent(context,UserProfileActivity.class);
+                intent1.putExtra("userId",userId);
+                intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent1);
+            }
+        });
 
         overflowIcon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -206,7 +212,7 @@ public class ChatActivity extends AppCompatActivity  {
                             case R.id.block:
 
                                 AlertDialog.Builder builder2 = new AlertDialog.Builder(ChatActivity.this,AlertDialog.THEME_HOLO_DARK);
-                                builder2.setTitle("Are you sure you want to block "+userName+"!!!");
+                                builder2.setTitle("Are you sure you want to block "+userName+"?");
                                 builder2.setMessage("You can find "+userName+" inside Block Users List.");
                                 builder2.setCancelable(true);
 
@@ -244,7 +250,7 @@ public class ChatActivity extends AppCompatActivity  {
                                 return true;
                             case R.id.deleteChat:
                                 AlertDialog.Builder builder1 = new AlertDialog.Builder(ChatActivity.this,AlertDialog.THEME_HOLO_DARK);
-                                builder1.setTitle("Do you want to delete this chat!!!");
+                                builder1.setTitle("Do you want to delete this chat?");
                                 builder1.setMessage("You may no longer be able to retreive the chat");
                                 builder1.setCancelable(true);
 
@@ -398,20 +404,20 @@ public class ChatActivity extends AppCompatActivity  {
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 if(dataSnapshot == null){
-                    chatRequestLayout.setVisibility(View.GONE);
+
                 }
                 if(!dataSnapshot.hasChild("chat_request")){
-                    chatRequestLayout.setVisibility(View.GONE);
+
                 }
 
                 for(DataSnapshot snapshot: dataSnapshot.getChildren()){
 
                     if("typing".equalsIgnoreCase(snapshot.getKey())){
                         if ("0".equalsIgnoreCase(snapshot.getValue().toString())) {
-                            tv_UserName.setText(userName);
+                            chatActionBarTyping.setVisibility(View.GONE);
                         }
                         if ("1".equalsIgnoreCase(snapshot.getValue().toString())) {
-                            tv_UserName.setText("...typing...");
+                            chatActionBarTyping.setVisibility(View.VISIBLE);
                         }
                     }
 
@@ -431,8 +437,32 @@ public class ChatActivity extends AppCompatActivity  {
                         if("1".equalsIgnoreCase(snapshot.getValue().toString())){
                             chatRequestLayout.setVisibility(View.GONE);
                             chatRequestApproved = true;
+                        }else if("0".equalsIgnoreCase(snapshot.getValue().toString())){
+                            chatRequestLayout.setVisibility(View.VISIBLE);
+                            chatRequestApproved = false;
                         }
                     }
+                }
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        };
+
+        userChatStatusValueEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot == null || dataSnapshot.getValue() == null){
+                    userChatRequestApproved = false;
+                    return;
+                }
+                if("0".equalsIgnoreCase(dataSnapshot.getValue().toString())){
+                    userChatRequestApproved = false;
+                    //chatRequestLayout.setVisibility(View.VISIBLE);
+                }else if("1".equalsIgnoreCase(dataSnapshot.getValue().toString())){
+                    userChatRequestApproved = true;
                 }
             }
 
@@ -454,35 +484,36 @@ public class ChatActivity extends AppCompatActivity  {
                     .thumbnail(0.5f).crossFade().diskCacheStrategy(DiskCacheStrategy.ALL).into(photoIcon);
         }
 
-        if(userName == null || userName.isEmpty() || imageUrl == null || imageUrl.isEmpty()){
-            Firebase userRef = new Firebase("https://new-amigos.firebaseio.com/users/"+userId);
-            userRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    for(DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
-                        if("name".equalsIgnoreCase(dataSnapshot1.getKey())){
-                            userName = dataSnapshot1.getValue().toString();
-                            tv_UserName.setText(userName);
-                        }
-                        if ("imageUrl".equalsIgnoreCase(dataSnapshot1.getKey())){
-                            for(DataSnapshot children : dataSnapshot1.getChildren()){
-                                if(userId.equalsIgnoreCase(children.getKey())){
-                                    imageUrl = children.getValue().toString();
-                                    Glide.with(context).load(imageUrl)
-                                            .bitmapTransform(new CropSquareTransformation(context), new CropCircleTransformation(context))
-                                            .thumbnail(0.5f).crossFade().diskCacheStrategy(DiskCacheStrategy.ALL).into(photoIcon);
-                                }
+        Firebase userRef = new Firebase("https://new-amigos.firebaseio.com/users/"+userId);
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
+                    if("name".equalsIgnoreCase(dataSnapshot1.getKey())){
+                        userName = dataSnapshot1.getValue().toString();
+                        tv_UserName.setText(userName);
+                    }
+                    if ("imageUrl".equalsIgnoreCase(dataSnapshot1.getKey())){
+                        for(DataSnapshot children : dataSnapshot1.getChildren()){
+                            if(userId.equalsIgnoreCase(children.getKey())){
+                                imageUrl = children.getValue().toString();
+                                Glide.with(context).load(imageUrl)
+                                        .bitmapTransform(new CropSquareTransformation(context), new CropCircleTransformation(context))
+                                        .thumbnail(0.5f).crossFade().diskCacheStrategy(DiskCacheStrategy.ALL).into(photoIcon);
                             }
                         }
                     }
+                    if("fcmToken".equalsIgnoreCase(dataSnapshot1.getKey())){
+                        userFcmToken = dataSnapshot1.getValue().toString();
+                    }
                 }
+            }
 
-                @Override
-                public void onCancelled(FirebaseError firebaseError) {
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
 
-                }
-            });
-        }
+            }
+        });
 
 
     }
@@ -494,6 +525,7 @@ public class ChatActivity extends AppCompatActivity  {
 
         photoIcon = (ImageView)findViewById(R.id.actionBarPhotoIcon);
         tv_UserName = (TextView)findViewById(R.id.actionBarUserName);
+        chatActionBarTyping = (TextView) findViewById(R.id.chatActionBarTyping);
         overflowIcon = (ImageView) findViewById(R.id.options_menu);
         sendIcon = (ImageView) findViewById(R.id.send);
         chatListView = (ListView) findViewById(R.id.msgview);
@@ -565,6 +597,9 @@ public class ChatActivity extends AppCompatActivity  {
             chatRequestApproved = true;
             chatRequestLayout.setVisibility(View.GONE);
             myChatStatusRef.child("chat_request").setValue("1");
+            if(!userChatRequestApproved) {
+                userChatStatusRef.child("chat_request").setValue("0");
+            }
         }
 
         //sendNotification
@@ -576,10 +611,15 @@ public class ChatActivity extends AppCompatActivity  {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
         messageNotificationRef.child(timeStamp).setValue(msg);
 
+        Firebase messagePushNotificationRef = new Firebase("https://new-amigos.firebaseio.com/push_message_notification/"+userId+"/"+
+                myId+"/" );
+        messagePushNotificationRef.child("-fcmToken").setValue(userFcmToken);
+        messagePushNotificationRef.child("-name").setValue(myName);
+        messagePushNotificationRef.child("messages").child(timeStamp).setValue(msg);
+
         Map<String,Object> message = new HashMap<String,Object>();
         message.put("message",msg);
         message.put("time",time);
-
 
         myAllChatsRef.child(timeStamp).updateChildren(message);
         userAllChatsRef.child(timeStamp).updateChildren(message);
@@ -600,14 +640,18 @@ public class ChatActivity extends AppCompatActivity  {
         super.onResume();
         myTempChatsRef.addValueEventListener(tempChatValueEventListener);
         myChatStatusRef.addValueEventListener(chatStatusValueEventListener);
+        userChatStatusRef.child("chat_request").addValueEventListener(userChatStatusValueEventListener);
         ChatService.thisUserId = userId;
+        currentUserId = userId;
     }
     @Override
     public void onBackPressed() {
         userChatStatusRef.child("typing").setValue("0");
         ChatService.thisUserId = null;
+        currentUserId = null;
         myTempChatsRef.removeEventListener(tempChatValueEventListener);
         myChatStatusRef.removeEventListener(chatStatusValueEventListener);
+        userChatStatusRef.child("chat_request").removeEventListener(userChatStatusValueEventListener);
         finish();
         return;
     }
@@ -616,8 +660,10 @@ public class ChatActivity extends AppCompatActivity  {
         super.onDestroy();
         userChatStatusRef.child("typing").setValue("0");
         ChatService.thisUserId = null;
+        currentUserId = null;
         myTempChatsRef.removeEventListener(tempChatValueEventListener);
         myChatStatusRef.removeEventListener(chatStatusValueEventListener);
+        userChatStatusRef.child("chat_request").removeEventListener(userChatStatusValueEventListener);
     }
 
     public static void cancelNotification(Context ctx, int notifyId) {

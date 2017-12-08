@@ -36,7 +36,6 @@ import co.lujun.androidtagview.TagView;
 
 public class MyInterestsFragment extends Fragment {
 
-    //LinearLayout layout_tags1, layout_tags2, layout_tags3, layout_tags4;
     TagContainerLayout tags1, tags2, tags3, tags4;
     Context context;
     ScrollView scroll_tag1, scroll_tag2, scroll_tag3, scroll_tag4;
@@ -160,7 +159,7 @@ public class MyInterestsFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                Toast.makeText(context, "Data saved", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Interests saved", Toast.LENGTH_SHORT).show();
 
                 ArrayList<String> interests_list1 = new ArrayList<String>();
                 ArrayList<String> interests_list2 = new ArrayList<String>();
@@ -213,9 +212,6 @@ public class MyInterestsFragment extends Fragment {
             tag.setBorderRadius(25.0f);
             tag.setOnTouchListener(new MyInterestsFragment.MyTouchListener());
             if(position == 1){
-                /*tag.setTagBackgroundColor(Color.WHITE);
-                tag.setTagTextColor(Color.parseColor("#5C6BC0"));//Blue
-                tag.setTagBorderColor(Color.parseColor("#5C6BC0"));*/
                 tag.setTagBackgroundColor(Color.parseColor("#7986CB"));
                 tag.setTagTextColor(Color.WHITE);//Blue
                 tag.setTagBorderColor(Color.WHITE);
@@ -223,13 +219,7 @@ public class MyInterestsFragment extends Fragment {
                 tag.setTagBackgroundColor(Color.parseColor("#FFD54F"));
                 tag.setTagTextColor(Color.WHITE);//Blue
                 tag.setTagBorderColor(Color.WHITE);
-                /*tag.setTagBackgroundColor(Color.WHITE);
-                tag.setTagTextColor(Color.parseColor("#FFCA28"));//Yellow
-                tag.setTagBorderColor(Color.parseColor("#FFCA28"));*/
             }else if(position == 3){
-                /*tag.setTagBackgroundColor(Color.WHITE);
-                tag.setTagTextColor(Color.parseColor("#EF5350"));//Red
-                tag.setTagBorderColor(Color.parseColor("#EF5350"));*/
                 tag.setTagBackgroundColor(Color.parseColor("#E57373"));
                 tag.setTagTextColor(Color.WHITE);//Blue
                 tag.setTagBorderColor(Color.WHITE);
@@ -237,9 +227,6 @@ public class MyInterestsFragment extends Fragment {
                 tag.setTagBackgroundColor(Color.parseColor("#81C784"));
                 tag.setTagTextColor(Color.WHITE);//Blue
                 tag.setTagBorderColor(Color.WHITE);
-                /*tag.setTagBackgroundColor(Color.WHITE);
-                tag.setTagTextColor(Color.parseColor("#66BB6A"));
-                tag.setTagBorderColor(Color.parseColor("#66BB6A"));*/
             }
         }
     }

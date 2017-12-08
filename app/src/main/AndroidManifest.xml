@@ -72,13 +72,13 @@
         <service
             android:name=".Services.ChatService"
             android:enabled="true">
+            <!--<intent-filter>
+                <action android:name="com.amigos.sachin.Services.ChatService" />
+            </intent-filter>-->
 
             <!--
             android:exported="false"
             android:process=":remote" >
-            <intent-filter>
-                <action android:name="com.amigos.sachin.Services.ChatService" />
-            </intent-filter>
             -->
         </service>
         <service android:name=".Services.MyFirebaseMessagingService">
@@ -158,9 +158,11 @@
             android:name=".Activities.MyInterestsUsageDirections"
             android:screenOrientation="portrait"
             android:theme="@style/TransparentTheme" />
-        <activity android:name=".Activities.MyMoodUsageDirections"
+        <activity
+            android:name=".Activities.MyMoodUsageDirections"
             android:screenOrientation="portrait"
-            android:theme="@style/TransparentTheme"></activity>
+            android:theme="@style/TransparentTheme" />
+        <activity android:name=".Activities.PeopleIRemoved"></activity>
     </application>
 
 </manifest>

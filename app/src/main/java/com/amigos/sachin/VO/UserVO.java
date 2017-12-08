@@ -30,6 +30,15 @@ public class UserVO implements Serializable {
     ArrayList<String> sentChatRequests = new ArrayList<String>();
     ArrayList<String> pendingChatRequests = new ArrayList<String>();
     ArrayList<String> approvedChatRequests = new ArrayList<String>();
+    String fcmToken;
+
+    public String getFcmToken() {
+        return fcmToken;
+    }
+
+    public void setFcmToken(String fcmToken) {
+        this.fcmToken = fcmToken;
+    }
 
     public ArrayList<String> getSentChatRequests() {
         return sentChatRequests;

@@ -4,24 +4,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ProgressBar;
 
-import com.amigos.sachin.DAO.ChatUsersDAO;
-import com.amigos.sachin.DAO.ChatsDAO;
-import com.amigos.sachin.DAO.InterestsDAO;
 import com.amigos.sachin.R;
 import com.amigos.sachin.Services.ChatService;
-//import com.amigos.sachin.Services.EnablingService;
-import com.amigos.sachin.Values.PeevesList;
-import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
-
-import java.util.ArrayList;
 
 public class SplashScreen extends AppCompatActivity {
 

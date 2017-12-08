@@ -1,19 +1,27 @@
 package com.amigos.sachin.Activities;
 
 import android.app.AlertDialog;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v4.app.NotificationCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.widget.Toast;
 
-import com.amigos.sachin.ApplicationCache.ApplicationCache;
+import com.amigos.sachin.DAO.ChatNotificationsDAO;
 import com.amigos.sachin.R;
+import com.amigos.sachin.VO.NotificationVO;
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
+
+import java.util.ArrayList;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -31,30 +39,15 @@ public class SettingsActivity extends AppCompatActivity {
         layout_facebook_logout = (LinearLayout) findViewById(R.id.layout_facebook_logout);
         //getSupportActionBar().setTitle("Settings");
 
-        /*layout_preview_profile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(SettingsActivity.this,UserProfileActivity.class);
-                intent.putExtra("userId", ApplicationCache.myUserVO.getId());
-                startActivity(intent);
-            }
-        });*/
-
         layout_blocked_users.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(SettingsActivity.this,BlockListActivity.class);
                 startActivity(intent);
+
+
             }
         });
-
-        /*layout_search_people.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(SettingsActivity.this,DragActivity.class);
-                startActivity(intent);
-            }
-        });*/
 
         layout_facebook_logout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -88,14 +81,14 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
-        /*layout_blocked_users.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                LoginManager.logOut();
-                Intent intent = new Intent(SettingsActivity.this,MainActivity.class);
-                startActivity(intent);
-            }
-        });*/
-
     }
+
+    private boolean isNotificationVisible() {
+        Intent notificationIntent = new Intent(context, MainActivity.class);
+        PendingIntent test = PendingIntent.getActivity(context, 1, notificationIntent, PendingIntent.FLAG_NO_CREATE);
+        return test != null;
+    }
+
+
+
 }

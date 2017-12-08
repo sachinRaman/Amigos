@@ -129,7 +129,7 @@ public class DragActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                Toast.makeText(context, "Data saved", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Interests saved", Toast.LENGTH_SHORT).show();
 
                 ArrayList<String> interests_list1 = new ArrayList<String>();
                 ArrayList<String> interests_list2 = new ArrayList<String>();
@@ -333,5 +333,13 @@ public class DragActivity extends AppCompatActivity {
             }
             return true;
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent a = new Intent(Intent.ACTION_MAIN);
+        a.addCategory(Intent.CATEGORY_HOME);
+        a.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(a);
     }
 }

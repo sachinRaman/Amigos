@@ -1,9 +1,12 @@
 package com.amigos.sachin.Activities;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ListView;
@@ -57,13 +60,27 @@ public class ChatListActivity extends AppCompatActivity {
         myId = sp.getString("myId","");
         tv_emptyChat = (TextView) findViewById(R.id.tv_emptyChat1);
 
+        LocalBroadcastManager.getInstance(context).registerReceiver(mMessageReceiver,
+                new IntentFilter("reloadChatList"));
+
         Firebase activeRef = new Firebase("https://new-amigos.firebaseio.com/users/"+myId+"/active/");
         activeRef.setValue("1");
 
         loadChatData();
     }
 
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // Get extra data included in the Intent
+            loadChatData();
+        }
+    };
+
     private static void loadChatData() {
+        if(context == null || myId == null){
+            return;
+        }
         ChatUsersDAO chatUsersDAO = new ChatUsersDAO(context);
         ArrayList<ChatUsersVO> chatUsersVOArrayList = chatUsersDAO.getMyChatList(myId);
         SharedPreferences sp;

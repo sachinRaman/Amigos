@@ -48,7 +48,7 @@
                         android:buttonTint="@color/colorPrimary"
                         android:checked="true"
                         android:textColor="@color/gray3"
-                        android:text="Show people of my interests"/>
+                        android:text="Show people of my own interests"/>
 
                     <RadioButton
                         android:id="@+id/radio_people_of_particular_interests1"
@@ -56,7 +56,7 @@
                         android:layout_height="wrap_content"
                         android:buttonTint="@color/colorPrimary"
                         android:textColor="@color/gray3"
-                        android:text="I have other preferences"/>
+                        android:text="Show people of other interests"/>
 
                 </RadioGroup>
 
@@ -102,13 +102,13 @@
                 <LinearLayout
                     android:id="@+id/myTagsContainerLayout"
                     android:layout_width="match_parent"
-                    android:layout_height="100dp"
+                    android:layout_height="120dp"
                     android:orientation="vertical">
 
                     <co.lujun.androidtagview.TagContainerLayout
                         android:id="@+id/chosenTags1"
                         android:layout_width="match_parent"
-                        android:layout_height="100dp"
+                        android:layout_height="120dp"
                         android:padding="5dp"
                         android:animateLayoutChanges="true"
                         app:container_enable_drag="false"

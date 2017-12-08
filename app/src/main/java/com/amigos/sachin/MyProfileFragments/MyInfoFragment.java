@@ -250,9 +250,7 @@ public class MyInfoFragment extends Fragment {
                 myRef.child("sex").setValue(sexStr);
                 myRef.child("activity").child("act1").setValue(et_activity1.getText().toString());
                 myRef.child("activity").child("act2").setValue(et_activity2.getText().toString());
-                /*myRef.child("activity").child("act3").setValue(et_activity3.getText().toString());*/
-
-                Toast.makeText(context,"Data updated successfully",Toast.LENGTH_LONG).show();
+                Toast.makeText(context,"Profile updated",Toast.LENGTH_LONG).show();
             }
         });
 

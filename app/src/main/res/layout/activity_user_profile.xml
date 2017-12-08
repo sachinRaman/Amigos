@@ -206,6 +206,7 @@
                 android:paddingBottom="5dp"
                 android:paddingLeft="10dp"
                 android:paddingTop="10dp"
+                android:visibility="gone"
                 android:text="Passionate about"
                 android:textColor="@color/gray3"
                 android:textSize="15sp" />
@@ -244,6 +245,7 @@
                 android:paddingLeft="10dp"
                 android:paddingTop="10dp"
                 android:text="Hobbies"
+                android:visibility="gone"
                 android:textColor="@color/gray3"
                 android:textSize="15sp" />
 
@@ -281,6 +283,7 @@
                 android:paddingLeft="10dp"
                 android:paddingTop="10dp"
                 android:text="Appreciates"
+                android:visibility="gone"
                 android:textColor="@color/gray3"
                 android:textSize="15sp" />
 

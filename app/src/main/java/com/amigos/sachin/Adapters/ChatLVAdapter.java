@@ -10,6 +10,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -146,45 +147,49 @@ public class ChatLVAdapter extends ArrayAdapter<ChatUsersVO> implements View.OnC
         }
         final String[] imageUrl = {""};
 
-        Firebase userRef = new Firebase("https://new-amigos.firebaseio.com/users/"+userId+"/");
-        userRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for(DataSnapshot child : dataSnapshot.getChildren()){
-                    if("name".equalsIgnoreCase(child.getKey())){
-                        if(child.getValue().toString() != null && !child.getValue().toString().isEmpty()) {
-                            holder.tvName.setText(child.getValue().toString());
-                            //holder.tvName.setTextColor(Color.parseColor("#757575"));
-                            userName[0] = child.getValue().toString();
-                        }else{
-                            holder.tvName.setText("User");
-                            userName[0] = "User";
+        try {
+            Firebase userRef = new Firebase("https://new-amigos.firebaseio.com/users/" + userId + "/");
+            userRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for (DataSnapshot child : dataSnapshot.getChildren()) {
+                        if ("name".equalsIgnoreCase(child.getKey())) {
+                            if (child.getValue().toString() != null && !child.getValue().toString().isEmpty()) {
+                                holder.tvName.setText(child.getValue().toString());
+                                //holder.tvName.setTextColor(Color.parseColor("#757575"));
+                                userName[0] = child.getValue().toString();
+                            } else {
+                                holder.tvName.setText("User");
+                                userName[0] = "User";
+                            }
                         }
-                    }
-                    if("imageUrl".equalsIgnoreCase(child.getKey())){
-                        for(DataSnapshot children : child.getChildren()){
-                            if(userId.equalsIgnoreCase(children.getKey())){
-                                imageUrl[0] = children.getValue().toString();
-                                Glide.with(context).load(imageUrl[0])
-                                        .bitmapTransform(new CropSquareTransformation(context)).thumbnail(0.5f).crossFade()
-                                        .diskCacheStrategy(DiskCacheStrategy.ALL).into(holder.profilePicImageView);
+                        if ("imageUrl".equalsIgnoreCase(child.getKey())) {
+                            for (DataSnapshot children : child.getChildren()) {
+                                if (userId.equalsIgnoreCase(children.getKey())) {
+                                    imageUrl[0] = children.getValue().toString();
+                                    Glide.with(context).load(imageUrl[0])
+                                            .bitmapTransform(new CropSquareTransformation(context)).thumbnail(0.5f).crossFade()
+                                            .diskCacheStrategy(DiskCacheStrategy.ALL).into(holder.profilePicImageView);
+                                }
                             }
                         }
                     }
+                    if (imageUrl[0].isEmpty()) {
+                        holder.profilePicImageView.setImageBitmap(null);
+                        int imageResource1 = context.getResources().getIdentifier("@drawable/ic_user", null, context.getPackageName());
+                        Drawable res1 = context.getResources().getDrawable(imageResource1);
+                        holder.profilePicImageView.setImageDrawable(res1);
+                    }
                 }
-                if(imageUrl[0].isEmpty()){
-                    holder.profilePicImageView.setImageBitmap(null);
-                    int imageResource1 = context.getResources().getIdentifier("@drawable/ic_user", null, context.getPackageName());
-                    Drawable res1 = context.getResources().getDrawable(imageResource1);
-                    holder.profilePicImageView.setImageDrawable(res1);
+
+                @Override
+                public void onCancelled(FirebaseError firebaseError) {
+
                 }
-            }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-
-            }
-        });
+            });
+        }catch (Exception e){
+            Log.i("ChatLVAdapter: " , "Exception is thrown :" + e);
+        }
 
 
         holder.profilePicImageView.setOnClickListener(new View.OnClickListener() {

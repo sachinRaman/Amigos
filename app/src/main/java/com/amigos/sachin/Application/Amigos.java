@@ -36,6 +36,7 @@ public class Amigos extends Application {
     }
 
     public void onTrimMemory(final int level) {
+        super.onTrimMemory(level);
         if (level == ComponentCallbacks2.TRIM_MEMORY_UI_HIDDEN) {
             if(myId != null) {
                 Firebase activeRef = new Firebase("https://new-amigos.firebaseio.com/users/" + myId + "/active/");

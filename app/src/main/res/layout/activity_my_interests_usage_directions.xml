@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#80000000"
+    android:background="#B3000000"
     tools:context="com.amigos.sachin.Activities.MyInterestsUsageDirections">
 
     <LinearLayout
@@ -16,11 +16,10 @@
             android:id="@+id/textView99"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
-            android:textColor="@color/backgroundColor"
-            android:background="@drawable/usage_instructions_border"
+            android:textColor="@color/gray3"
+            android:background="@drawable/usage_instruction_border2"
             android:text="Drag and Drop your interests into the right buckets"
             android:textSize="18dp"
             android:gravity="center"/>
@@ -49,7 +48,7 @@
                     android:textSize="16dp"
                     android:layout_margin="10dp"
                     android:layout_weight="1"
-                    android:textColor="@color/backgroundColor"
+                    android:textColor="@color/gray2"
                     android:background="@drawable/usage_instructions_border" />
 
                 <TextView
@@ -61,7 +60,7 @@
                     android:textSize="16dp"
                     android:layout_margin="10dp"
                     android:layout_weight="1"
-                    android:textColor="@color/backgroundColor"
+                    android:textColor="@color/gray2"
                     android:background="@drawable/usage_instructions_border" />
 
             </LinearLayout>
@@ -82,7 +81,7 @@
                     android:textSize="16dp"
                     android:layout_margin="10dp"
                     android:layout_weight="1"
-                    android:textColor="@color/backgroundColor"
+                    android:textColor="@color/gray2"
                     android:background="@drawable/usage_instructions_border"/>
 
                 <TextView
@@ -94,7 +93,7 @@
                     android:textSize="16dp"
                     android:layout_margin="10dp"
                     android:layout_weight="1"
-                    android:textColor="@color/backgroundColor"
+                    android:textColor="@color/gray2"
                     android:background="@drawable/usage_instructions_border" />
 
 
@@ -119,7 +118,7 @@
             app:layout_constraintTop_toTopOf="parent"
             android:layout_marginTop="88dp"
             android:layout_marginLeft="28dp"
-            android:textColor="@color/backgroundColor"
+            android:textColor="@color/gray2"
             android:background="@drawable/usage_instructions_border"
             app:layout_constraintLeft_toLeftOf="parent"
             android:layout_marginStart="25dp"

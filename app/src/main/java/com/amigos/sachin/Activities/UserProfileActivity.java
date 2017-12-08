@@ -1,28 +1,17 @@
 package com.amigos.sachin.Activities;
 
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.graphics.Typeface;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.view.WindowManager;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amigos.sachin.ApplicationCache.ApplicationCache;
-import com.amigos.sachin.ChatsFragments.PeopleILikedFragment;
 import com.amigos.sachin.DAO.PeopleILikedDAO;
 import com.amigos.sachin.R;
 import com.amigos.sachin.Utils.Algorithms;
@@ -35,26 +24,20 @@ import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
-/*import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;*/
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import hani.momanii.supernova_emoji_library.Helper.EmojiconTextView;
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
 import jp.wasabeef.glide.transformations.CropSquareTransformation;
 
-//import com.firebase.client.DataSnapshot;
-//import com.firebase.client.ValueEventListener;
+
+
 
 public class UserProfileActivity extends AppCompatActivity {
 
@@ -68,13 +51,11 @@ public class UserProfileActivity extends AppCompatActivity {
     int match = 0;
     ArrayList<Tag> tags = new ArrayList<Tag>();
     ImageView messageIcon, likeIcon, check_icon;
-    String myId;
+    String myId, userFcmToken;
     String age = null, sex = null, place = null;
     String userName , userId , imageUrl, myName ;
     TextView tv_interests1, tv_interests2, tv_interests3;
     TagView tags_interests1, tags_interests2, tags_interests3;
-    /*EditText et_search_all_users1;
-    LinearLayout linear_layout_search1;*/
 
     ArrayList<String> interestsList1 = new ArrayList<String>();
     ArrayList<String> interestsList2 = new ArrayList<String>();
@@ -95,27 +76,12 @@ public class UserProfileActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-
         UserVO myVO = ApplicationCache.myUserVO;
         /*myInterests = myVO.getInterests();*/
         myName = sp.getString("name","");
 
         Set<String> interests = sp.getStringSet("interests", new HashSet<String>());
         myInterests.addAll(interests);
-
-        final ArrayList<String> sentChatRequests = new ArrayList<String>();
-        final ArrayList<String> pendingChatRequests = new ArrayList<String>();
-        final ArrayList<String> approvedChatRequests = new ArrayList<String>();
-
-        final Set<String> sentRequestsSet = sp.getStringSet("sent_requests", new HashSet<String>());
-        sentChatRequests.addAll(sentRequestsSet);
-
-        final Set<String> pendingRequestsSet = sp.getStringSet("pending_requests", new HashSet<String>());
-        pendingChatRequests.addAll(pendingRequestsSet);
-
-        final Set<String> approvedRequestsSet = sp.getStringSet("approved_requests", new HashSet<String>());
-        approvedChatRequests.addAll(approvedRequestsSet);
-
 
         tv_name = (EmojiconTextView) findViewById(R.id.tv_display_name1);
         tv_extra_info = (EmojiconTextView) findViewById(R.id.tv_extra_info1) ;
@@ -146,13 +112,17 @@ public class UserProfileActivity extends AppCompatActivity {
         tv_act1.setEmojiconSize(40);
         tv_act2.setEmojiconSize(40);
 
-        tv_interests1.setVisibility(View.GONE);
+        /*tv_interests1.setVisibility(View.GONE);
         tv_interests2.setVisibility(View.GONE);
-        tv_interests3.setVisibility(View.GONE);
+        tv_interests3.setVisibility(View.GONE);*/
+        tv_act1.setVisibility(View.GONE);
+        tv_act2.setVisibility(View.GONE);
+        tv_professionalProfileText.setVisibility(View.GONE);
+        tv_InterestedInText.setVisibility(View.GONE);
 
-        tags_interests1.setVisibility(View.GONE);
+        /*tags_interests1.setVisibility(View.GONE);
         tags_interests2.setVisibility(View.GONE);
-        tags_interests3.setVisibility(View.GONE);
+        tags_interests3.setVisibility(View.GONE);*/
 
         Intent intent = getIntent();
         userId = intent.getStringExtra("userId");
@@ -227,6 +197,8 @@ public class UserProfileActivity extends AppCompatActivity {
                         for (DataSnapshot children : userData.getChildren()) {
                             if ("act1".equalsIgnoreCase(children.getKey())) {
                                 if (children.getValue(String.class) != null && !children.getValue(String.class).trim().isEmpty()) {
+                                    tv_InterestedInText.setVisibility(View.VISIBLE);
+                                    tv_act1.setVisibility(View.VISIBLE);
                                     tv_act1.setText(children.getValue(String.class));
                                 } else {
                                     tv_act1.setVisibility(View.GONE);
@@ -235,6 +207,8 @@ public class UserProfileActivity extends AppCompatActivity {
                             }
                             if ("act2".equalsIgnoreCase(children.getKey())) {
                                 if (children.getValue(String.class) != null && !children.getValue(String.class).trim().isEmpty()) {
+                                    tv_professionalProfileText.setVisibility(View.VISIBLE);
+                                    tv_act2.setVisibility(View.VISIBLE);
                                     tv_act2.setText(children.getValue(String.class));
                                 } else {
                                     tv_professionalProfileText.setVisibility(View.GONE);
@@ -268,16 +242,10 @@ public class UserProfileActivity extends AppCompatActivity {
                             }
                         }
                     }
+                    if("fcmToken".equalsIgnoreCase(userData.getKey())){
+                        userFcmToken = userData.getValue().toString();
+                    }
                     if("interests".equalsIgnoreCase(userData.getKey())){
-
-                        tv_interests1.setVisibility(View.VISIBLE);
-                        tv_interests2.setVisibility(View.VISIBLE);
-                        tv_interests3.setVisibility(View.VISIBLE);
-
-                        tags_interests1.setVisibility(View.VISIBLE);
-                        tags_interests2.setVisibility(View.VISIBLE);
-                        tags_interests3.setVisibility(View.VISIBLE);
-
                         ArrayList<String> interests1 = new ArrayList<String>();
                         ArrayList<String> interests2 = new ArrayList<String>();
                         ArrayList<String> interests3 = new ArrayList<String>();
@@ -286,24 +254,27 @@ public class UserProfileActivity extends AppCompatActivity {
                             String key = interest_list.getKey();
 
                             if("interests1".equalsIgnoreCase(key)){
+                                interests1.clear();
                                 for(DataSnapshot snap1 : interest_list.getChildren()){
                                     interests1.add(snap1.getKey());
                                 }
+                                updateTags(tv_interests1,tags_interests1,interests1);
                             }
                             if("interests2".equalsIgnoreCase(key)){
+                                interests2.clear();
                                 for(DataSnapshot snap1 : interest_list.getChildren()){
                                     interests2.add(snap1.getKey());
                                 }
+                                updateTags(tv_interests2,tags_interests2,interests2);
                             }
                             if("interests3".equalsIgnoreCase(key)){
+                                interests3.clear();
                                 for(DataSnapshot snap1 : interest_list.getChildren()){
                                     interests3.add(snap1.getKey());
                                 }
+                                updateTags(tv_interests3,tags_interests3,interests3);
                             }
                         }
-                        updateTags(tv_interests1,tags_interests1,interests1);
-                        updateTags(tv_interests2,tags_interests2,interests2);
-                        updateTags(tv_interests3,tags_interests3,interests3);
 
                         ArrayList<ArrayList<String>> userInterests = new ArrayList<ArrayList<String>>(Arrays.asList(interests1,
                                 interests2, interests3));
@@ -311,6 +282,11 @@ public class UserProfileActivity extends AppCompatActivity {
                                 interestsList2, interestsList3));
                         match = Algorithms.calculateMatch(myInterests, userInterests);
                         tv_matchCount.setText("Clicks "+match+ "%");
+                        if(myId.equalsIgnoreCase(finalUserId)){
+                            tv_matchCount.setVisibility(View.GONE);
+                            tv_bullet.setVisibility(View.GONE);
+                            tv_admired_you.setVisibility(View.GONE);
+                        }
                         if(match == 0){
                             tv_matchCount.setVisibility(View.GONE);
                             tv_bullet.setVisibility(View.GONE);
@@ -372,105 +348,6 @@ public class UserProfileActivity extends AppCompatActivity {
                 intent.putExtra("imageUrl", imageUrl);
                 startActivity(intent);
 
-                /*final Firebase chatRequestReceivedRef = new Firebase("https://new-amigos.firebaseio.com/chat_requests/"+finalUserId+"/request_received/");
-                final Firebase chatRequestApprovedRef = new Firebase("https://new-amigos.firebaseio.com/chat_requests/"+finalUserId+"/request_approved/");
-
-                if(sentChatRequests.contains(finalUserId)){
-                    Toast.makeText(context,"You have already sent the chat request", Toast.LENGTH_SHORT).show();
-                }else if(pendingChatRequests.contains(finalUserId)){
-                    AlertDialog.Builder builder2 = new AlertDialog.Builder(UserProfileActivity.this,AlertDialog.THEME_HOLO_DARK);
-                    builder2.setTitle("Request already received");
-                    builder2.setMessage(userName + " has already requested to chat with you. Do you wish to continue?");
-                    builder2.setCancelable(true);
-
-                    builder2.setPositiveButton(
-                            "Yes",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    Set<String> approvedChats = new HashSet<String>(approvedChatRequests);
-                                    Set<String> pendingChats = new HashSet<String>(pendingChatRequests);
-
-                                    approvedChats.add(finalUserId);
-                                    approvedChatRequests.add(finalUserId);
-
-                                    pendingChats.remove(finalUserId);
-                                    pendingChats.remove(finalUserId);
-
-                                    Firebase myChatRequestRef = new Firebase("https://new-amigos.firebaseio.com/users/"+myId+"/chat_requests/"+ finalUserId);
-                                    Firebase userChatRequestRef = new Firebase("https://new-amigos.firebaseio.com/users/"+finalUserId+"/chat_requests/"+ myId);
-                                    myChatRequestRef.setValue("2");
-                                    userChatRequestRef.setValue("2");
-
-                                    sp.edit().putStringSet("approved_requests", approvedChats)
-                                            .putStringSet("pending_requests", pendingChats)
-                                            .apply();
-
-                                    chatRequestApprovedRef.child(myId).setValue(myName);
-
-                                    Intent intent = new Intent(context, ChatActivity.class);
-                                    intent.putExtra("userId", userId);
-                                    intent.putExtra("userName", userName);
-                                    intent.putExtra("imageUrl", imageUrl);
-                                    startActivity(intent);
-
-                                }
-                            });
-
-                    builder2.setNegativeButton(
-                            "No",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    dialog.cancel();
-                                }
-                            });
-
-                    AlertDialog alert12 = builder2.create();
-                    alert12.show();
-                }else if(approvedChatRequests.contains(finalUserId)) {
-                    Intent intent = new Intent(context, ChatActivity.class);
-                    intent.putExtra("userId", userId);
-                    intent.putExtra("userName", userName);
-                    intent.putExtra("imageUrl", imageUrl);
-                    startActivity(intent);
-                }else{
-                    AlertDialog.Builder builder2 = new AlertDialog.Builder(UserProfileActivity.this,AlertDialog.THEME_HOLO_DARK);
-                    builder2.setTitle("Send Chat request");
-                    builder2.setMessage("Do you want to send chat request to "+ userName+"?");
-                    builder2.setCancelable(true);
-
-                    builder2.setPositiveButton(
-                            "Yes",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-
-                                    Set<String> sentChats = new HashSet<String>(sentChatRequests);
-                                    sentChats.add(finalUserId);
-                                    sentChatRequests.add(finalUserId);
-
-
-                                    Firebase myChatRequestRef = new Firebase("https://new-amigos.firebaseio.com/users/"+myId+"/chat_requests/"+ finalUserId);
-                                    Firebase userChatRequestRef = new Firebase("https://new-amigos.firebaseio.com/users/"+finalUserId+"/chat_requests/"+ myId);
-                                    myChatRequestRef.setValue("0");
-                                    userChatRequestRef.setValue("1");
-
-                                    sp.edit().putStringSet("sent_requests", sentChats)
-                                            .apply();
-
-                                    chatRequestReceivedRef.child(myId).setValue(myName);
-                                }
-                            });
-
-                    builder2.setNegativeButton(
-                            "No",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    dialog.cancel();
-                                }
-                            });
-
-                    AlertDialog alert12 = builder2.create();
-                    alert12.show();
-                }*/
 
             }
         });
@@ -488,8 +365,14 @@ public class UserProfileActivity extends AppCompatActivity {
 
                 final PeopleILikedDAO peopleILikedDAO = new PeopleILikedDAO(context);
                 ArrayList<String> peopleILikedArrayList = peopleILikedDAO.getAllPeopleIlikedId();
-                if(peopleILikedArrayList.contains(userId)){
-                    Toast.makeText(context,"You have already admired "+ userName,Toast.LENGTH_SHORT).show();
+                if(peopleILikedArrayList.contains(finalUserId)){
+                    check_icon.setVisibility(View.GONE);
+                    Firebase myRef = new Firebase("https://new-amigos.firebaseio.com/users/" + myId + "/people_i_liked/");
+                    Firebase userRef = new Firebase("https://new-amigos.firebaseio.com/users/" + finalUserId1 + "/people_who_liked_me/");
+                    myRef.child(finalUserId1).setValue(null);
+                    userRef.child(myId).setValue(null);
+                    peopleILikedDAO.removeFromPeopleILikedList(finalUserId1);
+                    Toast.makeText(context,"You have unadmired "+ userName,Toast.LENGTH_SHORT).show();
                 }else {
                     check_icon.setVisibility(View.VISIBLE);
                     Toast.makeText(context, "You admired " + userName, Toast.LENGTH_SHORT).show();
@@ -498,12 +381,18 @@ public class UserProfileActivity extends AppCompatActivity {
                     Firebase userRef = new Firebase("https://new-amigos.firebaseio.com/users/" + finalUserId1 + "/people_who_liked_me/");
                     Firebase likedNotificationRef = new Firebase("https://new-amigos.firebaseio.com/liked_notifications/"
                             + finalUserId1 + "/");
+
+                    Firebase admiredNotificationRef = new Firebase("https://new-amigos.firebaseio.com/admired_notifications/"
+                            + finalUserId1 + "/"+myId+"/");
                     myRef.child(finalUserId1).setValue(timeStamp);
                     userRef.child(myId).setValue(timeStamp);
                     likedNotificationRef.child(myId).child(myName).setValue(timeStamp);
+                    admiredNotificationRef.child("name").setValue(myName);
+                    admiredNotificationRef.child("timeStamp").setValue(timeStamp);
+                    admiredNotificationRef.child("fcmToken").setValue(userFcmToken);
 
-                    Firebase userRef1 = new Firebase("https://new-amigos.firebaseio.com/users/" + finalUserId1 + "/");
-                    userRef1.addValueEventListener(new ValueEventListener() {
+                    Firebase thisUserRef = new Firebase("https://new-amigos.firebaseio.com/users/" + finalUserId1 + "/");
+                    thisUserRef.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             String name = null, status = null, imageUrl = null;
@@ -523,6 +412,7 @@ public class UserProfileActivity extends AppCompatActivity {
                                 }
                             }
                             peopleILikedDAO.addUserToPeopleILikedList(finalUserId1, name, status, imageUrl);
+                            //PeopleILikedFragment.reloadPeopleILikedList();
                         }
 
                         @Override
@@ -535,23 +425,27 @@ public class UserProfileActivity extends AppCompatActivity {
         });
     }
 
-    private void updateTags(TextView tv_interests1, TagView tags_interests1, ArrayList<String> interests1) {
-        if(interests1 == null || interests1.isEmpty()){
-            tv_interests1.setVisibility(View.GONE);
-            tags_interests1.setVisibility(View.GONE);
+    private synchronized void updateTags(TextView tv_interests, TagView tags_interests, ArrayList<String> interests) {
+        if(interests == null || interests.isEmpty()){
+            tv_interests.setVisibility(View.GONE);
+            //tags_interests.setVisibility(View.INVISIBLE);
+            return;
         }else{
-            ArrayList<Tag> tags1 = new ArrayList<Tag>();
-            tags1.clear();
-            for(String s : interests1){
+            tv_interests.setVisibility(View.VISIBLE);
+            //tags_interests.setVisibility(View.VISIBLE);
+
+            ArrayList<Tag> tags = new ArrayList<Tag>();
+            tags.clear();
+            for(String s : interests){
                 Tag tag = new Tag(s);
                 tag.tagTextColor = context.getResources().getColor(R.color.colorPrimary);
                 tag.layoutBorderColor = context.getResources().getColor(R.color.colorPrimary);
                 tag.layoutColor = Color.parseColor("#FFFFFF");
                 tag.layoutBorderSize = 1.0F;
                 tag.layoutColorPress = Color.WHITE;
-                tags1.add(tag);
+                tags.add(tag);
             }
-            tags_interests1.addTags(tags1);
+            tags_interests.addTags(tags);
         }
     }
 

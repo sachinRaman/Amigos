@@ -1,10 +1,10 @@
 package com.amigos.sachin.Activities;
 
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
-import android.media.Image;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
@@ -12,9 +12,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-
-import android.support.v7.view.menu.MenuBuilder;
-import android.support.v7.view.menu.MenuPopupHelper;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -22,17 +20,15 @@ import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import com.amigos.sachin.Adapters.ViewPagerAdapter;
-import com.amigos.sachin.ApplicationCache.ApplicationCache;
 import com.amigos.sachin.CustomViews.CustomViewPager;
 import com.amigos.sachin.MainFragments.ChatsFragment;
 import com.amigos.sachin.MainFragments.MyProfileFragment;
 import com.amigos.sachin.MainFragments.UsersFragment;
 import com.amigos.sachin.R;
+import com.amigos.sachin.Services.ChatService;
 import com.firebase.client.Firebase;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class MainTabsActivity extends AppCompatActivity {
 
@@ -48,6 +44,7 @@ public class MainTabsActivity extends AppCompatActivity {
     int bottomTab = 0;
     String myId;
     ImageView search_icon, overflow_icon;
+    String TAG = "MainTabsActivity";
 
 
     @Override
@@ -60,10 +57,25 @@ public class MainTabsActivity extends AppCompatActivity {
         //Hide the action bar
         getSupportActionBar().hide();
 
+        if(isMyServiceRunning(ChatService.class) == false ) {
+            Intent startChatService = new Intent(this, ChatService.class);
+            startService(startChatService);
+        }
+
+        /*Intent startChatService = new Intent(MainTabsActivity.this, ChatService.class);
+        startService(startChatService);*/
+
         Firebase.setAndroidContext(context);
+
 
         SharedPreferences sp = getSharedPreferences("com.amigos.sachin", Context.MODE_PRIVATE);
         myId = sp.getString("myId","");
+
+        Firebase tokensRef = new Firebase("https://new-amigos.firebaseio.com/tokens/");
+        tokensRef.child(myId).setValue(sp.getString("myToken", null));
+
+        Firebase myTokensRef = new Firebase("https://new-amigos.firebaseio.com/users/"+myId+"/");
+        myTokensRef.child("fcmToken").setValue(sp.getString("myToken", null));
 
         Firebase activeRef = new Firebase("https://new-amigos.firebaseio.com/users/"+myId+"/active/");
         activeRef.setValue("1");
@@ -128,6 +140,10 @@ public class MainTabsActivity extends AppCompatActivity {
                                 Intent intent1  = new Intent(context, PeopleILikedActivity.class);
                                 startActivity(intent1);
                                 return true;
+                            case R.id.people_i_removed:
+                                Intent intent2  = new Intent(context, PeopleIRemoved.class);
+                                startActivity(intent2);
+                                return true;
                             case R.id.search_icon:
                                 Intent intent  = new Intent(context, SearchActivity.class);
                                 startActivity(intent);
@@ -137,18 +153,14 @@ public class MainTabsActivity extends AppCompatActivity {
                                 UsersFragment.updateSwipeUsersAdapter(0);
                                 return true;
                             case R.id.settings:
-                                Intent intent2 = new Intent(context, SettingsActivity.class);
-                                startActivity(intent2);
+                                Intent intent3 = new Intent(context, SettingsActivity.class);
+                                startActivity(intent3);
                                 return true;
 
                         }
                         return true;
                     }
                 });
-
-                /*MenuPopupHelper menuHelper = new MenuPopupHelper(context, (MenuBuilder) popup.getMenu(), overflow_icon);
-                menuHelper.setForceShowIcon(true);
-                menuHelper.show();*/
                 popup.show();
             }
         });
@@ -218,5 +230,18 @@ public class MainTabsActivity extends AppCompatActivity {
         Firebase activeRef = new Firebase("https://new-amigos.firebaseio.com/users/"+myId+"/active/");
         activeRef.setValue("1");
         super.onResume();
+    }
+
+    private boolean isMyServiceRunning(Class<?> serviceClass) {
+        Log.i(TAG,"isMyServiceRunning():: Entered");
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                Log.i(TAG,"isMyServiceRunning():: TRUE-Service running");
+                return true;
+            }
+        }
+        Log.i(TAG, "isMyServiceRunning():: FALSE-Service NOT-running");
+        return false;
     }
 }

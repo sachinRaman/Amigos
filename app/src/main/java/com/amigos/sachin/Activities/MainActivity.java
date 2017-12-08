@@ -4,6 +4,7 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -244,8 +245,6 @@ public class MainActivity extends AppCompatActivity {
                                 } catch (MalformedURLException e) {
                                     e.printStackTrace();
                                 }
-                                /*Intent intent = new Intent(MainActivity.this,SplashScreen.class);
-                                startActivity(intent);*/
 
                             }
                         }),
@@ -266,17 +265,17 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-                batch.addCallback(new GraphRequestBatch.Callback() {
+                /*batch.addCallback(new GraphRequestBatch.Callback() {
                     @Override
                     public void onBatchCompleted(GraphRequestBatch graphRequests) {
                         // Application code for when the batch finishes
                     }
-                });
+                });*/
 
                 batch.addCallback(new GraphRequestBatch.Callback() {
                     @Override
                     public void onBatchCompleted(GraphRequestBatch graphRequests) {
-                        Intent intent = new Intent(MainActivity.this,SplashScreen.class);
+                        Intent intent = new Intent(MainActivity.this,DragActivity.class);
                         startActivity(intent);
                         // Application code for when the batch finishes
                     }

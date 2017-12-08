@@ -96,6 +96,18 @@ public class UsersFragment extends Fragment {
         viewPagerAllUsers.setCurrentItem(position);
     }
 
+    public static void swipeRight(){
+        viewPagerAllUsers.arrowScroll(View.FOCUS_RIGHT);
+
+    }
+
+    public static void swipeLeft(){
+        viewPagerAllUsers.arrowScroll(View.FOCUS_LEFT);
+
+    }
+
+
+
     private class MyPagerAdapter extends FragmentPagerAdapter {
 
         public MyPagerAdapter(FragmentManager fm) {
